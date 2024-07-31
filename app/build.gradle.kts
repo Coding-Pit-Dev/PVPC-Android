@@ -1,6 +1,10 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
+    alias(libs.plugins.io.gitlab.arturbosch.detekt)
 }
 
 android {
@@ -49,6 +53,17 @@ android {
     }
 }
 
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
+    disabledRules.set(listOf("no-wildcard-imports", "final-newline"))
+    reporters {
+        reporter(ReporterType.CHECKSTYLE)
+        reporter(ReporterType.PLAIN)
+        reporter(ReporterType.SARIF)
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -59,7 +74,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    // Chats
     implementation(libs.vico.compose.m3)
+    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
