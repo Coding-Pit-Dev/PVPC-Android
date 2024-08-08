@@ -56,7 +56,6 @@ android {
 ktlint {
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.set(listOf("no-wildcard-imports", "final-newline"))
     reporters {
         reporter(ReporterType.CHECKSTYLE)
         reporter(ReporterType.PLAIN)
