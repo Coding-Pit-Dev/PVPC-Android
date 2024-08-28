@@ -50,7 +50,7 @@ fun PriceCardComponent(
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = price.toString(),
+                text = price,
                 modifier = Modifier
                     .padding(start = 8.dp, top = 8.dp),
                 textAlign = TextAlign.Center,

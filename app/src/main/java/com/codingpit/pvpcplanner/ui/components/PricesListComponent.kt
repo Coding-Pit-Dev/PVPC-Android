@@ -13,7 +13,7 @@ import java.util.Locale
 @Composable
 fun PricesListComponent() {
 
-    var prices = listOf(10,20,30,40,50,60,70,80,90,100)
+    val prices = listOf(10,20,30,40,50,60,70,80,90,100)
     val currentTimeMillis = System.currentTimeMillis()
     val date = Date(currentTimeMillis)
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
