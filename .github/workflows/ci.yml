@@ -2,9 +2,9 @@ name: Android CI
 
 on:
     push:
-        branches: [ 'main', 'develop']
+        branches: [ 'main', 'develop', 'github_actions' ]
     pull_request:
-        branches: [ 'main', 'develop']
+        branches: [ 'main', 'develop', 'github_actions']
 
 jobs:
     build:
@@ -22,3 +22,5 @@ jobs:
               uses: gradle/actions/setup-gradle@v3
             - name: Build with Gradle
               run: ./gradlew assemble
+            - name: Run Tests with Gradle
+              run: ./gradlew test
