@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
+    kotlin("kapt")
+
 }
 
 android {
@@ -83,4 +85,20 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.scalars)
+    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.retrofit.okhttp)
+    implementation(libs.moshi)
+    implementation(libs.okhttp3.interceptor)
+    implementation(libs.moshi.kotlin)
+
+    // Hilt and Dagger
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    // Gjson converter
+    implementation(libs.gson)
 }
