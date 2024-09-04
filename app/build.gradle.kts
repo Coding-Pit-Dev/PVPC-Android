@@ -77,14 +77,7 @@ dependencies {
     implementation(libs.androidx.material3)
     // Chats
     implementation(libs.vico.compose.m3)
-    // Tests
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+
 
     // Networking
     implementation(libs.retrofit)
@@ -101,4 +94,25 @@ dependencies {
 
     // Gjson converter
     implementation(libs.gson)
+
+    // Tests
+    testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.engine)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    //Other  Test
+    testImplementation(libs.mockk)
+
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform()  // Esto es necesario para que JUnit 5 sea reconocido
+}
+
