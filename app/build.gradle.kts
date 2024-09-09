@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
-    kotlin("kapt")
 
+    kotlin("kapt")
 }
 
 android {
@@ -78,7 +78,6 @@ dependencies {
     // Chats
     implementation(libs.vico.compose.m3)
 
-
     // Networking
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.scalars)
@@ -90,10 +89,7 @@ dependencies {
 
     // Hilt and Dagger
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-
-    // Gjson converter
-    implementation(libs.gson)
+     kapt(libs.hilt.compiler)
 
     // Tests
     testImplementation(libs.junit)
@@ -107,12 +103,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.kotlinx.coroutines.test)
 
-    //Other  Test
+    // Other  Test
     testImplementation(libs.mockk)
-
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()  // Esto es necesario para que JUnit 5 sea reconocido
+    useJUnitPlatform() // Esto es necesario para que JUnit 5 sea reconocido
 }
-

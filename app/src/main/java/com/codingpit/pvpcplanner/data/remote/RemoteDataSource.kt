@@ -5,4 +5,3 @@ import com.codingpit.pvpcplanner.domains.models.PVPCModel
 interface RemoteDataSource {
     suspend fun getPrices(): List<PVPCModel>
 }
-
