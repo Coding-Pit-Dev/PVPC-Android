@@ -1,11 +1,11 @@
 package com.codingpit.pvpcplanner.data.remote
 
-import com.codingpit.pvpcplanner.domains.models.PVPCModel
 import com.codingpit.pvpcplanner.mocks.Mocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -35,6 +35,7 @@ class RemoteDataSourceTest {
 
         // Then
         assertEquals(mocks.mockPVPCModel, result)
+        Assertions.assertEquals(mocks.mockPVPCModel, result)
         coVerify { api.getPrices() }
     }
 
@@ -47,8 +48,7 @@ class RemoteDataSourceTest {
         // When
         val result = runCatching { dataSource.getPrices() }
 
-        // Then
-        assertEquals(exception, result.exceptionOrNull())
+        Assertions.assertEquals(exception, result.exceptionOrNull())
         coVerify { api.getPrices() }
     }
 }
