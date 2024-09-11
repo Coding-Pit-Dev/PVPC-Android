@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.data.remote
 
+import android.util.Log
 import com.codingpit.pvpcplanner.domains.models.PVPCModel
 import com.codingpit.pvpcplanner.mocks.Mocks
 import io.mockk.coEvery
@@ -26,7 +27,7 @@ class RemoteDataSourceTest {
     }
 
     @Test
-    fun `getPrices should return a list of PVPCModel`() = runBlocking {
+    fun `Given successful response When getPrices Then return a list of PVPCModel`() = runBlocking {
         // Given
         coEvery { api.getPrices() } returns mocks.mockPVPCModel
 
@@ -39,7 +40,7 @@ class RemoteDataSourceTest {
     }
 
     @Test
-    fun `getPrices handles API exception`() = runBlocking {
+    fun `Given API throws an exception When getPrices is called Then exception is returned`() = runBlocking {
         // Given
         val exception = RuntimeException("API Error")
         coEvery { api.getPrices() } throws exception

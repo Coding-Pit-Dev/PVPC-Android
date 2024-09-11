@@ -89,7 +89,7 @@ dependencies {
 
     // Hilt and Dagger
     implementation(libs.hilt.android)
-     kapt(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
 
     // Tests
     testImplementation(libs.junit)
