@@ -1,2 +1,2 @@
 # PVPC-Android
-## Aplicación sobre gestión de precios de electricidad
+## Aplicación sobre gestión de precios de electricidad.
