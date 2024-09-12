@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
 
     kotlin("kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -65,6 +67,14 @@ ktlint {
     }
 }
 
+detekt {
+    toolVersion = "1.23.7"
+    parallel = true
+    config.setFrom("config/detekt/config.yml")
+    buildUponDefaultConfig = true
+    basePath = projectDir.absolutePath
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -90,6 +100,7 @@ dependencies {
     // Hilt and Dagger
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Tests
     testImplementation(libs.junit)
