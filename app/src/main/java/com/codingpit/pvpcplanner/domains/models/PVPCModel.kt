@@ -1,8 +1,7 @@
 package com.codingpit.pvpcplanner.domains.models
 
 data class PVPCModel(
-
-    var id: Int?,
+    val id: Int,
     val diaval: String,
     val horaval: String,
     val pcbval: String,
