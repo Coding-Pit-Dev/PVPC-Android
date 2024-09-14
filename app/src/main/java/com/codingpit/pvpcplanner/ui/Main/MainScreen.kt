@@ -10,7 +10,7 @@ fun MainScreen(
     viewModel: HomeVM,
 ) {
     HomeScreen(viewModel = viewModel)
-    viewModel.getHeroes()
+    viewModel.getPrices()
 
 }
 

@@ -30,10 +30,7 @@ fun PricesListComponent() {
                 price = "${it.toDouble()} €"
             )
         }
-
-
     }
-
 }
 
 @Preview
@@ -41,3 +38,6 @@ fun PricesListComponent() {
 private fun PricesView_Preview() {
     PricesListComponent()
 }
+
+
+

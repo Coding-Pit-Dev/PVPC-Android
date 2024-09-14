@@ -1,14 +1,14 @@
 package com.codingpit.pvpcplanner.data
 
 import android.util.Log
+import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domains.models.PVPCModel
 import javax.inject.Inject
 
 class Repository @Inject constructor (
     private val remoteDataSource: RemoteDataSource,
 ) {
-
-    suspend fun getHeroes(): List<PVPCModel> {
+    suspend fun getPrices(): List<PVPCModel> {
         try {
             Log.d("Repository", "Fetching data...")
             val responseRemote = remoteDataSource.getPrices()
@@ -20,6 +20,4 @@ class Repository @Inject constructor (
             return emptyList() // Or handle the error as needed
         }
     }
-
-
 }

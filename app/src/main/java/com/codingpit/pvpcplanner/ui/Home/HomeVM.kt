@@ -20,22 +20,21 @@ class HomeVM @Inject constructor(
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
-    fun getHeroes() {
+    fun getPrices() {
         viewModelScope.launch {
             _state.update { HomeState.Loading }
 
-            val heroes =
+            val data =
                 runCatching {
                     withContext(Dispatchers.IO) {
-                        repository.getHeroes()
+                        repository.getPrices()
                     }
                 }
-            if (heroes.isSuccess) {
-                _state.update { HomeState.Success(heroes.getOrThrow()) }
+            if (data.isSuccess) {
+                _state.update { HomeState.Success(data.getOrThrow()) }
             } else {
-                _state.update { HomeState.Error(heroes.exceptionOrNull()?.message.orEmpty()) }
+                _state.update { HomeState.Error(data.exceptionOrNull()?.message.orEmpty()) }
             }
         }
     }
-
 }

@@ -30,7 +30,6 @@ fun HomeScreen(
             Log.d("HomeScreen", "Error: $error")
         }
     }
-
 }
 
 @Composable
@@ -45,5 +44,5 @@ PricesListComponent()
 @Preview
 @Composable
 private fun HomeScreen_Preview() {
-    //HomeScreen()
+    // HomeScreen()
 }
