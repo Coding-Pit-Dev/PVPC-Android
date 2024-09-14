@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt.android.plugin)
 }
 
 android {
