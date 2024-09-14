@@ -1,6 +1,8 @@
 package com.codingpit.pvpcplanner.di
 
 import com.codingpit.pvpcplanner.data.remote.PVPCApi
+import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
+import com.codingpit.pvpcplanner.data.remote.RemoteDataSourceImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -41,6 +43,10 @@ object NetworkModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 
+    fun providePVPCApi(retrofit: Retrofit): PVPCApi = retrofit.create(PVPCApi::class.java)
+
     @Provides
-    fun provideBantuApi(retrofit: Retrofit): PVPCApi = retrofit.create(PVPCApi::class.java)
+    fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource {
+        return remoteDataSourceImpl
+    }
 }
