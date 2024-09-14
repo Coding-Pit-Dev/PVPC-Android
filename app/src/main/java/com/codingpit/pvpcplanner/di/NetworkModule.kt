@@ -43,6 +43,7 @@ object NetworkModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 
+    @Provides
     fun providePVPCApi(retrofit: Retrofit): PVPCApi = retrofit.create(PVPCApi::class.java)
 
     @Provides
