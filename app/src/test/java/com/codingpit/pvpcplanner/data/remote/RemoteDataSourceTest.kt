@@ -1,7 +1,5 @@
 package com.codingpit.pvpcplanner.data.remote
 
-import android.util.Log
-import com.codingpit.pvpcplanner.domains.models.PVPCModel
 import com.codingpit.pvpcplanner.mocks.Mocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,7 +27,7 @@ class RemoteDataSourceTest {
     @Test
     fun `Given successful response When getPrices Then return a list of PVPCModel`() = runBlocking {
         // Given
-        coEvery { api.getPrices() } returns mocks.mockPVPCModel
+        coEvery { api.getPrices().PVPC } returns mocks.mockPVPCModel
 
         // When
         val result = dataSource.getPrices()

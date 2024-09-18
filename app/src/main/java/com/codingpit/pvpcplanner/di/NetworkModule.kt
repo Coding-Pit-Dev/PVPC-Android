@@ -16,7 +16,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val BASE_URL = "https://api.esios.ree.es/archives/70/download_json/"
+    private const val BASE_URL = "https://api.esios.ree.es/"
 
     @Provides
     fun providesOkHttpClient(): OkHttpClient =
