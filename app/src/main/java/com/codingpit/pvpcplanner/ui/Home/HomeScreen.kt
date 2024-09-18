@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.codingpit.pvpcplanner.domains.models.PVPCDTO
+import com.codingpit.pvpcplanner.domains.models.PVPCModel
 import com.codingpit.pvpcplanner.ui.components.PricesListComponent
 
 @Composable
@@ -33,7 +33,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeComponents(
-    responseData: List<PVPCDTO>
+    responseData: List<PVPCModel>
 ) {
     PricesListComponent(responseData)
 }

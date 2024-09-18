@@ -1,12 +1,12 @@
 package com.codingpit.pvpcplanner.ui.Home
 
-import com.codingpit.pvpcplanner.domains.models.PVPCDTO
+import com.codingpit.pvpcplanner.domains.models.PVPCModel
 
 sealed class HomeState {
     object Loading : HomeState()
 
     data class Success(
-        val data: List<PVPCDTO>,
+        val data: List<PVPCModel>,
     ) : HomeState()
 
     data class Error(
