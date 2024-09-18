@@ -2,13 +2,13 @@ package com.codingpit.pvpcplanner.data
 
 import android.util.Log
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
-import com.codingpit.pvpcplanner.domains.models.PVPCModel
+import com.codingpit.pvpcplanner.domains.models.PVPCDTO
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor (
     private val remoteDataSource: RemoteDataSource,
 ): Repository {
-    override suspend fun getPrices(): List<PVPCModel> {
+    override suspend fun getPrices(): List<PVPCDTO> {
         try {
             Log.d("Repository", "Fetching data...")
             val responseRemote = remoteDataSource.getPrices()

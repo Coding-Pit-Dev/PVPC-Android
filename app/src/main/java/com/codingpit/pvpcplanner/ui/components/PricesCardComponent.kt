@@ -1,6 +1,7 @@
 package com.codingpit.pvpcplanner.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,8 +23,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PriceCardComponent(
     widthSize: Int = 200,
-    heightSize: Int = 50,
+    heightSize: Int = 100,
     iconCard: ImageVector = Icons.Outlined.Menu,
+    date : String = "00/00/0000",
     hour: String = "00:00",
     price: String = "0.0",
 ) {
@@ -37,24 +39,35 @@ fun PriceCardComponent(
     ) {
 
         Row {
-
             Icon(
                 imageVector = iconCard,
                 contentDescription = "Icon Card",
                 modifier = Modifier.padding(start = 8.dp, top = 8.dp)
             )
-            Text(
-                text = hour,
-                modifier = Modifier
-                    .padding(start = 8.dp, top = 8.dp),
-                textAlign = TextAlign.Center,
-            )
-            Text(
-                text = price,
-                modifier = Modifier
-                    .padding(start = 8.dp, top = 8.dp),
-                textAlign = TextAlign.Center,
-            )
+            Column {
+                Row {
+                    Text(
+                        text = date,
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 8.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = hour,
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 8.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+
+                Text(
+                    text = price,
+                    modifier = Modifier
+                        .padding(start = 8.dp, top = 8.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
+
 
         }
 

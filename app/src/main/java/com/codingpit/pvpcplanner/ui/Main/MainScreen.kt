@@ -11,11 +11,4 @@ fun MainScreen(
 ) {
     HomeScreen(viewModel = viewModel)
     viewModel.getPrices()
-
-}
-
-@Preview
-@Composable
-private fun MainScreen_Preview() {
-    //MainScreen()
 }

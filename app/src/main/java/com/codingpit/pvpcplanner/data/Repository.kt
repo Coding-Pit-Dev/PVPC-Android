@@ -1,7 +1,7 @@
 package com.codingpit.pvpcplanner.data
 
-import com.codingpit.pvpcplanner.domains.models.PVPCModel
+import com.codingpit.pvpcplanner.domains.models.PVPCDTO
 
 interface Repository{
-    suspend fun getPrices(): List<PVPCModel>
+    suspend fun getPrices(): List<PVPCDTO>
 }
