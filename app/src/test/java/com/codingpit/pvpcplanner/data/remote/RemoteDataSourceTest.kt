@@ -33,7 +33,7 @@ class RemoteDataSourceTest {
         val result = dataSource.getPrices()
 
         // Then
-        assertEquals(mocks.mockPVPCModel, result)
+        assertEquals(mocks.mockPVPCDTO, result)
         coVerify { api.getPrices() }
     }
 
