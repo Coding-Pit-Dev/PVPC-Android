@@ -27,7 +27,7 @@ class RemoteDataSourceTest {
     @Test
     fun `Given successful response When getPrices Then return a list of PVPCModel`() = runBlocking {
         // Given
-        coEvery { api.getPrices().PVPC } returns mocks.mockPVPCModel
+        coEvery { api.getPrices().PVPC } returns mocks.mockPVPCDTO
 
         // When
         val result = dataSource.getPrices()
