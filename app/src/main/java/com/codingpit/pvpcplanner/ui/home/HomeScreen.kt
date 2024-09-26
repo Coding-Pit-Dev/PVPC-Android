@@ -1,4 +1,4 @@
-package com.codingpit.pvpcplanner.ui.Home
+package com.codingpit.pvpcplanner.ui.home
 
 import android.util.Log
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package com.codingpit.pvpcplanner.ui.Home
+package com.codingpit.pvpcplanner.ui.home
 
 import com.codingpit.pvpcplanner.data.Repository
 import com.codingpit.pvpcplanner.mocks.Mocks
