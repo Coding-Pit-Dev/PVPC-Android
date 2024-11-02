@@ -17,7 +17,7 @@ retrofit = "2.11.0"
 moshi = "1.15.1"
 interceptor = "5.0.0-alpha.14"
 hilt = "2.52"
-junitJupiter = "5.9.0"
+junitJupiter = "5.11.3"
 ksp = "2.0.20-1.0.24"
 
 [libraries]
