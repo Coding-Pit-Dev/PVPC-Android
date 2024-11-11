@@ -18,7 +18,7 @@ moshi = "1.15.1"
 interceptor = "5.0.0-alpha.14"
 hilt = "2.52"
 junitJupiter = "5.11.3"
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.21-1.0.26"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
