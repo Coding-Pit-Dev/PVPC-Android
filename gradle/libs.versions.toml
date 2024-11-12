@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.9.3"
-agp = "8.6.1"
+agp = "8.7.2"
 composeBom = "2024.10.01"
 coreKtx = "1.15.0"
 detekt = "1.23.7"
@@ -18,7 +18,7 @@ moshi = "1.15.1"
 interceptor = "5.0.0-alpha.14"
 hilt = "2.52"
 junitJupiter = "5.11.3"
-ksp = "2.0.21-1.0.26"
+ksp = "2.0.21-1.0.27"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
