@@ -16,7 +16,7 @@ vico = "1.15.0"
 retrofit = "2.11.0"
 moshi = "1.15.1"
 interceptor = "5.0.0-alpha.14"
-hilt = "2.53"
+hilt = "2.53.1"
 junitJupiter = "5.11.3"
 ksp = "2.1.0-1.0.29"
 
