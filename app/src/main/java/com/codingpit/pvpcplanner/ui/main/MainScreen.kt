@@ -20,7 +20,7 @@ import com.codingpit.pvpcplanner.ui.main.MainComponents.MainContent
 fun MainScreen(
     viewModel: HomeVM,
 ) {
-    var selectedScreen by remember { mutableStateOf("MapScreen") }
+    var selectedScreen by remember { mutableStateOf("Home") }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -35,7 +35,8 @@ fun MainScreen(
 
         MainContent(
             modifier = Modifier.padding(paddingValues),
-            viewModel
+            viewModel,
+            selectedScreen
         )
 
     }
