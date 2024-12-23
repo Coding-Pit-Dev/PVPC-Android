@@ -1,14 +1,18 @@
 package com.codingpit.pvpcplanner.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import com.codingpit.pvpcplanner.domains.models.PVPCModel
 import com.codingpit.pvpcplanner.ui.components.PricesListComponent
 
 @Composable
 fun HomeScreen(
+    modifier: Modifier,
     viewModel: HomeVM
 ) {
     val state by viewModel.state.collectAsState()
@@ -21,7 +25,10 @@ fun HomeScreen(
         is HomeState.Success -> {
             val responseData = (state as HomeState.Success).data
             Log.d("HomeScreen", "Success: $responseData")
-            HomeComponents(responseData)
+            HomeComponents(
+                modifier = modifier,
+                responseData
+            )
         }
 
         is HomeState.Error -> {
@@ -33,7 +40,10 @@ fun HomeScreen(
 
 @Composable
 fun HomeComponents(
+    modifier: Modifier,
     responseData: List<PVPCModel>
 ) {
-    PricesListComponent(responseData)
+    Box( modifier = modifier.fillMaxSize()) {
+        PricesListComponent(responseData)
+    }
 }
