@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codingpit.pvpcplanner.data.Constants.ROUTES_NAVIGATION_BOTTOM_BAR
+import com.codingpit.pvpcplanner.utils.Constants.ROUTES_NAVIGATION_BOTTOM_BAR
 
 @Composable
 fun MainBottomBarNav(

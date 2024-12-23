@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.codingpit.pvpcplanner.data.Constants.HOME_SCREEN
-import com.codingpit.pvpcplanner.data.Constants.NOTIFICATION_SCREEN
-import com.codingpit.pvpcplanner.data.Constants.SETTING_SCREEN
+import com.codingpit.pvpcplanner.utils.Constants.HOME_SCREEN
+import com.codingpit.pvpcplanner.utils.Constants.NOTIFICATION_SCREEN
+import com.codingpit.pvpcplanner.utils.Constants.SETTING_SCREEN
 import com.codingpit.pvpcplanner.ui.home.HomeScreen
 import com.codingpit.pvpcplanner.ui.home.HomeVM
 
