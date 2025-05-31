@@ -1,12 +1,12 @@
-package com.codingpit.pvpcplanner.domains.models
+package com.codingpit.pvpcplanner.data.remote.response
 
 import com.squareup.moshi.Json
 
 data class PVPCDTO(
-    @Json(name = "Dia") val dia: String?,
-    @Json(name = "Hora") val hora: String?,
-    @Json(name = "PCB") val pcb: String?,
-    @Json(name = "CYM") val cym: String?,
+    @Json(name = "Dia") val day: String,
+    @Json(name = "Hora") val hour: String,
+    @Json(name = "PCB") val pcb: String,
+    @Json(name = "CYM") val cym: String,
     @Json(name = "COF2TD") val cof2td: String?,
     @Json(name = "PMHPCB") val pmhpcb: String?,
     @Json(name = "PMHCYM") val pmhcyM: String?,

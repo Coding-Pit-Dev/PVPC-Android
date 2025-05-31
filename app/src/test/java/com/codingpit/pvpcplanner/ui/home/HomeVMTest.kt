@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 class HomeVMTest{
 
     // SUT
-    private lateinit var viewModel: HomeVM
+    private lateinit var viewModel: HomeViewModel
     private lateinit var mocks: Mocks
 
     // Dependencies
@@ -34,7 +34,7 @@ class HomeVMTest{
     fun setUp() {
         mocks = Mocks()
         Dispatchers.setMain(testDispatcher)
-        viewModel = HomeVM(repository)
+        viewModel = HomeViewModel(repository)
     }
 
     @AfterEach

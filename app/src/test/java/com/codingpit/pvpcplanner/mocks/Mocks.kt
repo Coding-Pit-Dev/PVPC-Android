@@ -1,13 +1,13 @@
 package com.codingpit.pvpcplanner.mocks
 
-import com.codingpit.pvpcplanner.domains.models.PVPCDTO
-import com.codingpit.pvpcplanner.domains.models.PVPCModel
+import com.codingpit.pvpcplanner.data.remote.response.PVPCDTO
+import com.codingpit.pvpcplanner.domain.models.PVPCModel
 
 class Mocks {
     val mockPVPCDTO = listOf(
         PVPCDTO(
-            dia = "2024-09-17",
-            hora = "13:00",
+            day = "2024-09-17",
+            hour = "13:00",
             pcb = "11.5",
             cym = "10.3",
             cof2td = "0.3",
@@ -33,8 +33,8 @@ class Mocks {
             tahcym = "12.5"
         ),
         PVPCDTO(
-            dia = "2024-09-17",
-            hora = "13:00",
+            day = "2024-09-17",
+            hour = "13:00",
             pcb = "11.5",
             cym = "10.3",
             cof2td = "0.3",
@@ -60,8 +60,8 @@ class Mocks {
             tahcym = "12.5"
         ),
         PVPCDTO(
-            dia = "2024-09-17",
-            hora = "13:00",
+            day = "2024-09-17",
+            hour = "13:00",
             pcb = "11.5",
             cym = "10.3",
             cof2td = "0.3",
@@ -90,20 +90,20 @@ class Mocks {
 
     val mockPVPCModel = listOf(
         PVPCModel(
-            dia = "2024-09-17",
-            hora = "13:00",
+            day = "2024-09-17",
+            startHour = "13:00",
             pcb = "11.5",
             cym = "10.3",
         ),
         PVPCModel(
-            dia = "2024-09-17",
-            hora = "13:00",
+            day = "2024-09-17",
+            startHour = "13:00",
             pcb = "11.5",
             cym = "10.3",
         ),
         PVPCModel(
-            dia = "2024-09-17",
-            hora = "13:00",
+            day = "2024-09-17",
+            startHour = "13:00",
             pcb = "11.5",
             cym = "10.3",
 

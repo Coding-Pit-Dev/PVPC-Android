@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PVPC Planner</string>
+    <string name="price_format">%.5f €</string>
+    <string name="best_time_from_to">Best time from %1$s to %2$s</string>
 </resources>

@@ -13,5 +13,4 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindRepository(repositoryImpl: RepositoryImpl): Repository
-
 }

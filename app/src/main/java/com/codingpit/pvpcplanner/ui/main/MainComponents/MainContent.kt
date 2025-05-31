@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.codingpit.pvpcplanner.ui.devices.DevicesScreen
+import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.utils.Constants.HOME_SCREEN
-import com.codingpit.pvpcplanner.utils.Constants.NOTIFICATION_SCREEN
+import com.codingpit.pvpcplanner.utils.Constants.DEVICES_SCREEN
 import com.codingpit.pvpcplanner.utils.Constants.SETTING_SCREEN
 import com.codingpit.pvpcplanner.ui.home.HomeScreen
-import com.codingpit.pvpcplanner.ui.home.HomeVM
+import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 
 @Composable
 fun MainContent(
     modifier: Modifier,
-    viewModel: HomeVM,
+    viewModel: HomeViewModel,
+    devicesViewModel: DevicesViewModel,
     selectedScreen: String,
 ) {
 
@@ -27,10 +30,8 @@ fun MainContent(
                 )
             }
 
-        NOTIFICATION_SCREEN ->
-            Text(
-                text = NOTIFICATION_SCREEN
-            )
+        DEVICES_SCREEN ->
+            DevicesScreen(devicesViewModel)
 
         SETTING_SCREEN ->
             Text(

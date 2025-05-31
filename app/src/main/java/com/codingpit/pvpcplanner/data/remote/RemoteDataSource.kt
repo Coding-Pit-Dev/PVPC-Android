@@ -1,7 +1,7 @@
 package com.codingpit.pvpcplanner.data.remote
 
-import com.codingpit.pvpcplanner.domains.models.PVPCDTO
+import com.codingpit.pvpcplanner.domain.models.PVPCModel
 
 interface RemoteDataSource {
-    suspend fun getPrices(): List<PVPCDTO>
+    suspend fun getPrices(date: String): List<PVPCModel>
 }

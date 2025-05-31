@@ -12,15 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.codingpit.pvpcplanner.R
-import com.codingpit.pvpcplanner.ui.home.HomeVM
+import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
+import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.main.MainComponents.MainBottomBarNav
 import com.codingpit.pvpcplanner.ui.main.MainComponents.MainContent
 
 @Composable
 fun MainScreen(
-    viewModel: HomeVM,
+    viewModel: HomeViewModel,
+    devicesViewModel: DevicesViewModel
 ) {
     var selectedScreen by remember { mutableStateOf("Home") }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -32,15 +35,13 @@ fun MainScreen(
             )
         }
     ) { paddingValues ->
-
         MainContent(
             modifier = Modifier.padding(paddingValues),
             viewModel,
+            devicesViewModel,
             selectedScreen
         )
-
     }
-    viewModel.getPrices()
 }
 
 
