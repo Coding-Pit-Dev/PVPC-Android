@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.ui.devices
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingpit.pvpcplanner.domain.models.Device
@@ -11,6 +12,7 @@ import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
@@ -27,12 +29,15 @@ class DevicesViewModel @Inject constructor(
     private val deleteDevice: DeleteDevice
 ) : ViewModel() {
 
+
+
+    private val _state = MutableStateFlow<UIState>(UIState())
     val state =
-        getDevices().combine(getPricesFlow()) { devices, prices ->
+        combine(getDevices(), getPricesFlow(), _state) { devices, prices, _state ->
             prices.map { prices ->
                 devices.map { DeviceRender(it, getBestSlot(it, prices)) }
-            }
-        }.map { DevicesState.Success(it.getOrThrow()) }
+            } to _state
+        }.map { DevicesState.Success(it.first.getOrThrow(), it.second.showModal) }
             .flowOn(Dispatchers.IO)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
 
@@ -40,6 +45,7 @@ class DevicesViewModel @Inject constructor(
     fun addDevice(name: String, hours: Int) {
         viewModelScope.launch {
             addDevice(Device(name = name, hours = hours))
+            hideAddDeviceModal()
         }
     }
 
@@ -57,4 +63,20 @@ class DevicesViewModel @Inject constructor(
 
         return TimeSlot(bestSlot, bestSlot + device.hours)
     }
+
+    fun showAddDeviceModal() {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(showModal = true)
+        }
+    }
+
+    fun hideAddDeviceModal() {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(showModal = null)
+        }
+    }
 }
+
+data class UIState(
+    val showModal: Boolean? = null
+)

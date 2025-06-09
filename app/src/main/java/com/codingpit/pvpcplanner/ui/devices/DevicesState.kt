@@ -5,6 +5,7 @@ sealed class DevicesState {
 
     data class Success(
         val devicesSlot: List<DeviceRender> = emptyList(),
+        val showModal: Boolean? = null,
     ) : DevicesState()
 
     data class Error(

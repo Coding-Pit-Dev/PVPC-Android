@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getPrices: GetPrices,
-    private val dateChecker: DateChecker
+    dateChecker: DateChecker
 ) : ViewModel() {
 
     private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(dateChecker.getDefaultDate())

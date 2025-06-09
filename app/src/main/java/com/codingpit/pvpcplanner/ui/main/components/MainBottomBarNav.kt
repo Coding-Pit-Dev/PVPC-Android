@@ -1,4 +1,4 @@
-package com.codingpit.pvpcplanner.ui.main.MainComponents
+package com.codingpit.pvpcplanner.ui.main.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon

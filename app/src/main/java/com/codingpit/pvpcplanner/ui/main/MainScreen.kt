@@ -2,6 +2,10 @@ package com.codingpit.pvpcplanner.ui.main
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,20 +16,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.codingpit.pvpcplanner.R
+import com.codingpit.pvpcplanner.ui.components.ScaffoldScreen
 import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.ui.home.HomeViewModel
-import com.codingpit.pvpcplanner.ui.main.MainComponents.MainBottomBarNav
-import com.codingpit.pvpcplanner.ui.main.MainComponents.MainContent
+import com.codingpit.pvpcplanner.ui.main.components.MainBottomBarNav
+import com.codingpit.pvpcplanner.ui.main.components.MainContent
 
 @Composable
 fun MainScreen(
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
     devicesViewModel: DevicesViewModel
 ) {
     var selectedScreen by remember { mutableStateOf("Home") }
 
-    Scaffold(
+    ScaffoldScreen(
         modifier = Modifier.fillMaxSize(),
+        title = selectedScreen,
+        fab = {
+            when (selectedScreen) {
+                "Home" -> {}
+                "Devices" -> {
+                    FloatingActionButton(onClick = {
+                        devicesViewModel.showAddDeviceModal()
+                    }) {
+                        Icon(Icons.Filled.Add, "Floating action button.")
+                    }
+                }
+
+                else -> {}
+            }
+        },
         bottomBar = {
             MainBottomBarNav(
                 selectedScreen = selectedScreen,
@@ -34,12 +54,11 @@ fun MainScreen(
                 unselectedIconColor = Color.LightGray
             )
         }
-    ) { paddingValues ->
+    ) {
         MainContent(
-            modifier = Modifier.padding(paddingValues),
-            viewModel,
-            devicesViewModel,
-            selectedScreen
+            homeViewModel = homeViewModel,
+            devicesViewModel = devicesViewModel,
+            selectedScreen = selectedScreen
         )
     }
 }
