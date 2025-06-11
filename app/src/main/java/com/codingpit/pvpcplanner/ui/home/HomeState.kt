@@ -7,8 +7,11 @@ sealed class HomeState {
 
     data class Success(
         val pvpcEntries: List<PVPCModel> = emptyList(),
+        val selectedDate: String = "",
         val currentDate: String = "",
-        val nextDateEnabled: Boolean = true
+        val nextDateEnabled: Boolean = true,
+        val currentPrice: Double = 0.0,
+        val currentHour: Int = 0
     ) : HomeState()
 
     data class Error(

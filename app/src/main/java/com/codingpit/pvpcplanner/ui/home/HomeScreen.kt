@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,23 +8,27 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
-import com.codingpit.pvpcplanner.ui.components.PricesListComponent
+import com.codingpit.pvpcplanner.ui.components.PricesComponent
 
 @Composable
 fun HomeScreen(
@@ -34,7 +39,7 @@ fun HomeScreen(
 
     when (val state = state) {
         is HomeState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
@@ -44,8 +49,11 @@ fun HomeScreen(
             HomeComponents(
                 modifier = modifier,
                 pvpcEntries = responseData,
-                date = state.currentDate,
+                selectedDate = state.selectedDate,
                 nextDayEnabled = state.nextDateEnabled,
+                currentPrice = state.currentPrice,
+                currentHour = state.currentHour,
+                currentDate = state.currentDate,
                 onPreviewClicked = { viewModel.onPreviewClicked() },
                 onNextClicked = { viewModel.onNextClicked() }
             )
@@ -59,44 +67,60 @@ fun HomeScreen(
 @Composable
 fun HomeComponents(
     modifier: Modifier,
-    date: String,
+    selectedDate: String,
+    currentDate: String,
     pvpcEntries: List<PVPCModel>,
+    currentPrice: Double,
+    currentHour: Int,
     nextDayEnabled: Boolean,
     onPreviewClicked: () -> Unit = { },
     onNextClicked: () -> Unit = { }
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            DateSelector(
-                modifier = Modifier.fillMaxWidth(),
-                date = date,
+            PricesComponent(
+                responseData = pvpcEntries,
+                selectedDate = selectedDate,
+                currentDate = currentDate,
+                currentPrice = currentPrice,
+                currentHour = currentHour,
                 nextDayEnabled = nextDayEnabled,
                 onPreviewClicked = onPreviewClicked,
-                onNextClicked = onNextClicked
+                onNextClicked = onNextClicked,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
-            PricesListComponent(pvpcEntries)
         }
     }
 }
 
 @Composable
-private fun DateSelector(
+fun DateSelector(
     modifier: Modifier = Modifier,
-    date: String,
+    selectedDate: String,
+    currentDate: String,
     nextDayEnabled: Boolean,
     onPreviewClicked: () -> Unit,
     onNextClicked: () -> Unit
 ) {
-
     Row(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier
+            .padding(16.dp)
+            .background(
+                MaterialTheme.colorScheme.background,
+                RoundedCornerShape(8.dp)
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Absolute.SpaceBetween
     ) {
         IconButton(modifier = Modifier, onClick = onPreviewClicked) {
             Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Preview")
         }
-        Text(date)
+        val selectedDateText = if (selectedDate == currentDate){
+            stringResource(R.string.current_date_template).format(selectedDate)
+        } else {
+            selectedDate.toString()
+        }
+        Text(selectedDateText)
         IconButton(modifier = Modifier, enabled = nextDayEnabled, onClick = onNextClicked) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowForward,
@@ -111,8 +135,10 @@ private fun DateSelector(
 private fun DateSelector_Preview() {
     DateSelector(
         modifier = Modifier.fillMaxWidth(),
-        date = "2023-09-01",
+        selectedDate = "2023-09-01",
         nextDayEnabled = true,
         onPreviewClicked = { },
-        onNextClicked = { })
+        onNextClicked = { },
+        currentDate = "2023-09-01"
+    )
 }

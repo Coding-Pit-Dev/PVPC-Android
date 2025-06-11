@@ -6,8 +6,8 @@ import java.time.ZoneId
 import javax.inject.Inject
 
 class DateChecker @Inject constructor() {
-    val localDate: LocalDate = LocalDate.now()
-    val localHour: Int
+    internal val localDate: LocalDate = LocalDate.now()
+    internal val localHour: Int
 
     init {
         val spainZoneId = ZoneId.of(DEFAULT_TIME_ZONE)

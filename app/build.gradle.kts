@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.okhttp3.interceptor)
     implementation(libs.moshi.kotlin)
+    implementation (libs.androidx.graphics.shapes)
 
     // Hilt and Dagger
     implementation(libs.hilt.android)

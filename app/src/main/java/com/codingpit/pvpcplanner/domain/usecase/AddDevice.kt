@@ -8,5 +8,4 @@ import javax.inject.Inject
 class AddDevice @Inject constructor(private val repository: Repository) {
     suspend operator fun invoke(device: Device) =
         repository.addDevice(device)
-
 }

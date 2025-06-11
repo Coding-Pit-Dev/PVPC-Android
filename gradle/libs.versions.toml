@@ -5,6 +5,7 @@ composeBom = "2025.06.00"
 coreKtx = "1.16.0"
 detekt = "1.23.7"
 espressoCore = "3.6.1"
+graphicsShapes = "1.0.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlin = "2.1.0"
@@ -22,6 +23,7 @@ ksp = "2.1.21-2.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-graphics-shapes = { module = "androidx.graphics:graphics-shapes", version.ref = "graphicsShapes" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }

@@ -3,7 +3,10 @@ package com.codingpit.pvpcplanner.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
-import com.codingpit.pvpcplanner.utils.DateChecker
+import com.codingpit.pvpcplanner.domain.usecase.date.GetDefaultDate
+import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalDate
+import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalHour
+import com.codingpit.pvpcplanner.domain.usecase.date.IsValidDate
 import com.codingpit.pvpcplanner.utils.toParsedDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,19 +25,26 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getPrices: GetPrices,
-    dateChecker: DateChecker
+    getDefaultDate: GetDefaultDate,
+    isValidDate: IsValidDate,
+    getLocalHour: GetLocalHour,
+    getLocalDate: GetLocalDate
 ) : ViewModel() {
 
-    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(dateChecker.getDefaultDate())
+    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(getDefaultDate())
     val state: StateFlow<HomeState> = selectedDate
         .map {
             getPrices(it.toParsedDate())
         }
         .map {
+            val currentHour = getLocalHour()
             HomeState.Success(
-                currentDate = selectedDate.value.toParsedDate(),
+                selectedDate = selectedDate.value.toParsedDate(),
                 pvpcEntries = it.getOrThrow(),
-                nextDateEnabled = dateChecker.checkValidDate(selectedDate.value),
+                nextDateEnabled = isValidDate(selectedDate.value),
+                currentPrice = it.getOrThrow().first { it.startHour == currentHour }.pcb,
+                currentHour = currentHour,
+                currentDate =  getLocalDate().toParsedDate()
             )
         }
         .catch { HomeState.Error(it.message.orEmpty()) }

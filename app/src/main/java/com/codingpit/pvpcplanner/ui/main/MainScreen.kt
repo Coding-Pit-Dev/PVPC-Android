@@ -27,14 +27,14 @@ fun MainScreen(
     homeViewModel: HomeViewModel,
     devicesViewModel: DevicesViewModel
 ) {
-    var selectedScreen by remember { mutableStateOf("Home") }
+    var selectedScreen by remember { mutableStateOf("Prices") }
 
     ScaffoldScreen(
         modifier = Modifier.fillMaxSize(),
         title = selectedScreen,
         fab = {
             when (selectedScreen) {
-                "Home" -> {}
+                "Prices" -> {}
                 "Devices" -> {
                     FloatingActionButton(onClick = {
                         devicesViewModel.showAddDeviceModal()
