@@ -1,11 +1,10 @@
-package com.codingpit.pvpcplanner.data.local
+package com.codingpit.pvpcplanner.data.local.sources
 
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
-
     suspend fun getPrices(date: String): List<PVPCModel>
 
     suspend fun savePrices(pcpcModel: List<PVPCModel>)

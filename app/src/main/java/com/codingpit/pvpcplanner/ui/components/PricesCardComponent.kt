@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codingpit.pvpcplanner.R
 
-
 @Composable
 fun PriceCardComponent(
     hour: String,
@@ -32,17 +31,18 @@ fun PriceCardComponent(
     modifier: Modifier = Modifier,
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-        ),
+        colors =
+            CardDefaults.cardColors(),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        modifier = modifier
+        modifier = modifier,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -55,9 +55,12 @@ fun PriceCardComponent(
                 )
             }
 
-            Spacer(modifier = Modifier
-                .size(20.dp)
-                .background(getBackground(price), CircleShape))
+            Spacer(
+                modifier =
+                    Modifier
+                        .size(20.dp)
+                        .background(getBackground(price), CircleShape),
+            )
         }
     }
 }
@@ -78,4 +81,3 @@ private fun ContentView_Preview() {
         price = 0.087,
     )
 }
-

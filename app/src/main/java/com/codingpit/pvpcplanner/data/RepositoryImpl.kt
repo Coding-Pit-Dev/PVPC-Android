@@ -1,6 +1,6 @@
 package com.codingpit.pvpcplanner.data
 
-import com.codingpit.pvpcplanner.data.local.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
@@ -9,8 +9,9 @@ import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
 ) : Repository {
+
     override suspend fun getPrices(date: String): Result<List<PVPCModel>> {
         return runCatching {
             val localPrices = localDataSource.getPrices(date)

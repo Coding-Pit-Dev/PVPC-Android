@@ -2,10 +2,10 @@ package com.codingpit.pvpcplanner.di
 
 import android.content.Context
 import androidx.room.Room
-import com.codingpit.pvpcplanner.data.local.DefaultLocalDataSource
-import com.codingpit.pvpcplanner.data.local.LocalDataSource
 import com.codingpit.pvpcplanner.data.local.db.PVPCDao
 import com.codingpit.pvpcplanner.data.local.db.PVPCDatabase
+import com.codingpit.pvpcplanner.data.local.sources.DefaultLocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,13 +16,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalModule {
-
     @Singleton
     @Provides
-    fun providesRoomDatabase(@ApplicationContext applicationContext: Context): PVPCDatabase =
+    fun providesRoomDatabase(
+        @ApplicationContext applicationContext: Context,
+    ): PVPCDatabase =
         Room.databaseBuilder(
             applicationContext,
-            PVPCDatabase::class.java, "pvpc-database"
+            PVPCDatabase::class.java,
+            "pvpc-database",
         ).build()
 
     @Provides
@@ -33,5 +35,3 @@ object LocalModule {
         return localDataSource
     }
 }
-
-

@@ -5,7 +5,8 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface PVPCApi {
-
     @GET("archives/70/download_json")
-    suspend fun getPrices(@Query("date") date: String): PVPCResponse
+    suspend fun getPrices(
+        @Query("date") date: String,
+    ): PVPCResponse
 }

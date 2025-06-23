@@ -27,5 +27,5 @@ data class PVPCDTO(
     @Json(name = "EDSRPCB") val edsrpcb: String?,
     @Json(name = "EDSRCYM") val edsrcym: String?,
     @Json(name = "TAHPCB") val tahpcb: String?,
-    @Json(name = "TAHCYM") val tahcym: String?
+    @Json(name = "TAHCYM") val tahcym: String?,
 )

@@ -8,7 +8,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -20,10 +19,10 @@ fun ScaffoldScreen(
     fab: @Composable () -> Unit = {},
     fabPosition: FabPosition = FabPosition.End,
     bottomBar: @Composable () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Scaffold(
-        modifier = Modifier.systemBarsPadding(),
+        modifier = modifier,
         topBar = {
             if (title != null) {
                 CenterAlignedTopAppBar(title = { Text(title) })
@@ -31,7 +30,7 @@ fun ScaffoldScreen(
         },
         floatingActionButton = fab,
         floatingActionButtonPosition = fabPosition,
-        bottomBar = bottomBar
+        bottomBar = bottomBar,
     ) {
         Surface(modifier = modifier.padding(it), content = content)
     }

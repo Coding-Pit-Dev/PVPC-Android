@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -24,30 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
+import com.codingpit.pvpcplanner.domain.models.TimeFormat
+import com.codingpit.pvpcplanner.ui.components.graph.PriceChart
 import com.codingpit.pvpcplanner.ui.home.DateSelector
-import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
-import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
-import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
-import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.component.TextComponent
-import kotlin.math.roundToInt
-
 
 @Composable
 fun PricesComponent(
-    responseData: List<PVPCModel>,
+    pvpcEntries: List<PVPCModel>,
     selectedDate: String,
     currentPrice: Double,
     currentHour: Int,
@@ -55,34 +37,39 @@ fun PricesComponent(
     nextDayEnabled: Boolean,
     onPreviewClicked: () -> Unit,
     onNextClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
 ) {
     val state = rememberLazyListState()
 
-    var selectedPrice by remember(responseData) {
+    var selectedPrice by remember(pvpcEntries) {
         mutableDoubleStateOf(currentPrice)
     }
 
-    var selectedHour by remember(responseData) {
+    var selectedHour by remember(pvpcEntries) {
         mutableIntStateOf(currentHour)
     }
 
     LazyColumn(
         modifier = modifier,
         state = state,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
             CurrentPriceLabel(
                 price = selectedPrice,
                 hour = selectedHour,
                 currentHour = currentHour,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
 
         item {
-            PriceChart(responseData, modifier = Modifier.padding(horizontal = 16.dp)) { x, y ->
+            PriceChart(
+                responseData = pvpcEntries,
+                timeFormat = timeFormat,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) { x, y ->
                 selectedPrice = y
                 selectedHour = x
             }
@@ -95,27 +82,31 @@ fun PricesComponent(
                 currentDate = currentDate,
                 nextDayEnabled = nextDayEnabled,
                 onPreviewClicked = onPreviewClicked,
-                onNextClicked = onNextClicked
+                onNextClicked = onNextClicked,
             )
         }
 
         items(
-            items = responseData,
+            items = pvpcEntries,
             key = {
                 it.startHour
-            }
+            },
         ) { pvpcItem ->
             PriceCardComponent(
                 hour = "${pvpcItem.startHour} - ${pvpcItem.endHour}",
-                price = pvpcItem.pcb
+                price = pvpcItem.pcb,
             )
         }
     }
 }
 
 @Composable
-private fun CurrentPriceLabel(price: Double, hour: Int, currentHour: Int, modifier: Modifier = Modifier) {
-
+private fun CurrentPriceLabel(
+    price: Double,
+    hour: Int,
+    currentHour: Int,
+    modifier: Modifier = Modifier,
+) {
     val hourText = if (hour == currentHour) {
         stringResource(R.string.current_hour_template).format(hour)
     } else {
@@ -128,87 +119,15 @@ private fun CurrentPriceLabel(price: Double, hour: Int, currentHour: Int, modifi
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary,
-            lineHeight = 24.sp
+            lineHeight = 24.sp,
         )
         Text(
             text = price.toString(),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
-            lineHeight = 40.sp
+            lineHeight = 40.sp,
         )
-    }
-
-}
-
-@Composable
-fun PriceChart(
-    responseData: List<PVPCModel>,
-    modifier: Modifier = Modifier,
-    onMarkerChanged: (Int, Double) -> Unit,
-) {
-    val modelProducer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(responseData) {
-        modelProducer.runTransaction {
-            lineSeries { series(responseData.map { it.pcb.toFloat() }) }
-        }
-    }
-
-    val yAxisStep = rememberYAxis(responseData.map { it.pcb.toFloat() })
-
-    CartesianChartHost(
-        modifier = modifier,
-        chart = rememberCartesianChart(
-            rememberLineCartesianLayer(),
-            marker = rememberDefaultCartesianMarker(
-                label = TextComponent(),
-                labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
-
-                ),
-            markerVisibilityListener = object : CartesianMarkerVisibilityListener {
-                override fun onUpdated(
-                    marker: CartesianMarker,
-                    targets: List<CartesianMarker.Target>
-                ) {
-                    super.onUpdated(marker, targets)
-                    val target = targets.first()
-                    onMarkerChanged(
-                        target.x.toInt(),
-                        responseData.first { it.startHour == target.x.toInt() }.pcb
-                    )
-                }
-            },
-            startAxis = VerticalAxis.rememberStart(
-                guideline = null,
-                itemPlacer = VerticalAxis.ItemPlacer.step(step = { yAxisStep.toDouble() })
-            ),
-            bottomAxis = HorizontalAxis.rememberBottom(guideline = null),
-        ),
-        zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
-        scrollState = rememberVicoScrollState(scrollEnabled = false),
-        modelProducer = modelProducer,
-    )
-}
-
-@Composable
-private fun rememberYAxis(values: List<Float>) = remember(values) {
-    if (values.isEmpty()) {
-        0.1f // Default step if no data
-    } else {
-        val minPrice = values.minOrNull() ?: 0f
-        val maxPrice = values.maxOrNull() ?: 1f // Avoid division by zero if all prices are same
-
-        val range = maxPrice - minPrice
-        if (range == 0f) {
-            0.1f // Handle case where all prices are the same
-        } else {
-            val desiredLabelCount = 5 // Adjust as needed
-            val calculatedStep = range / (desiredLabelCount - 1)
-            // Optional: Round to a nicer number, e.g., nearest 0.01 or 0.05
-            // This is a simple example; you might want more sophisticated rounding
-            (calculatedStep * 100).roundToInt() / 100f // Round to 2 decimal places
-                .coerceAtLeast(0.01f) // Ensure step is not too small
-        }
     }
 }
 
@@ -217,11 +136,11 @@ private fun rememberYAxis(values: List<Float>) = remember(values) {
 @Composable
 private fun PricesView_Preview() {
     PricesComponent(
-        responseData = List(24) { 
+        pvpcEntries = List(24) {
             PVPCModel(
                 startHour = it,
                 endHour = it + 1,
-                pcb = it.toDouble(),
+                pcb = (it*0.01).toDouble(),
                 day = "2023-09-01",
                 cym = it.toDouble(),
             )
@@ -232,6 +151,6 @@ private fun PricesView_Preview() {
         onNextClicked = { },
         currentPrice = 0.0,
         currentHour = 0,
-        currentDate = "2023-09-01"
+        currentDate = "2023-09-01",
     )
 }

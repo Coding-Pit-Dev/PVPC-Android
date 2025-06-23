@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.dagger.hilt.android.plugin)
+    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -32,7 +33,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -71,6 +72,21 @@ detekt {
     basePath = projectDir.absolutePath
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:21.0-rc-1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -92,7 +108,9 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.okhttp3.interceptor)
     implementation(libs.moshi.kotlin)
-    implementation (libs.androidx.graphics.shapes)
+    implementation(libs.androidx.graphics.shapes)
+    implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.material3)
 
     // Hilt and Dagger
     implementation(libs.hilt.android)
@@ -100,12 +118,14 @@ dependencies {
 
     // Room
     implementation(libs.androidx.room.runtime)
-    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.ktx)
 
     implementation(libs.kotlinx.datetime)
 
     ksp(libs.androidx.room.compiler)
 
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.javalite)
 
     // Tests
     testImplementation(libs.junit)

@@ -12,13 +12,15 @@ fun List<PVPCDTO>.toDomain(): List<PVPCModel> =
     }
 
 fun PVPCDTO.toDomain(): PVPCModel =
-    (this.hour.split("-")).let { PVPCModel(
-        day = this.day,
-        startHour = it.first().toInt(),
-        endHour = it[1].toInt(),
-        pcb = this.pcb.replace(",", ".").toDouble() / 1000,
-        cym = this.cym.replace(",", ".").toDouble() / 1000
-    ) }
+    (this.hour.split("-")).let {
+        PVPCModel(
+            day = this.day,
+            startHour = it.first().toInt(),
+            endHour = it[1].toInt(),
+            pcb = this.pcb.replace(",", ".").toDouble() / 1000,
+            cym = this.cym.replace(",", ".").toDouble() / 1000,
+        )
+    }
 
 fun PVPCEntity.toDomain(): PVPCModel =
     PVPCModel(
@@ -26,30 +28,31 @@ fun PVPCEntity.toDomain(): PVPCModel =
         startHour = this.startHour,
         endHour = this.endHour,
         pcb = this.pcb,
-        cym = this.cym
+        cym = this.cym,
     )
 
 fun PVPCModel.toEntity(): PVPCEntity =
     PVPCEntity(
-        id = day+startHour,
+        id = day + startHour,
         day = this.day,
         startHour = this.startHour,
         endHour = this.endHour,
         pcb = this.pcb,
-        cym = this.cym
+        cym = this.cym,
     )
 
- fun DeviceEntity.toDomain(): Device =
+fun DeviceEntity.toDomain(): Device =
     Device(
         id = id,
         name = name,
-        hours = hours
+        hours = hours,
+        icon = icon,
     )
 
 fun Device.toEntity(): DeviceEntity =
     DeviceEntity(
         id = id,
         name = name,
-        hours = hours
+        hours = hours,
+        icon = icon,
     )
-

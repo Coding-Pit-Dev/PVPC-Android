@@ -1,5 +1,7 @@
 package com.codingpit.pvpcplanner.ui.main.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -17,13 +19,12 @@ import com.codingpit.pvpcplanner.utils.Constants.ROUTES_NAVIGATION_BOTTOM_BAR
 fun MainBottomBarNav(
     selectedScreen: String,
     onScreenSelected: (String) -> Unit,
-    selectedIconColor: Color,
-    unselectedIconColor: Color,
     iconSize: Int = 22,
     fontSize: Int = 14,
 ) {
-    NavigationBar {
-
+    NavigationBar(
+        modifier = Modifier.background(Color.Red),
+    ) {
         ROUTES_NAVIGATION_BOTTOM_BAR.forEach { screen ->
             NavigationBarItem(
                 selected = selectedScreen == screen.key,
@@ -31,9 +32,8 @@ fun MainBottomBarNav(
                 icon = {
                     Icon(
                         imageVector = screen.value,
-                        contentDescription = "icon route",
+                        contentDescription = screen.key,
                         modifier = Modifier.size(iconSize.dp),
-                        tint = if (selectedScreen == screen.key) selectedIconColor else unselectedIconColor
                     )
                 },
                 label = {
@@ -41,7 +41,7 @@ fun MainBottomBarNav(
                         text = screen.key,
                         fontSize = fontSize.sp,
                     )
-                }
+                },
             )
         }
     }
@@ -53,7 +53,5 @@ private fun BottomBar_Preview() {
     MainBottomBarNav(
         selectedScreen = "HomeScreen",
         onScreenSelected = {},
-        selectedIconColor = Color.Black,
-        unselectedIconColor = Color.Black,
     )
 }

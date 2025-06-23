@@ -4,7 +4,7 @@ import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import kotlinx.coroutines.flow.Flow
 
-interface Repository{
+interface Repository {
     suspend fun getPrices(date: String): Result<List<PVPCModel>>
 
     fun getDevices(): Flow<List<Device>>

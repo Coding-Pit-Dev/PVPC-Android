@@ -28,13 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
+import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.ui.components.PricesComponent
 
 @Composable
-fun HomeScreen(
-    modifier: Modifier,
-    viewModel: HomeViewModel
-) {
+fun HomeScreen(viewModel: HomeViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (val state = state) {
@@ -45,17 +43,16 @@ fun HomeScreen(
         }
 
         is HomeState.Success -> {
-            val responseData = state.pvpcEntries
             HomeComponents(
-                modifier = modifier,
-                pvpcEntries = responseData,
+                pvpcEntries = state.pvpcEntries,
                 selectedDate = state.selectedDate,
                 nextDayEnabled = state.nextDateEnabled,
                 currentPrice = state.currentPrice,
                 currentHour = state.currentHour,
                 currentDate = state.currentDate,
+                timeFormat = state.timeFormat,
                 onPreviewClicked = { viewModel.onPreviewClicked() },
-                onNextClicked = { viewModel.onNextClicked() }
+                onNextClicked = { viewModel.onNextClicked() },
             )
         }
 
@@ -66,20 +63,21 @@ fun HomeScreen(
 
 @Composable
 fun HomeComponents(
-    modifier: Modifier,
     selectedDate: String,
     currentDate: String,
     pvpcEntries: List<PVPCModel>,
     currentPrice: Double,
     currentHour: Int,
     nextDayEnabled: Boolean,
+    modifier: Modifier = Modifier,
+    timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
     onPreviewClicked: () -> Unit = { },
-    onNextClicked: () -> Unit = { }
+    onNextClicked: () -> Unit = { },
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             PricesComponent(
-                responseData = pvpcEntries,
+                pvpcEntries = pvpcEntries,
                 selectedDate = selectedDate,
                 currentDate = currentDate,
                 currentPrice = currentPrice,
@@ -87,7 +85,8 @@ fun HomeComponents(
                 nextDayEnabled = nextDayEnabled,
                 onPreviewClicked = onPreviewClicked,
                 onNextClicked = onNextClicked,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                timeFormat = timeFormat,
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
     }
@@ -100,31 +99,33 @@ fun DateSelector(
     currentDate: String,
     nextDayEnabled: Boolean,
     onPreviewClicked: () -> Unit,
-    onNextClicked: () -> Unit
+    onNextClicked: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .padding(16.dp)
-            .background(
-                MaterialTheme.colorScheme.background,
-                RoundedCornerShape(8.dp)
-            ),
+        modifier =
+            modifier
+                .padding(16.dp)
+                .background(
+                    MaterialTheme.colorScheme.background,
+                    RoundedCornerShape(8.dp),
+                ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Absolute.SpaceBetween
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
     ) {
         IconButton(modifier = Modifier, onClick = onPreviewClicked) {
             Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Preview")
         }
-        val selectedDateText = if (selectedDate == currentDate){
-            stringResource(R.string.current_date_template).format(selectedDate)
-        } else {
-            selectedDate.toString()
-        }
+        val selectedDateText =
+            if (selectedDate == currentDate) {
+                stringResource(R.string.current_date_template).format(selectedDate)
+            } else {
+                selectedDate.toString()
+            }
         Text(selectedDateText)
         IconButton(modifier = Modifier, enabled = nextDayEnabled, onClick = onNextClicked) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                contentDescription = "Preview"
+                contentDescription = "Preview",
             )
         }
     }
@@ -139,6 +140,6 @@ private fun DateSelector_Preview() {
         nextDayEnabled = true,
         onPreviewClicked = { },
         onNextClicked = { },
-        currentDate = "2023-09-01"
+        currentDate = "2023-09-01",
     )
 }
