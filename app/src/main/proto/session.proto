@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "com.codingpit.pvpcplanner";
+option java_multiple_files = true;
+
+message PvpcSettings {
+  DarkMode darkMode = 1;
+  TimeFormat timeFormat = 2;
+  int32 yAxisSlots = 3;
+
+  enum DarkMode {
+    SYSTEM = 0;
+    LIGHT = 1;
+    DARK = 2;
+  }
+
+  enum TimeFormat {
+    AM_PM = 0;
+    FULL_HOURS = 1;
+  }
+}
+
