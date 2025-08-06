@@ -17,9 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,6 +33,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -78,6 +78,7 @@ fun DevicesScreen(viewModel: DevicesViewModel) {
                     state = state,
                     addDevice = { name, hours, icon -> viewModel.addDevice(name, hours, icon) },
                     hideAddDeviceModal = { viewModel.hideAddDeviceModal() },
+                    onSwiped = { viewModel.removeDevice(it.device) },
                 )
         }
     }
@@ -89,6 +90,7 @@ private fun DevicesScreen_Success(
     state: DevicesState.Success,
     addDevice: (String, Int, String) -> Unit,
     hideAddDeviceModal: () -> Unit,
+    onSwiped: (DeviceRender) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
         LazyVerticalGrid(
@@ -96,7 +98,9 @@ private fun DevicesScreen_Success(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(state.devicesSlot) {
-                DeviceItem(it)
+                DeviceItem(it){
+                    onSwiped(it)
+                }
             }
         }
 
@@ -112,34 +116,36 @@ private fun DevicesScreen_Success(
 private fun DeviceItem(
     render: DeviceRender,
     modifier: Modifier = Modifier,
+    onSwiped: (DeviceRender) -> Unit,
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
 
     SwipeToDismissBox(
         state = dismissState,
         modifier = modifier,
+        onDismiss = {
+            onSwiped(render)
+        },
         backgroundContent = {
             val direction = dismissState.dismissDirection
 
             val color by animateColorAsState(
                 when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.Settled -> Color.LightGray
-                    SwipeToDismissBoxValue.EndToStart -> Color.Green
+                    SwipeToDismissBoxValue.Settled -> Color.Red
+                    SwipeToDismissBoxValue.EndToStart -> Color.Red
                     SwipeToDismissBoxValue.StartToEnd -> Color.Red
                 },
             )
-            val alignment =
-                when (direction) {
-                    SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
-                    SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
-                    SwipeToDismissBoxValue.Settled -> Alignment.Center
-                }
-            val icon =
-                when (direction) {
-                    SwipeToDismissBoxValue.EndToStart -> Icons.Default.Done
-                    SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Delete
-                    SwipeToDismissBoxValue.Settled -> Icons.Default.AccountBox
-                }
+            val alignment = when (direction) {
+                SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
+                SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
+                SwipeToDismissBoxValue.Settled -> Alignment.Center
+            }
+            val icon = when (direction) {
+                SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
+                SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Delete
+                SwipeToDismissBoxValue.Settled -> Icons.Default.Delete
+            }
             val scale by animateFloatAsState(
                 if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
             )

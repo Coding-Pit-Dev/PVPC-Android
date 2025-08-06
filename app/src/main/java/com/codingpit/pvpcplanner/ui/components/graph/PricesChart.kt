@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.ui.components.graph
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -7,6 +8,7 @@ import androidx.compose.ui.Modifier
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -59,10 +61,12 @@ fun PriceChart(
             ),
             markerVisibilityListener = MarkerVisibilityListener(responseData, onMarkerChanged),
             startAxis = VerticalAxis.rememberStart(
+                label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
                 guideline = null,
                 itemPlacer = VerticalAxis.ItemPlacer.step(step = { yAxisStep.toDouble() }),
             ),
             bottomAxis = HorizontalAxis.rememberBottom(
+                label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
                 guideline = null,
                 valueFormatter = if (timeFormat == TimeFormat.TWENTY_FOUR_HOURS) {
                     CartesianValueFormatter.Default
@@ -82,10 +86,7 @@ fun PriceChart(
                         }
                     }
                 },
-                itemPlacer =
-                    HorizontalAxis.ItemPlacer.aligned(spacing = { 1 })
-
-
+                itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 })
             )
         ),
         zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),

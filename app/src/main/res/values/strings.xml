@@ -2,6 +2,6 @@
     <string name="app_name">PVPC Planner</string>
     <string name="price_format">%.5f €/kWh</string>
     <string name="best_time_from_to">Best time from %1$s to %2$s</string>
-    <string name="current_hour_template">%d (Now)</string>
+    <string name="current_hour_template">%s (Now)</string>
     <string name="current_date_template">%s (Today)</string>
 </resources>

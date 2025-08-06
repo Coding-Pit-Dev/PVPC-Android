@@ -26,6 +26,9 @@ import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.ui.components.graph.PriceChart
 import com.codingpit.pvpcplanner.ui.home.DateSelector
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun PricesComponent(
@@ -106,29 +109,48 @@ private fun CurrentPriceLabel(
     hour: Int,
     currentHour: Int,
     modifier: Modifier = Modifier,
+    timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
 ) {
-    val hourText = if (hour == currentHour) {
-        stringResource(R.string.current_hour_template).format(hour)
-    } else {
-        hour.toString()
-    }
+    val hourText = formatHour(hour, currentHour, timeFormat)
 
     Column(modifier = modifier) {
         Text(
             text = hourText,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.primary,
             lineHeight = 24.sp,
         )
         Text(
-            text = price.toString(),
+            text = stringResource(R.string.price_format, price),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
             lineHeight = 40.sp,
         )
     }
+}
+
+@Composable
+private fun formatHour(
+    hour: Int,
+    currentHour: Int,
+    timeFormat: TimeFormat
+): String {
+    val formattedHour = if (timeFormat == TimeFormat.TWELVE_HOURS) {
+        val sdf = SimpleDateFormat("h a", Locale.getDefault())
+        sdf.format(
+            Calendar.getInstance()
+                .apply { set(Calendar.HOUR_OF_DAY, hour) }.time
+        )
+    } else {
+        hour.toString()
+    }
+
+    val hourText = if (hour == currentHour) {
+        stringResource(R.string.current_hour_template).format(formattedHour)
+    } else {
+        formattedHour
+    }
+    return hourText
 }
 
 
@@ -140,7 +162,7 @@ private fun PricesView_Preview() {
             PVPCModel(
                 startHour = it,
                 endHour = it + 1,
-                pcb = (it*0.01).toDouble(),
+                pcb = it * 0.01,
                 day = "2023-09-01",
                 cym = it.toDouble(),
             )
