@@ -3,12 +3,11 @@ package com.codingpit.pvpcplanner.ui.devices
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingpit.pvpcplanner.domain.models.Device
-import com.codingpit.pvpcplanner.domain.models.PVPCModel
-import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
+import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
+import com.codingpit.pvpcplanner.domain.usecase.DeleteDevice
 import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
-import com.codingpit.pvpcplanner.domain.usecase.DeleteDevice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,13 +27,14 @@ constructor(
     getDevices: GetDevices,
     getPricesFlow: GetPricesFlow,
     private val addDevice: AddDevice,
-    private val deleteDevice: DeleteDevice
+    private val deleteDevice: DeleteDevice,
+    private val calculateBestTimeSlot: CalculateBestTimeSlot
 ) : ViewModel() {
-    private val _state = MutableStateFlow<UIState>(UIState())
+    private val _state = MutableStateFlow(DevicesUIState())
     val state =
         combine(getDevices(), getPricesFlow(), _state) { devices, prices, _state ->
             prices.map { prices ->
-                devices.map { DeviceRender(it, getBestSlot(it, prices)) }
+                devices.map { DeviceRender(it, calculateBestTimeSlot(it, prices)) }
             } to _state
         }.map { DevicesState.Success(it.first.getOrThrow(), it.second.showModal) }
             .flowOn(Dispatchers.IO)
@@ -51,23 +51,6 @@ constructor(
         }
     }
 
-    private fun getBestSlot(
-        device: Device,
-        prices: List<PVPCModel>,
-    ): TimeSlot {
-        var bestSlot = prices.first().startHour
-        var bestPrice = Double.MAX_VALUE
-
-        for (index in 0 until prices.size - device.hours) {
-            val slotPrice = prices.subList(index, index + device.hours).sumOf { it.pcb }
-            if (slotPrice < bestPrice) {
-                bestPrice = slotPrice
-                bestSlot = prices[index].startHour
-            }
-        }
-
-        return TimeSlot(bestSlot, bestSlot + device.hours)
-    }
 
     fun showAddDeviceModal() {
         viewModelScope.launch {
@@ -89,7 +72,3 @@ constructor(
         }
     }
 }
-
-data class UIState(
-    val showModal: Boolean? = null,
-)
