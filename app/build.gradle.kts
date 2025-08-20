@@ -129,8 +129,6 @@ dependencies {
 
     // Tests
     testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.engine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -149,6 +147,7 @@ java {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform() // Esto es necesario para que JUnit 5 sea reconocido
-}
+// Commented out JUnit Platform to use JUnit 4 for now
+// tasks.withType<Test> {
+//     useJUnitPlatform()
+// }

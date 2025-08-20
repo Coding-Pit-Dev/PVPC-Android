@@ -93,21 +93,35 @@ private fun DevicesScreen_Success(
     onSwiped: (DeviceRender) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(state.devicesSlot) {
-                DeviceItem(it){
-                    onSwiped(it)
+        if (state.devicesSlot.isNotEmpty()){
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(state.devicesSlot) {
+                    DeviceItem(it){
+                        onSwiped(it)
+                    }
                 }
             }
+        } else {
+            EmptyState()
         }
 
         AddDeviceModal(
             isVisible = state.showModal,
             onDismissRequest = hideAddDeviceModal,
             addDevice = addDevice,
+        )
+    }
+}
+
+@Composable
+private fun EmptyState(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Text(
+            text = stringResource(R.string.no_devices),
+            modifier = Modifier.align(Alignment.Center),
         )
     }
 }

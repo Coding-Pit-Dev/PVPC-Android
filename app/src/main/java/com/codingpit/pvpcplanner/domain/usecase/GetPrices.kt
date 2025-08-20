@@ -1,13 +1,13 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
-import com.codingpit.pvpcplanner.data.Repository
+import com.codingpit.pvpcplanner.data.PriceRepository
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import java.time.LocalDate
 import javax.inject.Inject
 
 class GetPrices
     @Inject
-    constructor(private val repository: Repository) {
+    constructor(private val repository: PriceRepository) {
         suspend operator fun invoke(date: String = ""): Result<List<PVPCModel>> =
             repository.getPrices(date.takeIf { it.isNotEmpty() } ?: getDate())
 

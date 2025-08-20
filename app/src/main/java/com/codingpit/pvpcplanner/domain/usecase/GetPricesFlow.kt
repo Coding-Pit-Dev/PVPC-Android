@@ -1,6 +1,6 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
-import com.codingpit.pvpcplanner.data.Repository
+import com.codingpit.pvpcplanner.data.PriceRepository
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.utils.DateChecker
 import com.codingpit.pvpcplanner.utils.toParsedDate
@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetPricesFlow
     @Inject
     constructor(
-        private val repository: Repository,
+        private val repository: PriceRepository,
         private val dateChecker: DateChecker,
     ) {
         operator fun invoke(date: String = ""): Flow<Result<List<PVPCModel>>> =
