@@ -2,6 +2,8 @@ package com.codingpit.pvpcplanner.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
+import com.codingpit.pvpcplanner.domain.error.handleErrors
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.date.GetDefaultDate
@@ -14,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -32,6 +33,7 @@ class HomeViewModel @Inject constructor(
     getLocalHour: GetLocalHour,
     getLocalDate: GetLocalDate,
     getSettings: GetSettings,
+    errorHandler: ErrorHandler,
 ) : ViewModel() {
     private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(getDefaultDate())
     val state: StateFlow<HomeState> =
@@ -54,7 +56,7 @@ class HomeViewModel @Inject constructor(
                     timeFormat = settings.timeFormat,
                 )
             }
-            .catch { HomeState.Error(it.message.orEmpty()) }
+            .handleErrors(errorHandler, "home_data", HomeState.Factory)
             .flowOn(Dispatchers.IO)
             .stateIn(viewModelScope, SharingStarted.Eagerly, HomeState.Loading)
 

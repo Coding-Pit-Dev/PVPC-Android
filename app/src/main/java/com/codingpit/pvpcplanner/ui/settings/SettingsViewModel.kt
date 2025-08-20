@@ -2,6 +2,8 @@ package com.codingpit.pvpcplanner.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
+import com.codingpit.pvpcplanner.domain.error.handleErrors
 import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
@@ -19,12 +21,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     getSettings: GetSettings,
+    errorHandler: ErrorHandler,
     private val updateSetting: UpdateSetting,
 ) : ViewModel() {
     val state =
         getSettings().map {
             SettingsState.Success(it.toRender(it))
-        }.flowOn(Dispatchers.IO)
+        }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
+            .flowOn(Dispatchers.IO)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
 
 

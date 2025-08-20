@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.ui.devices
 
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
@@ -24,6 +25,7 @@ class DevicesViewModelTest {
     private val mockAddDevice = mockk<AddDevice>(relaxed = true)
     private val mockDeleteDevice = mockk<DeleteDevice>(relaxed = true)
     private val mockCalculateBestTimeSlot = mockk<CalculateBestTimeSlot>()
+    private val mockErrorHandler = mockk<ErrorHandler>()
     
     private lateinit var viewModel: DevicesViewModel
     private val strategy = BestTimeSlotCalculationStrategy()
@@ -39,11 +41,12 @@ class DevicesViewModelTest {
         }
         
         viewModel = DevicesViewModel(
-            mockGetDevices,
-            mockGetPricesFlow,
-            mockAddDevice,
-            mockDeleteDevice,
-            mockCalculateBestTimeSlot
+            getDevices = mockGetDevices,
+            getPricesFlow = mockGetPricesFlow,
+            addDevice = mockAddDevice,
+            deleteDevice = mockDeleteDevice,
+            calculateBestTimeSlot = mockCalculateBestTimeSlot,
+            errorHandler = mockErrorHandler
         )
     }
 

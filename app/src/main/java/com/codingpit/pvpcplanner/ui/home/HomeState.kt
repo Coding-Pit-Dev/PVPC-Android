@@ -1,5 +1,8 @@
 package com.codingpit.pvpcplanner.ui.home
 
+import com.codingpit.pvpcplanner.domain.error.ErrorResult
+import com.codingpit.pvpcplanner.domain.error.ErrorState
+import com.codingpit.pvpcplanner.domain.error.HasErrorState
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 
@@ -17,6 +20,12 @@ sealed class HomeState {
     ) : HomeState()
 
     data class Error(
-        val error: String,
-    ) : HomeState()
+        override val error: String,
+    ) : HomeState(), ErrorState
+    
+    companion object Factory : HasErrorState<HomeState> {
+        override fun createErrorState(errorResult: ErrorResult): HomeState {
+            return Error(errorResult.message)
+        }
+    }
 }
