@@ -9,6 +9,7 @@ import com.codingpit.pvpcplanner.domain.usecase.DeleteDevice
 import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,7 +29,8 @@ constructor(
     getPricesFlow: GetPricesFlow,
     private val addDevice: AddDevice,
     private val deleteDevice: DeleteDevice,
-    private val calculateBestTimeSlot: CalculateBestTimeSlot
+    private val calculateBestTimeSlot: CalculateBestTimeSlot,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DevicesUIState())
     val state =
@@ -37,7 +39,7 @@ constructor(
                 devices.map { DeviceRender(it, calculateBestTimeSlot(it, prices)) }
             } to _state
         }.map { DevicesState.Success(it.first.getOrThrow(), it.second.showModal) }
-            .flowOn(Dispatchers.IO)
+            .flowOn(dispatcher)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
 
     fun addDevice(
@@ -46,7 +48,7 @@ constructor(
         icon: String,
     ) {
         viewModelScope.launch {
-            addDevice(Device(name = name, hours = hours, icon = icon))
+            addDevice.invoke(Device(name = name, hours = hours, icon = icon))
             hideAddDeviceModal()
         }
     }
@@ -66,8 +68,8 @@ constructor(
 
     fun removeDevice(device: Device) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                deleteDevice(device)
+            withContext(dispatcher) {
+                deleteDevice.invoke(device)
             }
         }
     }
