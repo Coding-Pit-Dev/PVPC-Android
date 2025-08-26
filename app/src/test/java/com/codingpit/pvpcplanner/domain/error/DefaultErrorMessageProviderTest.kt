@@ -128,7 +128,10 @@ class DefaultErrorMessageProviderTest {
         val result = errorMessageProvider.getTimeoutErrorMessage()
 
         // Assert
-        assertEquals("La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet.", result)
+        assertEquals(
+            "La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet.",
+            result
+        )
     }
 
     @Test

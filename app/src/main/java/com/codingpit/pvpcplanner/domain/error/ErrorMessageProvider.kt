@@ -8,32 +8,32 @@ import javax.inject.Singleton
  * Enables consistent error messaging and easy localization.
  */
 interface ErrorMessageProvider {
-    
+
     /**
      * Gets a user-friendly error message for network-related errors.
      */
     fun getNetworkErrorMessage(errorCode: Int? = null): String
-    
+
     /**
      * Gets a user-friendly error message for data-related errors.
      */
     fun getDataErrorMessage(context: String? = null): String
-    
+
     /**
      * Gets a user-friendly error message for validation errors.
      */
     fun getValidationErrorMessage(field: String? = null): String
-    
+
     /**
      * Gets a user-friendly error message for generic errors.
      */
     fun getGenericErrorMessage(): String
-    
+
     /**
      * Gets a user-friendly error message for timeout errors.
      */
     fun getTimeoutErrorMessage(): String
-    
+
     /**
      * Gets a user-friendly error message for authentication errors.
      */
@@ -46,7 +46,7 @@ interface ErrorMessageProvider {
  */
 @Singleton
 class DefaultErrorMessageProvider @Inject constructor() : ErrorMessageProvider {
-    
+
     override fun getNetworkErrorMessage(errorCode: Int?): String {
         return when (errorCode) {
             400 -> "Solicitud incorrecta. Por favor, verifica los datos introducidos."
@@ -58,7 +58,7 @@ class DefaultErrorMessageProvider @Inject constructor() : ErrorMessageProvider {
             else -> "Error de conexión. Por favor, verifica tu conexión a Internet."
         }
     }
-    
+
     override fun getDataErrorMessage(context: String?): String {
         return when (context) {
             "price_data" -> "No hay datos de precios disponibles para la fecha seleccionada."
@@ -68,7 +68,7 @@ class DefaultErrorMessageProvider @Inject constructor() : ErrorMessageProvider {
             else -> "Los datos solicitados no están disponibles en este momento."
         }
     }
-    
+
     override fun getValidationErrorMessage(field: String?): String {
         return when (field) {
             "date" -> "La fecha introducida no es válida."
@@ -78,15 +78,15 @@ class DefaultErrorMessageProvider @Inject constructor() : ErrorMessageProvider {
             else -> "Los datos introducidos no son válidos."
         }
     }
-    
+
     override fun getGenericErrorMessage(): String {
         return "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo."
     }
-    
+
     override fun getTimeoutErrorMessage(): String {
         return "La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet."
     }
-    
+
     override fun getAuthenticationErrorMessage(): String {
         return "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión."
     }
@@ -96,7 +96,7 @@ class DefaultErrorMessageProvider @Inject constructor() : ErrorMessageProvider {
  * Extension functions to make error message retrieval more convenient.
  */
 object ErrorMessages {
-    
+
     /**
      * Common error message categories for easy access.
      */
@@ -108,7 +108,7 @@ object ErrorMessages {
         AUTHENTICATION,
         GENERIC
     }
-    
+
     /**
      * Gets an error message for a specific category with optional context.
      */

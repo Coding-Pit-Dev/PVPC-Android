@@ -19,7 +19,7 @@ abstract class ValidationModule {
     abstract fun bindDateValidator(
         defaultDateValidator: DefaultDateValidator
     ): DateValidator
-    
+
     @Binds
     @Singleton
     abstract fun bindErrorMessageProvider(

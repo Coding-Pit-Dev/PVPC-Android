@@ -21,8 +21,10 @@ fun PVPCDTO.toDomain(): PVPCModel =
             day = this.day,
             startHour = it.first().toInt(),
             endHour = it[1].toInt(),
-            pcb = this.pcb.replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT).toDouble() / PRICE_CONVERSION_FACTOR,
-            cym = this.cym.replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT).toDouble() / PRICE_CONVERSION_FACTOR,
+            pcb = this.pcb.replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT)
+                .toDouble() / PRICE_CONVERSION_FACTOR,
+            cym = this.cym.replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT)
+                .toDouble() / PRICE_CONVERSION_FACTOR,
         )
     }
 

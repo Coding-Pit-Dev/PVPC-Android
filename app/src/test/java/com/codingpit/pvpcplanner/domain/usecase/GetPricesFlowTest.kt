@@ -58,7 +58,9 @@ class GetPricesFlowTest {
             PVPCModel("2023-10-15", 0, 1, 0.15, 0.18)
         )
         every { mockDateChecker.getDefaultDate() } returns defaultDate
-        coEvery { mockRepository.getPrices(expectedDateString) } returns Result.success(expectedPrices)
+        coEvery { mockRepository.getPrices(expectedDateString) } returns Result.success(
+            expectedPrices
+        )
 
         // Act
         val result = useCase("")
@@ -81,7 +83,9 @@ class GetPricesFlowTest {
             PVPCModel("2023-10-16", 0, 1, 0.16, 0.19)
         )
         every { mockDateChecker.getDefaultDate() } returns defaultDate
-        coEvery { mockRepository.getPrices(expectedDateString) } returns Result.success(expectedPrices)
+        coEvery { mockRepository.getPrices(expectedDateString) } returns Result.success(
+            expectedPrices
+        )
 
         // Act
         val result = useCase()

@@ -22,7 +22,7 @@ import org.junit.Test
 class SettingsIntegrationTest {
 
     private val mockSettingsStore = mockk<SettingsStore>()
-    
+
     private lateinit var repository: SettingsRepositoryImpl
     private lateinit var getSettingsUseCase: GetSettings
     private lateinit var updateSettingUseCase: UpdateSetting
@@ -55,7 +55,7 @@ class SettingsIntegrationTest {
         assertEquals(DarkMode.SYSTEM, settings.darkMode)
         assertEquals(TimeFormat.TWELVE_HOURS, settings.timeFormat)
         assertEquals(5, settings.yAxisSlots)
-        
+
         verify { mockSettingsStore.settings }
     }
 
@@ -63,7 +63,9 @@ class SettingsIntegrationTest {
     fun `complete settings flow - update dark mode to light`() = runTest {
         // Arrange
         val updatedSettings = defaultSettings.copy(darkMode = DarkMode.LIGHT)
-        every { mockSettingsStore.settings } returns flowOf(defaultSettings) andThen flowOf(updatedSettings)
+        every { mockSettingsStore.settings } returns flowOf(defaultSettings) andThen flowOf(
+            updatedSettings
+        )
         coEvery { mockSettingsStore.updateDarkMode(DarkMode.LIGHT) } returns Unit
 
         // Act
@@ -119,10 +121,10 @@ class SettingsIntegrationTest {
         val lightSettings = defaultSettings.copy(darkMode = DarkMode.LIGHT)
         val darkSettings = lightSettings.copy(darkMode = DarkMode.DARK)
         val finalSettings = darkSettings.copy(timeFormat = TimeFormat.TWENTY_FOUR_HOURS)
-        
+
         every { mockSettingsStore.settings } returns flowOf(
             defaultSettings,
-            lightSettings, 
+            lightSettings,
             darkSettings,
             finalSettings
         )
@@ -133,19 +135,19 @@ class SettingsIntegrationTest {
 
         // Assert
         assertEquals(4, emissions.size)
-        
+
         assertEquals(DarkMode.SYSTEM, emissions[0].darkMode)
         assertEquals(TimeFormat.TWELVE_HOURS, emissions[0].timeFormat)
-        
+
         assertEquals(DarkMode.LIGHT, emissions[1].darkMode)
         assertEquals(TimeFormat.TWELVE_HOURS, emissions[1].timeFormat)
-        
+
         assertEquals(DarkMode.DARK, emissions[2].darkMode)
         assertEquals(TimeFormat.TWELVE_HOURS, emissions[2].timeFormat)
-        
+
         assertEquals(DarkMode.DARK, emissions[3].darkMode)
         assertEquals(TimeFormat.TWENTY_FOUR_HOURS, emissions[3].timeFormat)
-        
+
         verify { mockSettingsStore.settings }
     }
 
@@ -206,7 +208,7 @@ class SettingsIntegrationTest {
         assertEquals(DarkMode.LIGHT, settings.darkMode)
         assertEquals(TimeFormat.TWENTY_FOUR_HOURS, settings.timeFormat)
         assertEquals(10, settings.yAxisSlots)
-        
+
         verify { mockSettingsStore.settings }
     }
 
@@ -216,9 +218,9 @@ class SettingsIntegrationTest {
         val systemSettings = Settings(DarkMode.SYSTEM, TimeFormat.TWELVE_HOURS, 5)
         val lightSettings = systemSettings.copy(darkMode = DarkMode.LIGHT)
         val finalSettings = lightSettings.copy(timeFormat = TimeFormat.TWENTY_FOUR_HOURS)
-        
-        every { mockSettingsStore.settings } returns flowOf(systemSettings) andThen 
-            flowOf(lightSettings) andThen flowOf(finalSettings)
+
+        every { mockSettingsStore.settings } returns flowOf(systemSettings) andThen
+                flowOf(lightSettings) andThen flowOf(finalSettings)
         coEvery { mockSettingsStore.updateDarkMode(DarkMode.LIGHT) } returns Unit
         coEvery { mockSettingsStore.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS) } returns Unit
 
@@ -229,7 +231,7 @@ class SettingsIntegrationTest {
 
         // Act - User switches to light mode
         updateSettingUseCase(DarkMode.LIGHT)
-        
+
         // Act - User switches to 24-hour format
         updateSettingUseCase(TimeFormat.TWENTY_FOUR_HOURS)
 

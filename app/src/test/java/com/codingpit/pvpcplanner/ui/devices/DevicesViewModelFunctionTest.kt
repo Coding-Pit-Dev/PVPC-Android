@@ -25,7 +25,7 @@ import org.junit.Test
 
 /**
  * Simplified DevicesViewModel test focusing on public method behavior
- * rather than complex StateFlow testing which is problematic due to 
+ * rather than complex StateFlow testing which is problematic due to
  * Dispatchers.IO and WhileSubscribed timing.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,20 +36,20 @@ class DevicesViewModelFunctionTest {
     private val mockAddDevice = mockk<AddDevice>(relaxed = true)
     private val mockDeleteDevice = mockk<DeleteDevice>(relaxed = true)
     private val mockCalculateBestTimeSlot = mockk<CalculateBestTimeSlot>()
-    
+
     private lateinit var viewModel: DevicesViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        
+
         // Set up basic mocks to prevent flow exceptions
         every { mockGetDevices() } returns flowOf(emptyList())
         every { mockGetPricesFlow() } returns flowOf(Result.success(emptyList()))
         every { mockCalculateBestTimeSlot(any(), any()) } returns TimeSlot(0, 1)
     }
-    
+
     private fun createViewModel(): DevicesViewModel {
         return DevicesViewModel(
             mockGetDevices,
@@ -60,7 +60,7 @@ class DevicesViewModelFunctionTest {
             testDispatcher
         )
     }
-    
+
     @After
     fun tearDown() {
         Dispatchers.resetMain()
@@ -71,13 +71,13 @@ class DevicesViewModelFunctionTest {
         // Arrange
         coEvery { mockAddDevice(any()) } returns Unit
         viewModel = createViewModel()
-        
+
         // Act
         viewModel.addDevice("Test Device", 3, "test_icon")
         testDispatcher.scheduler.advanceUntilIdle() // Let coroutines complete
-        
+
         // Assert
-        coVerify { 
+        coVerify {
             mockAddDevice(Device(name = "Test Device", hours = 3, icon = "test_icon"))
         }
     }
@@ -88,11 +88,11 @@ class DevicesViewModelFunctionTest {
         val device = Device(1, "Test Device", 2, "test")
         coEvery { mockDeleteDevice(device) } returns Unit
         viewModel = createViewModel()
-        
+
         // Act
         viewModel.removeDevice(device)
         testDispatcher.scheduler.advanceUntilIdle() // Let coroutines complete
-        
+
         // Assert
         coVerify { mockDeleteDevice(device) }
     }
@@ -101,7 +101,7 @@ class DevicesViewModelFunctionTest {
     fun `showAddDeviceModal executes without error`() = runTest {
         // Arrange
         viewModel = createViewModel()
-        
+
         // Act & Assert - Just verify the method can be called
         viewModel.showAddDeviceModal()
         assertTrue("showAddDeviceModal should execute successfully", true)
@@ -111,7 +111,7 @@ class DevicesViewModelFunctionTest {
     fun `hideAddDeviceModal executes without error`() = runTest {
         // Arrange
         viewModel = createViewModel()
-        
+
         // Act & Assert - Just verify the method can be called  
         viewModel.hideAddDeviceModal()
         assertTrue("hideAddDeviceModal should execute successfully", true)
@@ -121,7 +121,7 @@ class DevicesViewModelFunctionTest {
     fun `viewModel can be initialized successfully`() = runTest {
         // Act - Create ViewModel
         viewModel = createViewModel()
-        
+
         // Assert - ViewModel should be created without throwing
         assertTrue("ViewModel should be initialized", viewModel != null)
         assertTrue("Initial state should be Loading", viewModel.state.value is DevicesState.Loading)
@@ -132,16 +132,24 @@ class DevicesViewModelFunctionTest {
         // Arrange
         coEvery { mockAddDevice(any()) } returns Unit
         viewModel = createViewModel()
-        
+
         // Act & Assert - Test different parameter combinations
         viewModel.addDevice("Washing Machine", 2, "washing_machine")
         testDispatcher.scheduler.advanceUntilIdle()
-        coVerify { mockAddDevice(Device(name = "Washing Machine", hours = 2, icon = "washing_machine")) }
-        
+        coVerify {
+            mockAddDevice(
+                Device(
+                    name = "Washing Machine",
+                    hours = 2,
+                    icon = "washing_machine"
+                )
+            )
+        }
+
         viewModel.addDevice("Dryer", 1, "dryer")
         testDispatcher.scheduler.advanceUntilIdle()
         coVerify { mockAddDevice(Device(name = "Dryer", hours = 1, icon = "dryer")) }
-        
+
         viewModel.addDevice("", 0, "")
         testDispatcher.scheduler.advanceUntilIdle()
         coVerify { mockAddDevice(Device(name = "", hours = 0, icon = "")) }
@@ -153,10 +161,10 @@ class DevicesViewModelFunctionTest {
         coEvery { mockAddDevice(any()) } returns Unit
         coEvery { mockDeleteDevice(any()) } returns Unit
         viewModel = createViewModel()
-        
+
         val device1 = Device(1, "Device 1", 2, "icon1")
-        val device2 = Device(2, "Device 2", 3, "icon2")
-        
+        Device(2, "Device 2", 3, "icon2")
+
         // Act - Perform a sequence of operations
         viewModel.addDevice("Device 1", 2, "icon1")
         viewModel.addDevice("Device 2", 3, "icon2")
@@ -164,7 +172,7 @@ class DevicesViewModelFunctionTest {
         viewModel.showAddDeviceModal()
         viewModel.hideAddDeviceModal()
         testDispatcher.scheduler.advanceUntilIdle() // Let all coroutines complete
-        
+
         // Assert - Verify all operations were called
         coVerify { mockAddDevice(Device(name = "Device 1", hours = 2, icon = "icon1")) }
         coVerify { mockAddDevice(Device(name = "Device 2", hours = 3, icon = "icon2")) }

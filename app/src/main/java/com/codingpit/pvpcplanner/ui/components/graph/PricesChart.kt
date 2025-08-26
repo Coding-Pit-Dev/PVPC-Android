@@ -26,7 +26,6 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.component.TextComponent
-import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.roundToInt

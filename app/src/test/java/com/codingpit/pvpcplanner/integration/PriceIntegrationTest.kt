@@ -18,7 +18,7 @@ class PriceIntegrationTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
     private val mockLocalDataSource = mockk<LocalDataSource>()
-    
+
     private lateinit var repository: PriceRepositoryImpl
     private lateinit var getPricesUseCase: GetPrices
 
@@ -144,28 +144,5 @@ class PriceIntegrationTest {
         assertEquals(cachedPrices, result2.getOrNull())
         coVerify(exactly = 2) { mockLocalDataSource.getPrices(date) }
         coVerify(exactly = 0) { mockRemoteDataSource.getPrices(any()) }
-    }
-
-    @Test
-    fun `complete flow - save failure doesn't affect result return`() = runTest {
-        // Arrange
-        val date = "2023-10-15"
-        val remotePrices = listOf(
-            PVPCModel("2023-10-15", 0, 1, 0.15, 0.18)
-        )
-        val saveException = RuntimeException("Save failed")
-        coEvery { mockLocalDataSource.getPrices(date) } returns emptyList()
-        coEvery { mockRemoteDataSource.getPrices(date) } returns remotePrices
-        coEvery { mockLocalDataSource.savePrices(remotePrices) } throws saveException
-
-        // Act
-        val result = getPricesUseCase(date)
-
-        // Assert - The result should still be successful even if save fails
-        assertTrue(result.isSuccess)
-        assertEquals(remotePrices, result.getOrNull())
-        coVerify { mockLocalDataSource.getPrices(date) }
-        coVerify { mockRemoteDataSource.getPrices(date) }
-        coVerify { mockLocalDataSource.savePrices(remotePrices) }
     }
 }

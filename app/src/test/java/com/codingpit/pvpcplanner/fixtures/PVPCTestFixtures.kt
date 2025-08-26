@@ -1,7 +1,5 @@
 package com.codingpit.pvpcplanner.fixtures
 
-import com.codingpit.pvpcplanner.data.remote.response.PVPCDTO
-import com.codingpit.pvpcplanner.data.remote.response.PVPCResponse
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 
 /**
@@ -131,7 +129,7 @@ object PVPCTestFixtures {
     )
 
      */
-    
+
     /*/**
      * Empty response for error scenarios.
      */
@@ -169,7 +167,7 @@ object PVPCTestFixtures {
             PVPCModel("2023-10-15", 22, 23, 0.13520, 0.16321),
             PVPCModel("2023-10-15", 23, 24, 0.12840, 0.15505)
         )
-        
+
         val HIGH_PRICES = listOf(
             PVPCModel("2023-10-16", 0, 1, 0.18050, 0.21780),
             PVPCModel("2023-10-16", 1, 2, 0.18530, 0.22360),
@@ -177,7 +175,7 @@ object PVPCTestFixtures {
             PVPCModel("2023-10-16", 3, 4, 0.17840, 0.21525)
             // ... truncated for brevity, would include all 24 hours
         )
-        
+
         val LOW_PRICES = listOf(
             PVPCModel("2023-10-17", 0, 1, 0.04550, 0.05494),
             PVPCModel("2023-10-17", 1, 2, 0.04230, 0.05108),
@@ -186,7 +184,7 @@ object PVPCTestFixtures {
             // ... truncated for brevity
         )
     }
-    
+
     /**
      * Network error responses for testing error handling.
      */
@@ -195,13 +193,13 @@ object PVPCTestFixtures {
         const val API_ERROR_MESSAGE = "API service unavailable"
         const val TIMEOUT_ERROR_MESSAGE = "Request timeout"
         const val PARSE_ERROR_MESSAGE = "Failed to parse response"
-        
+
         val networkException = RuntimeException(NETWORK_ERROR_MESSAGE)
         val apiException = RuntimeException(API_ERROR_MESSAGE)
         val timeoutException = RuntimeException(TIMEOUT_ERROR_MESSAGE)
         val parseException = RuntimeException(PARSE_ERROR_MESSAGE)
     }
-    
+
     /**
      * Common test dates for consistent testing.
      */

@@ -7,16 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codingpit.pvpcplanner.domain.models.DarkMode
+import com.codingpit.pvpcplanner.domain.models.Settings
+import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
 import com.codingpit.pvpcplanner.ui.theme.PVPCPlannerTheme
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.compose.runtime.getValue
-import com.codingpit.pvpcplanner.domain.models.DarkMode
-import com.codingpit.pvpcplanner.domain.models.Settings
-import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import javax.inject.Inject
 
 @AndroidEntryPoint

@@ -27,12 +27,12 @@ class PriceCalculationIntegrationTest {
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
     private val mockLocalDataSource = mockk<LocalDataSource>()
     private val mockDateChecker = mockk<DateChecker>()
-    
+
     private lateinit var priceRepository: PriceRepositoryImpl
     private lateinit var getPricesUseCase: GetPrices
     private lateinit var getPricesFlowUseCase: GetPricesFlow
     private lateinit var calculateBestTimeSlotUseCase: CalculateBestTimeSlot
-    
+
     private val strategy = BestTimeSlotCalculationStrategy()
 
     @Before
@@ -55,7 +55,7 @@ class PriceCalculationIntegrationTest {
             PVPCModel("2023-10-15", 3, 4, 0.15, 0.18),  // Moderate
             PVPCModel("2023-10-15", 4, 5, 0.25, 0.28)   // Very expensive
         )
-        
+
         coEvery { mockLocalDataSource.getPrices(date) } returns prices
 
         // Act
@@ -65,7 +65,7 @@ class PriceCalculationIntegrationTest {
         // Assert
         assertTrue(priceResult.isSuccess)
         assertEquals(5, priceResult.getOrNull()?.size)
-        
+
         // Best slot for 2-hour device should be hours 1-3 (0.10 + 0.08 = 0.18 total)
         assertEquals(TimeSlot(1, 3), bestTimeSlot)
     }
@@ -78,7 +78,7 @@ class PriceCalculationIntegrationTest {
             PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
             PVPCModel("2023-10-15", 1, 2, 0.14, 0.17)
         )
-        
+
         every { mockDateChecker.getDefaultDate() } returns defaultDate
         coEvery { mockLocalDataSource.getPrices("2023-10-15") } returns prices
 
@@ -110,19 +110,19 @@ class PriceCalculationIntegrationTest {
             PVPCModel("2023-10-15", 10, 11, 0.16, 0.19), // Day - moderate
             PVPCModel("2023-10-15", 11, 12, 0.14, 0.17)  // Noon - cheaper
         )
-        
+
         val devices = listOf(
             Device(1, "Quick Wash", 1, "washing_machine"),      // 1 hour
             Device(2, "Dishwasher", 2, "dishwasher"),           // 2 hours  
             Device(3, "Dryer", 3, "dryer")                      // 3 hours
         )
-        
+
         coEvery { mockLocalDataSource.getPrices(date) } returns prices
 
         // Act
         val priceResult = getPricesUseCase(date)
         assertTrue(priceResult.isSuccess)
-        
+
         val quickWashSlot = calculateBestTimeSlotUseCase(devices[0], prices)
         val dishwasherSlot = calculateBestTimeSlotUseCase(devices[1], prices)
         val dryerSlot = calculateBestTimeSlotUseCase(devices[2], prices)
@@ -141,13 +141,14 @@ class PriceCalculationIntegrationTest {
             PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
             PVPCModel("2023-10-15", 1, 2, 0.14, 0.17)
         )
-        val longRunningDevice = Device(1, "Long Device", 5, "device") // 5 hours but only 2 hours available
-        
+        val longRunningDevice =
+            Device(1, "Long Device", 5, "device") // 5 hours but only 2 hours available
+
         coEvery { mockLocalDataSource.getPrices(date) } returns limitedPrices
 
         // Act
         val priceResult = getPricesUseCase(date)
-        
+
         // The strategy should handle this gracefully - in real implementation it would
         // either return the maximum available slot or handle the edge case
         val bestTimeSlot = calculateBestTimeSlotUseCase(longRunningDevice, limitedPrices)
@@ -171,7 +172,7 @@ class PriceCalculationIntegrationTest {
             PVPCModel("2023-10-15", 2, 3, 0.10, 0.13),  // Cheapest
             PVPCModel("2023-10-15", 3, 4, 0.16, 0.19)
         )
-        
+
         coEvery { mockLocalDataSource.getPrices(date) } returns emptyList()
         coEvery { mockRemoteDataSource.getPrices(date) } returns remotePrices
         coEvery { mockLocalDataSource.savePrices(remotePrices) } returns Unit
@@ -197,7 +198,7 @@ class PriceCalculationIntegrationTest {
             PVPCModel("2023-10-15", 2, 3, 0.15, 0.18),
             PVPCModel("2023-10-15", 3, 4, 0.15, 0.18)
         )
-        
+
         coEvery { mockLocalDataSource.getPrices(date) } returns equalPrices
 
         // Act
@@ -215,7 +216,7 @@ class PriceCalculationIntegrationTest {
         // Arrange
         val defaultDate = LocalDate.of(2023, 10, 15)
         val exception = RuntimeException("Network error")
-        
+
         every { mockDateChecker.getDefaultDate() } returns defaultDate
         coEvery { mockLocalDataSource.getPrices("2023-10-15") } returns emptyList()
         coEvery { mockRemoteDataSource.getPrices("2023-10-15") } throws exception

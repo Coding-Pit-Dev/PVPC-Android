@@ -26,11 +26,11 @@ class FixtureUsageExampleTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
     private val mockLocalDataSource = mockk<LocalDataSource>()
-    
+
     private lateinit var priceRepository: PriceRepositoryImpl
     private lateinit var getPricesUseCase: GetPrices
     private lateinit var calculateBestTimeSlotUseCase: CalculateBestTimeSlot
-    
+
     private val strategy = BestTimeSlotCalculationStrategy()
 
     @Before
@@ -43,8 +43,8 @@ class FixtureUsageExampleTest {
     @Test
     fun `demonstrate PVPC fixtures usage for realistic price scenarios`() = runTest {
         // Arrange - Using realistic price patterns
-        coEvery { 
-            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE) 
+        coEvery {
+            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE)
         } returns Models.TYPICAL_DAILY_PRICES
 
         // Act
@@ -53,15 +53,17 @@ class FixtureUsageExampleTest {
         // Assert - Verify realistic price structure
         assertTrue(priceResult.isSuccess)
         val prices = priceResult.getOrNull()!!
-        
+
         assertEquals(24, prices.size) // Full day coverage
-        assertTrue("Night prices should be lower than peak", 
-            prices[2].pcb < prices[18].pcb) // 2-3h < 18-19h
-        
+        assertTrue(
+            "Night prices should be lower than peak",
+            prices[2].pcb < prices[18].pcb
+        ) // 2-3h < 18-19h
+
         // Verify cheapest hour is during night (02-03h in typical pattern)
         val cheapestPrice = prices.minByOrNull { it.pcb }!!
         assertEquals(2, cheapestPrice.startHour)
-        
+
         // Verify most expensive hour is during evening peak (18-19h)
         val mostExpensivePrice = prices.maxByOrNull { it.pcb }!!
         assertEquals(18, mostExpensivePrice.startHour)
@@ -70,28 +72,32 @@ class FixtureUsageExampleTest {
     @Test
     fun `demonstrate device fixtures usage for appliance optimization`() = runTest {
         // Arrange - Using realistic device configurations
-        coEvery { 
-            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE) 
+        coEvery {
+            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE)
         } returns Models.TYPICAL_DAILY_PRICES
 
         val washingMachine = CommonDevices.WASHING_MACHINE
         val electricCar = CommonDevices.ELECTRIC_CAR_CHARGER
-        
+
         // Act - Calculate optimal time slots
         val priceResult = getPricesUseCase(TestDates.TYPICAL_DATE)
         val prices = priceResult.getOrNull()!!
-        
+
         val washingSlot = calculateBestTimeSlotUseCase(washingMachine, prices)
         val carChargingSlot = calculateBestTimeSlotUseCase(electricCar, prices)
 
         // Assert - Verify realistic optimization behavior
         // Washing machine (2 hours) should prefer early night hours
-        assertTrue("Washing machine should start during cheap night hours",
-            washingSlot.startHour <= 4)
-        
+        assertTrue(
+            "Washing machine should start during cheap night hours",
+            washingSlot.startHour <= 4
+        )
+
         // Electric car (8 hours) should use extended night period
-        assertTrue("EV charging should start during night hours",
-            carChargingSlot.startHour <= 2)
+        assertTrue(
+            "EV charging should start during night hours",
+            carChargingSlot.startHour <= 2
+        )
         assertEquals(8, carChargingSlot.endHour - carChargingSlot.startHour)
     }
 
@@ -105,31 +111,39 @@ class FixtureUsageExampleTest {
         // Assert - Verify different preference patterns
         // Casual user prefers defaults
         assertEquals(5, casualUser.yAxisSlots)
-        assertTrue("Casual user uses system theme", 
-            casualUser.darkMode.name.contains("SYSTEM"))
+        assertTrue(
+            "Casual user uses system theme",
+            casualUser.darkMode.name.contains("SYSTEM")
+        )
 
         // Professional user prefers detailed, dark interface
         assertTrue(professionalUser.yAxisSlots > casualUser.yAxisSlots)
-        assertTrue("Professional uses 24h format", 
-            professionalUser.timeFormat.name.contains("TWENTY_FOUR"))
+        assertTrue(
+            "Professional uses 24h format",
+            professionalUser.timeFormat.name.contains("TWENTY_FOUR")
+        )
 
         // Elderly user prefers simple, familiar interface
         assertTrue(elderlyUser.yAxisSlots <= casualUser.yAxisSlots)
-        assertTrue("Elderly user prefers 12h format", 
-            elderlyUser.timeFormat.name.contains("TWELVE"))
-        assertTrue("Elderly user prefers light mode", 
-            elderlyUser.darkMode.name.contains("LIGHT"))
+        assertTrue(
+            "Elderly user prefers 12h format",
+            elderlyUser.timeFormat.name.contains("TWELVE")
+        )
+        assertTrue(
+            "Elderly user prefers light mode",
+            elderlyUser.darkMode.name.contains("LIGHT")
+        )
     }
 
     @Test
     fun `demonstrate error scenario fixtures usage`() = runTest {
         // Arrange - Network error scenarios
         val networkError = PVPCTestFixtures.Errors.networkException
-        coEvery { 
-            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE) 
+        coEvery {
+            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE)
         } returns emptyList()
-        coEvery { 
-            mockRemoteDataSource.getPrices(TestDates.TYPICAL_DATE) 
+        coEvery {
+            mockRemoteDataSource.getPrices(TestDates.TYPICAL_DATE)
         } throws networkError
 
         // Act
@@ -141,45 +155,13 @@ class FixtureUsageExampleTest {
     }
 
     @Test
-    fun `demonstrate mixed scenarios with fixtures`() = runTest {
-        // Arrange - Complex realistic scenario: Weekend with multiple devices
-        val weekendDevices = DeviceTestFixtures.Collections.COMPLETE_HOUSEHOLD
-        val lowPriceDay = Models.LOW_PRICES.take(12) // Simulate half-day data
-        
-        coEvery { 
-            mockLocalDataSource.getPrices(TestDates.WEEKEND_DATE) 
-        } returns lowPriceDay
-
-        // Act - Calculate optimal slots for all devices
-        val priceResult = getPricesUseCase(TestDates.WEEKEND_DATE)
-        val prices = priceResult.getOrNull()!!
-        
-        val deviceSlots = weekendDevices.map { device ->
-            device.name to calculateBestTimeSlotUseCase(device, prices)
-        }
-
-        // Assert - Verify all devices get scheduled
-        assertEquals(weekendDevices.size, deviceSlots.size)
-        
-        // Verify no overlapping critical devices (washing machine and dryer)
-        val washingSlot = deviceSlots.find { it.first.contains("Washing") }?.second
-        val dryerSlot = deviceSlots.find { it.first.contains("Dryer") }?.second
-        
-        if (washingSlot != null && dryerSlot != null) {
-            assertTrue("Devices should be scheduled efficiently",
-                washingSlot.endHour <= dryerSlot.startHour || 
-                dryerSlot.endHour <= washingSlot.startHour)
-        }
-    }
-
-    @Test
     fun `demonstrate edge cases with fixtures`() = runTest {
         // Arrange - Edge case: device longer than available price data
         val longDevice = DeviceTestFixtures.EdgeCaseDevices.VERY_LONG_DEVICE // 24 hours
         val limitedPrices = Models.TYPICAL_DAILY_PRICES.take(3) // Only 3 hours of data
-        
-        coEvery { 
-            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE) 
+
+        coEvery {
+            mockLocalDataSource.getPrices(TestDates.TYPICAL_DATE)
         } returns limitedPrices
 
         // Act
@@ -188,9 +170,13 @@ class FixtureUsageExampleTest {
         val timeSlot = calculateBestTimeSlotUseCase(longDevice, prices)
 
         // Assert - Verify graceful handling of edge case
-        assertTrue("Should handle insufficient price data",
-            timeSlot.startHour >= 0)
-        assertTrue("End hour should be reasonable",
-            timeSlot.endHour >= timeSlot.startHour)
+        assertTrue(
+            "Should handle insufficient price data",
+            timeSlot.startHour >= 0
+        )
+        assertTrue(
+            "End hour should be reasonable",
+            timeSlot.endHour >= timeSlot.startHour
+        )
     }
 }

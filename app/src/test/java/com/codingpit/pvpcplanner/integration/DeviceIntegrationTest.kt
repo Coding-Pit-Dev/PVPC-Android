@@ -22,7 +22,7 @@ import org.junit.Test
 class DeviceIntegrationTest {
 
     private val mockLocalDataSource = mockk<LocalDataSource>()
-    
+
     private lateinit var repository: DeviceRepositoryImpl
     private lateinit var getDevicesUseCase: GetDevices
     private lateinit var addDeviceUseCase: AddDevice
@@ -46,8 +46,10 @@ class DeviceIntegrationTest {
         )
         val newDevice = Device(2, "Dishwasher", 2, "dishwasher")
         val updatedDevice = Device(1, "Updated Washing Machine", 4, "updated_icon")
-        
-        every { mockLocalDataSource.getDevices() } returns flowOf(initialDevices) andThen flowOf(initialDevices + newDevice) andThen flowOf(listOf(updatedDevice) + newDevice) andThen flowOf(listOf(updatedDevice))
+
+        every { mockLocalDataSource.getDevices() } returns flowOf(initialDevices) andThen flowOf(
+            initialDevices + newDevice
+        ) andThen flowOf(listOf(updatedDevice) + newDevice) andThen flowOf(listOf(updatedDevice))
         coEvery { mockLocalDataSource.saveDevice(newDevice) } returns Unit
         coEvery { mockLocalDataSource.updateDevice(updatedDevice) } returns Unit
         coEvery { mockLocalDataSource.deleteDevice(newDevice) } returns Unit
@@ -79,7 +81,7 @@ class DeviceIntegrationTest {
         // Arrange
         val device1 = Device(1, "Device 1", 2, "icon1")
         val device2 = Device(2, "Device 2", 3, "icon2")
-        
+
         every { mockLocalDataSource.getDevices() } returns flowOf(
             emptyList(),
             listOf(device1),
@@ -97,7 +99,7 @@ class DeviceIntegrationTest {
         assertEquals(2, emissions[2].size)
         assertEquals("Device 1", emissions[1][0].name)
         assertEquals("Device 2", emissions[2][1].name)
-        
+
         verify { mockLocalDataSource.getDevices() }
     }
 
@@ -158,7 +160,7 @@ class DeviceIntegrationTest {
         val washingMachine = Device(1, "Samsung Washing Machine", 3, "washing_machine")
         val dishwasher = Device(2, "Bosch Dishwasher", 2, "dishwasher")
         val dryer = Device(3, "LG Dryer", 1, "dryer")
-        
+
         every { mockLocalDataSource.getDevices() } returns flowOf(emptyList())
         coEvery { mockLocalDataSource.saveDevice(any()) } returns Unit
         coEvery { mockLocalDataSource.updateDevice(any()) } returns Unit
@@ -185,7 +187,7 @@ class DeviceIntegrationTest {
         val originalDevice = Device(1, "Original Name", 2, "original_icon")
         val duplicateIdDevice = Device(1, "Duplicate ID", 3, "duplicate_icon")
         val constraintException = RuntimeException("UNIQUE constraint failed: device.id")
-        
+
         coEvery { mockLocalDataSource.saveDevice(originalDevice) } returns Unit
         coEvery { mockLocalDataSource.saveDevice(duplicateIdDevice) } throws constraintException
 
@@ -211,7 +213,7 @@ class DeviceIntegrationTest {
             Device(2, "Device 2", 2, "icon2"),
             Device(3, "Device 3", 3, "icon3")
         )
-        
+
         coEvery { mockLocalDataSource.saveDevice(any()) } returns Unit
 
         // Act - Add multiple devices in sequence

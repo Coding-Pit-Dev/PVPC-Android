@@ -9,28 +9,32 @@ import javax.inject.Inject
  * Provides a flexible and extensible approach to date validation.
  */
 interface DateValidator {
-    
+
     /**
      * Validates if a date is acceptable for querying price data.
-     * 
+     *
      * @param date The date to validate
      * @return ValidationResult indicating success or failure with details
      */
     fun validateQueryDate(date: LocalDate): ValidationResult
-    
+
     /**
      * Validates if a date falls within an acceptable range.
-     * 
+     *
      * @param date The date to validate
      * @param startDate The earliest acceptable date (inclusive)
      * @param endDate The latest acceptable date (inclusive)
      * @return ValidationResult indicating success or failure with details
      */
-    fun validateDateRange(date: LocalDate, startDate: LocalDate, endDate: LocalDate): ValidationResult
-    
+    fun validateDateRange(
+        date: LocalDate,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): ValidationResult
+
     /**
      * Validates if a date is not in the future beyond what's allowed.
-     * 
+     *
      * @param date The date to validate
      * @return ValidationResult indicating success or failure with details
      */
@@ -45,10 +49,10 @@ sealed class ValidationResult {
      * Validation succeeded.
      */
     object Success : ValidationResult()
-    
+
     /**
      * Validation failed with a specific reason.
-     * 
+     *
      * @param reason Human-readable reason for the failure
      * @param errorCode Optional error code for programmatic handling
      */
@@ -62,10 +66,10 @@ sealed class ValidationResult {
  * Default implementation of DateValidator using application business rules.
  */
 class DefaultDateValidator @Inject constructor() : DateValidator {
-    
+
     override fun validateQueryDate(date: LocalDate): ValidationResult {
         val isValid = DateFormatter.isValidQueryDate(date)
-        
+
         return if (isValid) {
             ValidationResult.Success
         } else {
@@ -75,34 +79,52 @@ class DefaultDateValidator @Inject constructor() : DateValidator {
             )
         }
     }
-    
-    override fun validateDateRange(date: LocalDate, startDate: LocalDate, endDate: LocalDate): ValidationResult {
+
+    override fun validateDateRange(
+        date: LocalDate,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): ValidationResult {
         return when {
             date.isBefore(startDate) -> ValidationResult.Error(
-                reason = "Date is before the allowed range. Earliest date: ${DateFormatter.formatDate(startDate)}",
+                reason = "Date is before the allowed range. Earliest date: ${
+                    DateFormatter.formatDate(
+                        startDate
+                    )
+                }",
                 errorCode = "DATE_TOO_EARLY"
             )
+
             date.isAfter(endDate) -> ValidationResult.Error(
-                reason = "Date is after the allowed range. Latest date: ${DateFormatter.formatDate(endDate)}",
+                reason = "Date is after the allowed range. Latest date: ${
+                    DateFormatter.formatDate(
+                        endDate
+                    )
+                }",
                 errorCode = "DATE_TOO_LATE"
             )
+
             else -> ValidationResult.Success
         }
     }
-    
+
     override fun validateNotTooFarInFuture(date: LocalDate): ValidationResult {
         val maxFutureDate = DateFormatter.getCurrentDate().plusDays(MAX_FUTURE_DAYS)
-        
+
         return if (date.isAfter(maxFutureDate)) {
             ValidationResult.Error(
-                reason = "Date is too far in the future. Maximum allowed: ${DateFormatter.formatDate(maxFutureDate)}",
+                reason = "Date is too far in the future. Maximum allowed: ${
+                    DateFormatter.formatDate(
+                        maxFutureDate
+                    )
+                }",
                 errorCode = "DATE_TOO_FAR_FUTURE"
             )
         } else {
             ValidationResult.Success
         }
     }
-    
+
     companion object {
         /**
          * Maximum number of days in the future that are allowed for validation.

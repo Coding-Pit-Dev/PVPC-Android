@@ -109,7 +109,8 @@ class GetSettingsTest {
     fun `invoke handles multiple emissions from repository`() = runTest {
         // Arrange
         val firstSettings = Settings(darkMode = DarkMode.LIGHT)
-        val secondSettings = Settings(darkMode = DarkMode.DARK, timeFormat = TimeFormat.TWENTY_FOUR_HOURS)
+        val secondSettings =
+            Settings(darkMode = DarkMode.DARK, timeFormat = TimeFormat.TWENTY_FOUR_HOURS)
         val multiEmissionFlow = flowOf(firstSettings, secondSettings)
         every { mockRepository.getSettings() } returns multiEmissionFlow
 
