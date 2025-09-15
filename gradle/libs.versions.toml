@@ -26,7 +26,7 @@ junitJupiter = "5.13.4"
 ksp = "2.2.10-2.0.2"
 protobuf = "0.9.5"
 datastore = "1.1.7"
-protobufJavalite = "4.32.0"
+protobufJavalite = "4.32.1"
 
 
 [libraries]
