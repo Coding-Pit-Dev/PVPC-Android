@@ -17,7 +17,7 @@ jobs:
                   cache: gradle
             - name: Set up Gradle
               uses: gradle/actions/setup-gradle@v5
-            - name: Build with Gradle
+            - name: Build wth Gradle
               run: ./gradlew assemble
             - name: Run Tests with Gradle
               run: ./gradlew test
