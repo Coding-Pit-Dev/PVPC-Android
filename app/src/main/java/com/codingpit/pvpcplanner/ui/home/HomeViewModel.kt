@@ -58,7 +58,7 @@ class HomeViewModel @Inject constructor(
             .flowOn(Dispatchers.IO)
             .stateIn(viewModelScope, SharingStarted.Eagerly, HomeState.Loading)
 
-    fun onPreviewClicked() {
+    fun onPreviousClicked() {
         viewModelScope.launch {
             val currentDate = selectedDate.value
 

@@ -3,9 +3,7 @@ package com.codingpit.pvpcplanner.utils
 import java.time.LocalDate
 import javax.inject.Inject
 
-class DateChecker
-@Inject
-constructor() {
+class DateChecker @Inject constructor() {
 
     /**
      * Gets the default date for price queries.
