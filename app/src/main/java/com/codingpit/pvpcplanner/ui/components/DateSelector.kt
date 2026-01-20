@@ -42,7 +42,10 @@ fun DateSelector(
         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
     ) {
         IconButton(modifier = Modifier, onClick = onPreviewClicked) {
-            Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Preview")
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = stringResource(R.string.a11y_previous_day)
+            )
         }
         val selectedDateText =
             if (selectedDate == currentDate) {
@@ -54,7 +57,7 @@ fun DateSelector(
         IconButton(modifier = Modifier, enabled = nextDayEnabled, onClick = onNextClicked) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                contentDescription = "Preview",
+                contentDescription = stringResource(R.string.a11y_next_day),
             )
         }
     }

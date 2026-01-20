@@ -5,4 +5,6 @@
     <string name="current_hour_template">%s (Now)</string>
     <string name="current_date_template">%s (Today)</string>
     <string name="no_devices">No devices</string>
+    <string name="a11y_previous_day">Previous day</string>
+    <string name="a11y_next_day">Next day</string>
 </resources>

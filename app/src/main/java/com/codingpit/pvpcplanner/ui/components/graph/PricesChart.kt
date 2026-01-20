@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -36,6 +37,10 @@ fun PriceChart(
     onMarkerChanged: (Int, Double) -> Unit,
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
+    val simpleDateFormat = remember { SimpleDateFormat("h a", Locale.getDefault()) }
+    val calendar = remember { Calendar.getInstance() }
+    val yAxisStep = rememberYAxis(responseData.map { it.pcb.toFloat() })
+
     LaunchedEffect(responseData) {
         modelProducer.runTransaction {
             lineSeries {
@@ -45,8 +50,6 @@ fun PriceChart(
             }
         }
     }
-
-    val yAxisStep = rememberYAxis(responseData.map { it.pcb.toFloat() })
 
     CartesianChartHost(
         modifier = modifier,
@@ -65,28 +68,13 @@ fun PriceChart(
             bottomAxis = HorizontalAxis.rememberBottom(
                 label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
                 guideline = null,
-                valueFormatter = if (timeFormat == TimeFormat.TWENTY_FOUR_HOURS) {
-                    CartesianValueFormatter.Default
-                } else {
-                    CartesianValueFormatter { _, value, _ ->
-                        formatTwelveHoursTime(value.toInt())
-                    }
-                },
+                valueFormatter = getValueFormatter(calendar, timeFormat, simpleDateFormat),
                 itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 })
             )
         ),
         zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
         scrollState = rememberVicoScrollState(scrollEnabled = false),
         modelProducer = modelProducer,
-    )
-}
-
-private fun formatTwelveHoursTime(hour: Int): String {
-    val xInt = hour
-    val sdf = SimpleDateFormat("h a", Locale.getDefault())
-    return sdf.format(
-        java.util.Calendar.getInstance()
-            .apply { set(java.util.Calendar.HOUR_OF_DAY, xInt) }.time
     )
 }
 
@@ -113,6 +101,20 @@ private fun rememberYAxis(values: List<Float>) =
             }
         }
     }
+
+@Composable
+private fun getValueFormatter(
+    calendar: Calendar,
+    timeFormat: TimeFormat,
+    simpleDateFormat: SimpleDateFormat
+) = if (timeFormat == TimeFormat.TWENTY_FOUR_HOURS) {
+    CartesianValueFormatter.Default
+} else {
+    CartesianValueFormatter { _, value, _ ->
+        calendar.set(Calendar.HOUR_OF_DAY, value.toInt())
+        simpleDateFormat.format(calendar.time)
+    }
+}
 
 private const val DefaultYAxisValue = 0.1f
 private const val DefaultMinPrice = 0f
