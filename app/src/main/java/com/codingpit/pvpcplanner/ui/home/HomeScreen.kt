@@ -51,7 +51,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 currentHour = state.currentHour,
                 currentDate = state.currentDate,
                 timeFormat = state.timeFormat,
-                onPreviewClicked = { viewModel.onPreviewClicked() },
+                onPreviousClicked = { viewModel.onPreviousClicked() },
                 onNextClicked = { viewModel.onNextClicked() },
             )
         }
@@ -71,7 +71,7 @@ fun HomeComponents(
     nextDayEnabled: Boolean,
     modifier: Modifier = Modifier,
     timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
-    onPreviewClicked: () -> Unit = { },
+    onPreviousClicked: () -> Unit = { },
     onNextClicked: () -> Unit = { },
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
@@ -83,7 +83,7 @@ fun HomeComponents(
                 currentPrice = currentPrice,
                 currentHour = currentHour,
                 nextDayEnabled = nextDayEnabled,
-                onPreviewClicked = onPreviewClicked,
+                onPreviousClicked = onPreviousClicked,
                 onNextClicked = onNextClicked,
                 timeFormat = timeFormat,
                 modifier = Modifier.padding(horizontal = 16.dp),

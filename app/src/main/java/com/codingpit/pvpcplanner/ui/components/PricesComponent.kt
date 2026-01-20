@@ -36,7 +36,7 @@ fun PricesComponent(
     currentHour: Int,
     currentDate: String,
     nextDayEnabled: Boolean,
-    onPreviewClicked: () -> Unit,
+    onPreviousClicked: () -> Unit,
     onNextClicked: () -> Unit,
     modifier: Modifier = Modifier,
     timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
@@ -83,7 +83,7 @@ fun PricesComponent(
                 selectedDate = selectedDate,
                 currentDate = currentDate,
                 nextDayEnabled = nextDayEnabled,
-                onPreviewClicked = onPreviewClicked,
+                onPreviousClicked = onPreviousClicked,
                 onNextClicked = onNextClicked,
             )
         }
@@ -174,7 +174,7 @@ private fun PricesView_Preview() {
         },
         selectedDate = "2023-09-01",
         nextDayEnabled = true,
-        onPreviewClicked = { },
+        onPreviousClicked = { },
         onNextClicked = { },
         currentPrice = 0.0,
         currentHour = 0,

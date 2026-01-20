@@ -27,7 +27,7 @@ fun DateSelector(
     selectedDate: String,
     currentDate: String,
     nextDayEnabled: Boolean,
-    onPreviewClicked: () -> Unit,
+    onPreviousClicked: () -> Unit,
     onNextClicked: () -> Unit,
 ) {
     Row(
@@ -41,7 +41,7 @@ fun DateSelector(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
     ) {
-        IconButton(modifier = Modifier, onClick = onPreviewClicked) {
+        IconButton(modifier = Modifier, onClick = onPreviousClicked) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
                 contentDescription = stringResource(R.string.a11y_previous_day)
@@ -70,7 +70,7 @@ private fun DateSelector_Preview() {
         modifier = Modifier.fillMaxWidth(),
         selectedDate = "2023-09-01",
         nextDayEnabled = true,
-        onPreviewClicked = { },
+        onPreviousClicked = { },
         onNextClicked = { },
         currentDate = "2023-09-01",
     )

@@ -102,7 +102,6 @@ private fun rememberYAxis(values: List<Float>) =
         }
     }
 
-@Composable
 private fun getValueFormatter(
     calendar: Calendar,
     timeFormat: TimeFormat,
