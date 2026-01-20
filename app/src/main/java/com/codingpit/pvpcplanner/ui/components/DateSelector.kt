@@ -46,7 +46,7 @@ fun DateSelector(
         }
         val selectedDateText =
             if (selectedDate == currentDate) {
-                stringResource(R.string.current_date_template).format(selectedDate)
+                stringResource(R.string.current_date_template, selectedDate)
             } else {
                 selectedDate
             }
