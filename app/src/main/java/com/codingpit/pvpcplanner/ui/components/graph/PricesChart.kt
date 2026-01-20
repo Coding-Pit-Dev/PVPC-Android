@@ -16,9 +16,7 @@ import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesi
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
 import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -70,19 +68,8 @@ fun PriceChart(
                 valueFormatter = if (timeFormat == TimeFormat.TWENTY_FOUR_HOURS) {
                     CartesianValueFormatter.Default
                 } else {
-                    object : CartesianValueFormatter {
-                        override fun format(
-                            context: CartesianMeasuringContext,
-                            value: Double,
-                            verticalAxisPosition: Axis.Position.Vertical?
-                        ): CharSequence {
-                            val xInt = value.toInt()
-                            val sdf = SimpleDateFormat("h a", Locale.getDefault())
-                            return sdf.format(
-                                java.util.Calendar.getInstance()
-                                    .apply { set(java.util.Calendar.HOUR_OF_DAY, xInt) }.time
-                            )
-                        }
+                    CartesianValueFormatter { _, value, _ ->
+                        formatTwelveHoursTime(value.toInt())
                     }
                 },
                 itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 })
@@ -91,6 +78,15 @@ fun PriceChart(
         zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
         scrollState = rememberVicoScrollState(scrollEnabled = false),
         modelProducer = modelProducer,
+    )
+}
+
+private fun formatTwelveHoursTime(hour: Int): String {
+    val xInt = hour
+    val sdf = SimpleDateFormat("h a", Locale.getDefault())
+    return sdf.format(
+        java.util.Calendar.getInstance()
+            .apply { set(java.util.Calendar.HOUR_OF_DAY, xInt) }.time
     )
 }
 

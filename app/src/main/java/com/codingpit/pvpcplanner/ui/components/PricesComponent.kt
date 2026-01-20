@@ -24,7 +24,6 @@ import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.ui.components.graph.PriceChart
-import com.codingpit.pvpcplanner.ui.home.DateSelector
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -63,6 +62,7 @@ fun PricesComponent(
                 hour = selectedHour,
                 currentHour = currentHour,
                 modifier = Modifier.padding(16.dp),
+                timeFormat = timeFormat,
             )
         }
 
@@ -95,7 +95,13 @@ fun PricesComponent(
             },
         ) { pvpcItem ->
             PriceCardComponent(
-                hour = "${pvpcItem.startHour} - ${pvpcItem.endHour}",
+                hour = "${formatHour(pvpcItem.startHour, currentHour, timeFormat)} - ${
+                    formatHour(
+                        pvpcItem.endHour,
+                        currentHour,
+                        timeFormat
+                    )
+                }",
                 price = pvpcItem.pcb,
             )
         }
