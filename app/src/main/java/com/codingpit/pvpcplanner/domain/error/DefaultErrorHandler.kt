@@ -32,7 +32,9 @@ class DefaultErrorHandler @Inject constructor(
     
     private fun handleNetworkException(exception: IOException, context: String?): ErrorResult {
         val message = when {
-            exception.message?.contains("timeout", ignoreCase = true) == true -> 
+            exception is java.net.SocketTimeoutException ||
+                    exception is java.net.ConnectException ||
+                    exception.cause is java.net.SocketTimeoutException ->
                 errorMessageProvider.getTimeoutErrorMessage()
             else -> errorMessageProvider.getNetworkErrorMessage()
         }

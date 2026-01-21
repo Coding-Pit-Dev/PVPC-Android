@@ -42,7 +42,42 @@ class ErrorStateManagerTest {
         // Act & Assert
         errorFlow.test {
             val item = awaitItem()
-            assertTrue(item.data.contains("ERROR"))
+            val expectedMessage = DefaultErrorMessageProvider().getGenericErrorMessage()
+            assertEquals("ERROR: $expectedMessage", item.data)
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `handleResultErrors catches exceptions and emits Result failure`() = runTest {
+        // Arrange
+        val errorFlow = flow<Result<String>> { throw RuntimeException("Test error") }
+            .handleResultErrors(errorHandler, "test_context")
+
+        // Act & Assert
+        errorFlow.test {
+            val result = awaitItem()
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertTrue(exception is RuntimeException)
+            assertEquals(DefaultErrorMessageProvider().getGenericErrorMessage(), exception?.message)
+            assertTrue(exception?.cause is RuntimeException)
+            assertEquals("Test error", exception?.cause?.message)
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `handleResultErrors preserves successful results`() = runTest {
+        // Arrange
+        val successFlow = flowOf(Result.success("success"))
+            .handleResultErrors(errorHandler, "test_context")
+
+        // Act & Assert
+        successFlow.test {
+            val result = awaitItem()
+            assertTrue(result.isSuccess)
+            assertEquals("success", result.getOrNull())
             awaitComplete()
         }
     }

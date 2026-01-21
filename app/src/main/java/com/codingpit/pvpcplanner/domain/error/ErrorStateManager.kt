@@ -2,7 +2,6 @@ package com.codingpit.pvpcplanner.domain.error
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 
 interface ErrorState {
     val error: String
@@ -29,6 +28,6 @@ fun <T> Flow<Result<T>>.handleResultErrors(
 ): Flow<Result<T>> {
     return this.catch { throwable ->
         val errorResult = errorHandler.handleError(throwable, context)
-        emit(Result.failure(RuntimeException(errorResult.message)))
+        emit(Result.failure(RuntimeException(errorResult.message, throwable)))
     }
 }

@@ -11,8 +11,6 @@ import java.time.format.DateTimeFormatter
 class DefaultPriceLocalDataSource @Inject constructor(
     private val pvpcDao: PVPCDao,
 ) : PriceLocalDataSource {
-    private val queryDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    private val inputDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     override suspend fun getPrices(date: String): List<PVPCModel> {
         return try {
@@ -25,5 +23,10 @@ class DefaultPriceLocalDataSource @Inject constructor(
 
     override suspend fun savePrices(pvpcModel: List<PVPCModel>) {
         pvpcDao.insertAll(pvpcModel.map { it.toEntity() })
+    }
+
+    companion object {
+        private val queryDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        private val inputDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
     }
 }

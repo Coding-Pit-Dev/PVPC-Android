@@ -206,4 +206,30 @@ class SettingsViewModelTest {
         // Assert
         coVerify { mockUpdateSetting(TimeFormat.TWELVE_HOURS) }
     }
+
+    @Test
+    fun `state emits Error when settings retrieval fails`() = runTest(testDispatcher) {
+        // Arrange
+        val errorMessage = "Network error"
+        every { mockGetSettings() } returns kotlinx.coroutines.flow.flow { throw java.io.IOException(errorMessage) }
+
+        viewModel = SettingsViewModel(
+            getSettings = mockGetSettings,
+            errorHandler = mockErrorHandler,
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
+        )
+
+        // Act & Assert
+        viewModel.state.test {
+            val state = awaitItem()
+            // Handle potential Loading state
+            val finalState = if (state is SettingsState.Loading) awaitItem() else state
+            assertTrue(
+                "Expected Error state but got: ${finalState::class.simpleName}",
+                finalState is SettingsState.Error
+            )
+            assertEquals(errorMessage, (finalState as SettingsState.Error).error)
+        }
+    }
 }

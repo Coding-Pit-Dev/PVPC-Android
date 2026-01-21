@@ -25,13 +25,23 @@ class DefaultErrorHandlerTest {
     }
     
     @Test
-    fun `handleError returns NetworkError for IOException`() {
-        val ioException = IOException("Connection timeout")
+    fun `handleError returns NetworkError with timeout message for SocketTimeoutException`() {
+        val socketTimeoutException = java.net.SocketTimeoutException("timeout")
+        
+        val result = errorHandler.handleError(socketTimeoutException)
+        
+        assertTrue(result is ErrorResult.NetworkError)
+        assertEquals(errorMessageProvider.getTimeoutErrorMessage(), result.message)
+    }
+
+    @Test
+    fun `handleError returns NetworkError with generic message for IOException without timeout`() {
+        val ioException = IOException("Connection refused")
         
         val result = errorHandler.handleError(ioException)
         
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals(errorMessageProvider.getTimeoutErrorMessage(), result.message)
+        assertEquals(errorMessageProvider.getNetworkErrorMessage(), result.message)
     }
     
     @Test
