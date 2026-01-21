@@ -18,7 +18,7 @@ class ErrorStateManagerTest {
         }
     }
 
-    private val errorHandler = DefaultErrorHandler()
+    private val errorHandler = DefaultErrorHandler(DefaultErrorMessageProvider())
 
     @Test
     fun `handleErrors extension function catches exceptions and creates error state`() = runTest {

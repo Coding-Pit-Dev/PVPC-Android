@@ -12,13 +12,12 @@ interface HasErrorState<T> {
     fun createErrorState(errorResult: ErrorResult): T
 }
 
-fun <T, R> Flow<T>.handleErrors(
+fun <R : Any> Flow<R>.handleErrors(
     errorHandler: ErrorHandler,
     context: String? = null,
     stateFactory: HasErrorState<R>
-): Flow<R> where R : Any, T : R {
-    return (this as Flow<R>)
-        .catch { throwable ->
+): Flow<R> {
+    return this.catch { throwable ->
             val errorResult = errorHandler.handleError(throwable, context)
             emit(stateFactory.createErrorState(errorResult))
         }

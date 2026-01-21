@@ -59,7 +59,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `state emits Success when settings are retrieved successfully`() = runTest {
+    fun `state emits Success when settings are retrieved successfully`() = runTest(testDispatcher) {
         // Arrange
         val settings = Settings(DarkMode.DARK, TimeFormat.TWELVE_HOURS)
         every { mockGetSettings() } returns flowOf(settings)
@@ -94,7 +94,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for DarkMode Light`() = runTest {
+    fun `updateSetting calls correct use case for DarkMode Light`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
             setting = SettingValue.DarkMode("Dark mode", "Light"),
@@ -120,7 +120,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for DarkMode Dark`() = runTest {
+    fun `updateSetting calls correct use case for DarkMode Dark`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
             setting = SettingValue.DarkMode("Dark mode", "Dark"),
@@ -142,7 +142,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for DarkMode System (default)`() = runTest {
+    fun `updateSetting calls correct use case for DarkMode System (default)`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
             setting = SettingValue.DarkMode("Dark mode", "System"),
@@ -164,7 +164,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for TimeFormat 24 hours`() = runTest {
+    fun `updateSetting calls correct use case for TimeFormat 24 hours`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
             setting = SettingValue.TimeFormat("Time format", "24 hours"),
@@ -186,7 +186,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for TimeFormat AM PM (default)`() = runTest {
+    fun `updateSetting calls correct use case for TimeFormat AM PM (default)`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
             setting = SettingValue.TimeFormat("Time format", "AM/PM"),

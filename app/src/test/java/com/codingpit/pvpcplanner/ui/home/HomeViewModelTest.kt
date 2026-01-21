@@ -34,6 +34,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
+    private lateinit var viewModel: HomeViewModel
 
     @Before
     fun setupDispatchers() {
@@ -41,8 +42,11 @@ class HomeViewModelTest {
     }
 
     @After
-    fun tearDownDispatchers() {
+    fun tearDown() {
         Dispatchers.resetMain()
+        if (::viewModel.isInitialized) {
+            viewModel.viewModelScope.cancel()
+        }
     }
 
     private val mockGetPrices = mockk<GetPrices>()
@@ -82,11 +86,12 @@ class HomeViewModelTest {
             getSettings = mockGetSettings
         )
 
-        return HomeViewModel(
+        viewModel = HomeViewModel(
             useCaseProvider = useCaseProvider,
             errorHandler = mockErrorHandler,
             coroutineDispatcher = testDispatcher
         )
+        return viewModel
     }
 
     @Test
@@ -135,8 +140,6 @@ class HomeViewModelTest {
             assertTrue(errorState is HomeState.Error)
             assertEquals(errorMessage, (errorState as HomeState.Error).error)
         }
-
-        viewModel.viewModelScope.cancel()
     }
 
     @Test
@@ -153,8 +156,6 @@ class HomeViewModelTest {
             assertTrue(errorState is HomeState.Error)
             assertTrue((errorState as HomeState.Error).error.isNotEmpty())
         }
-
-        viewModel.viewModelScope.cancel()
     }
 
     @Test
@@ -173,12 +174,10 @@ class HomeViewModelTest {
 
             assertTrue(errorState is HomeState.Error)
         }
-
-        viewModel.viewModelScope.cancel()
     }
 
     @Test
-    fun `onPreviewClicked decrements selected date by one day`() = runTest {
+    fun `onPreviousClicked decrements selected date by one day`() = runTest {
         // Arrange
         val prices = listOf(PVPCModel("2023-10-14", 10, 11, 0.15, 0.18))
         val viewModel = createViewModel(Result.success(prices))

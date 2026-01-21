@@ -11,7 +11,8 @@ import java.lang.RuntimeException
 
 class DefaultErrorHandlerTest {
     
-    private val errorHandler = DefaultErrorHandler()
+    private val errorMessageProvider = DefaultErrorMessageProvider()
+    private val errorHandler = DefaultErrorHandler(errorMessageProvider)
     
     @Test
     fun `handleError returns UnknownError for RuntimeException`() {
@@ -20,7 +21,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(runtimeException)
         
         assertTrue(result is ErrorResult.UnknownError)
-        assertEquals("Test error", result.message)
+        assertEquals(errorMessageProvider.getGenericErrorMessage(), result.message)
     }
     
     @Test
@@ -30,7 +31,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(ioException)
         
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals("Connection timeout - please check your internet connection", result.message)
+        assertEquals(errorMessageProvider.getTimeoutErrorMessage(), result.message)
     }
     
     @Test
@@ -40,7 +41,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(noSuchElementException, "price_data")
         
         assertTrue(result is ErrorResult.DataError)
-        assertEquals("No price data available for the selected date", result.message)
+        assertEquals(errorMessageProvider.getDataErrorMessage("price_data"), result.message)
         assertEquals("price_data", result.context)
     }
     
@@ -51,7 +52,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(illegalArgumentException)
         
         assertTrue(result is ErrorResult.ValidationError)
-        assertEquals("Invalid argument", result.message)
+        assertEquals(errorMessageProvider.getValidationErrorMessage(null), result.message)
     }
     
     @Test
@@ -61,7 +62,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(unknownException, "test_context")
         
         assertTrue(result is ErrorResult.UnknownError)
-        assertEquals("Unknown error", result.message)
+        assertEquals(errorMessageProvider.getGenericErrorMessage(), result.message)
         assertEquals("test_context", result.context)
     }
 
@@ -74,7 +75,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(httpException)
 
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals("Bad request - please check your input", result.message)
+        assertEquals(errorMessageProvider.getNetworkErrorMessage(400), result.message)
     }
 
     @Test
@@ -86,7 +87,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(httpException)
 
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals("Authentication required", result.message)
+        assertEquals(errorMessageProvider.getNetworkErrorMessage(401), result.message)
     }
 
     @Test
@@ -98,7 +99,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(httpException)
 
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals("Data not found", result.message)
+        assertEquals(errorMessageProvider.getNetworkErrorMessage(404), result.message)
     }
 
     @Test
@@ -110,7 +111,7 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(httpException)
 
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals("Too many requests - please try again later", result.message)
+        assertEquals(errorMessageProvider.getNetworkErrorMessage(429), result.message)
     }
 
     @Test
@@ -122,6 +123,6 @@ class DefaultErrorHandlerTest {
         val result = errorHandler.handleError(httpException)
 
         assertTrue(result is ErrorResult.NetworkError)
-        assertEquals("Server error - please try again later", result.message)
+        assertEquals(errorMessageProvider.getNetworkErrorMessage(500), result.message)
     }
 }

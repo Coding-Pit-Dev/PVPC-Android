@@ -12,7 +12,7 @@ class DefaultDeviceLocalDataSource @Inject constructor(
     private val pvpcDao: PVPCDao,
 ) : DeviceLocalDataSource {
     override fun getDevices(): Flow<List<Device>> {
-        return pvpcDao.getDevices().map { it.map { it.toDomain() } }
+        return pvpcDao.getDevices().map { entities -> entities.map { it.toDomain() } }
     }
 
     override suspend fun saveDevice(device: Device) {
