@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +24,6 @@ import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.ui.components.graph.PriceChart
-import com.codingpit.pvpcplanner.ui.home.DateSelector
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -38,7 +36,7 @@ fun PricesComponent(
     currentHour: Int,
     currentDate: String,
     nextDayEnabled: Boolean,
-    onPreviewClicked: () -> Unit,
+    onPreviousClicked: () -> Unit,
     onNextClicked: () -> Unit,
     modifier: Modifier = Modifier,
     timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
@@ -64,6 +62,7 @@ fun PricesComponent(
                 hour = selectedHour,
                 currentHour = currentHour,
                 modifier = Modifier.padding(16.dp),
+                timeFormat = timeFormat,
             )
         }
 
@@ -84,7 +83,7 @@ fun PricesComponent(
                 selectedDate = selectedDate,
                 currentDate = currentDate,
                 nextDayEnabled = nextDayEnabled,
-                onPreviewClicked = onPreviewClicked,
+                onPreviousClicked = onPreviousClicked,
                 onNextClicked = onNextClicked,
             )
         }
@@ -96,7 +95,13 @@ fun PricesComponent(
             },
         ) { pvpcItem ->
             PriceCardComponent(
-                hour = "${pvpcItem.startHour} - ${pvpcItem.endHour}",
+                hour = "${formatHour(pvpcItem.startHour, currentHour, timeFormat)} - ${
+                    formatHour(
+                        pvpcItem.endHour,
+                        currentHour,
+                        timeFormat
+                    )
+                }",
                 price = pvpcItem.pcb,
             )
         }
@@ -169,7 +174,7 @@ private fun PricesView_Preview() {
         },
         selectedDate = "2023-09-01",
         nextDayEnabled = true,
-        onPreviewClicked = { },
+        onPreviousClicked = { },
         onNextClicked = { },
         currentPrice = 0.0,
         currentHour = 0,

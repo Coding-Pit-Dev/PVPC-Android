@@ -33,7 +33,6 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -93,13 +91,13 @@ private fun DevicesScreen_Success(
     onSwiped: (DeviceRender) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
-        if (state.devicesSlot.isNotEmpty()){
+        if (state.devicesSlot.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(state.devicesSlot) {
-                    DeviceItem(it){
+                    DeviceItem(it) {
                         onSwiped(it)
                     }
                 }

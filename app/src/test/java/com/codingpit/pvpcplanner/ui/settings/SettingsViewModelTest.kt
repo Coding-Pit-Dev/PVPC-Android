@@ -14,23 +14,27 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
 
     private val mockGetSettings = mockk<GetSettings>()
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()
-    
+    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         // Mock UpdateSetting calls
         coEvery { mockUpdateSetting(any<DarkMode>()) } returns Unit
         coEvery { mockUpdateSetting(any<TimeFormat>()) } returns Unit
-        
+
         // Mock GetSettings to return default settings
         val defaultSettings = Settings(DarkMode.SYSTEM, TimeFormat.TWENTY_FOUR_HOURS)
         every { mockGetSettings() } returns flowOf(defaultSettings)
@@ -46,13 +50,17 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
         )
 
         // Act & Assert
         try {
             val state = viewModel.state.first()
-            assertTrue("Expected Success state but got: ${state::class.simpleName}", state is SettingsState.Success)
+            assertTrue(
+                "Expected Success state but got: ${state::class.simpleName}",
+                state is SettingsState.Success
+            )
             if (state is SettingsState.Success) {
                 assertEquals(2, state.settings.size) // DarkMode + TimeFormat
             }
@@ -80,7 +88,8 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
         )
         viewModel.updateSetting(render, option)
 
@@ -101,7 +110,8 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
         )
         viewModel.updateSetting(render, option)
 
@@ -122,7 +132,8 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
         )
         viewModel.updateSetting(render, option)
 
@@ -143,7 +154,8 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
         )
         viewModel.updateSetting(render, option)
 
@@ -164,7 +176,8 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting
+            updateSetting = mockUpdateSetting,
+            coroutineDispatcher = testDispatcher
         )
         viewModel.updateSetting(render, option)
 

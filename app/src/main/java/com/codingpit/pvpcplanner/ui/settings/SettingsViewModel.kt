@@ -10,7 +10,7 @@ import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -23,12 +23,13 @@ class SettingsViewModel @Inject constructor(
     getSettings: GetSettings,
     errorHandler: ErrorHandler,
     private val updateSetting: UpdateSetting,
+    coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val state =
         getSettings().map {
             SettingsState.Success(it.toRender(it))
         }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
-            .flowOn(Dispatchers.IO)
+            .flowOn(coroutineDispatcher)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
 
 

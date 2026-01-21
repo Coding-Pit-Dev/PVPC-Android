@@ -51,7 +51,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 currentHour = state.currentHour,
                 currentDate = state.currentDate,
                 timeFormat = state.timeFormat,
-                onPreviewClicked = { viewModel.onPreviewClicked() },
+                onPreviousClicked = { viewModel.onPreviousClicked() },
                 onNextClicked = { viewModel.onNextClicked() },
             )
         }
@@ -71,7 +71,7 @@ fun HomeComponents(
     nextDayEnabled: Boolean,
     modifier: Modifier = Modifier,
     timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
-    onPreviewClicked: () -> Unit = { },
+    onPreviousClicked: () -> Unit = { },
     onNextClicked: () -> Unit = { },
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
@@ -83,63 +83,11 @@ fun HomeComponents(
                 currentPrice = currentPrice,
                 currentHour = currentHour,
                 nextDayEnabled = nextDayEnabled,
-                onPreviewClicked = onPreviewClicked,
+                onPreviousClicked = onPreviousClicked,
                 onNextClicked = onNextClicked,
                 timeFormat = timeFormat,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
     }
-}
-
-@Composable
-fun DateSelector(
-    modifier: Modifier = Modifier,
-    selectedDate: String,
-    currentDate: String,
-    nextDayEnabled: Boolean,
-    onPreviewClicked: () -> Unit,
-    onNextClicked: () -> Unit,
-) {
-    Row(
-        modifier =
-            modifier
-                .padding(16.dp)
-                .background(
-                    MaterialTheme.colorScheme.background,
-                    RoundedCornerShape(8.dp),
-                ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-    ) {
-        IconButton(modifier = Modifier, onClick = onPreviewClicked) {
-            Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Preview")
-        }
-        val selectedDateText =
-            if (selectedDate == currentDate) {
-                stringResource(R.string.current_date_template).format(selectedDate)
-            } else {
-                selectedDate.toString()
-            }
-        Text(selectedDateText)
-        IconButton(modifier = Modifier, enabled = nextDayEnabled, onClick = onNextClicked) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                contentDescription = "Preview",
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DateSelector_Preview() {
-    DateSelector(
-        modifier = Modifier.fillMaxWidth(),
-        selectedDate = "2023-09-01",
-        nextDayEnabled = true,
-        onPreviewClicked = { },
-        onNextClicked = { },
-        currentDate = "2023-09-01",
-    )
 }
