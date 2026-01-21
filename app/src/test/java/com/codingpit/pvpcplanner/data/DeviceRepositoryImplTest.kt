@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.data
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import io.mockk.coEvery
@@ -33,11 +34,11 @@ class DeviceRepositoryImplTest {
         val devicesFlow = flowOf(devices)
         every { mockLocalDataSource.getDevices() } returns devicesFlow
 
-        // Act
-        val result = repository.getDevices()
-
-        // Assert
-        assertEquals(devicesFlow, result)
+        // Act & Assert
+        repository.getDevices().test {
+            assertEquals(devices, awaitItem())
+            awaitComplete()
+        }
         verify { mockLocalDataSource.getDevices() }
     }
 

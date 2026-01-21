@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.PriceRepository
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.utils.DateChecker
@@ -8,7 +9,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -41,10 +41,12 @@ class GetPricesFlowTest {
         val result = useCase(date)
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isSuccess)
-        assertEquals(expectedPrices, resultList.first().getOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isSuccess)
+            assertEquals(expectedPrices, item.getOrNull())
+            awaitComplete()
+        }
         coVerify { mockRepository.getPrices(date) }
         verify(exactly = 0) { mockDateChecker.getDefaultDate() }
     }
@@ -66,10 +68,12 @@ class GetPricesFlowTest {
         val result = useCase("")
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isSuccess)
-        assertEquals(expectedPrices, resultList.first().getOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isSuccess)
+            assertEquals(expectedPrices, item.getOrNull())
+            awaitComplete()
+        }
         verify { mockDateChecker.getDefaultDate() }
         coVerify { mockRepository.getPrices(expectedDateString) }
     }
@@ -91,10 +95,12 @@ class GetPricesFlowTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isSuccess)
-        assertEquals(expectedPrices, resultList.first().getOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isSuccess)
+            assertEquals(expectedPrices, item.getOrNull())
+            awaitComplete()
+        }
         verify { mockDateChecker.getDefaultDate() }
         coVerify { mockRepository.getPrices(expectedDateString) }
     }
@@ -110,10 +116,12 @@ class GetPricesFlowTest {
         val result = useCase(date)
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isFailure)
-        assertEquals(exception, resultList.first().exceptionOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isFailure)
+            assertEquals(exception, item.exceptionOrNull())
+            awaitComplete()
+        }
         coVerify { mockRepository.getPrices(date) }
     }
 
@@ -130,10 +138,12 @@ class GetPricesFlowTest {
         val result = useCase("")
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isFailure)
-        assertEquals(exception, resultList.first().exceptionOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isFailure)
+            assertEquals(exception, item.exceptionOrNull())
+            awaitComplete()
+        }
         verify { mockDateChecker.getDefaultDate() }
         coVerify { mockRepository.getPrices(expectedDateString) }
     }
@@ -151,10 +161,12 @@ class GetPricesFlowTest {
         val result = useCase(futureDate)
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isSuccess)
-        assertEquals(expectedPrices, resultList.first().getOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isSuccess)
+            assertEquals(expectedPrices, item.getOrNull())
+            awaitComplete()
+        }
         coVerify { mockRepository.getPrices(futureDate) }
     }
 
@@ -169,10 +181,12 @@ class GetPricesFlowTest {
         val result = useCase(date)
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertTrue(resultList.first().isSuccess)
-        assertEquals(emptyPrices, resultList.first().getOrNull())
+        result.test {
+            val item = awaitItem()
+            assertTrue(item.isSuccess)
+            assertEquals(emptyPrices, item.getOrNull())
+            awaitComplete()
+        }
         coVerify { mockRepository.getPrices(date) }
     }
 }

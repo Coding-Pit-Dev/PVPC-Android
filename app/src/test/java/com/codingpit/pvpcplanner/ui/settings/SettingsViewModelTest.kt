@@ -1,21 +1,23 @@
 package com.codingpit.pvpcplanner.ui.settings
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.cancel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -27,7 +29,7 @@ class SettingsViewModelTest {
     private val mockGetSettings = mockk<GetSettings>()
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()
-    private val testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
@@ -55,20 +57,24 @@ class SettingsViewModelTest {
         )
 
         // Act & Assert
-        try {
-            val state = viewModel.state.first()
-            assertTrue(
-                "Expected Success state but got: ${state::class.simpleName}",
-                state is SettingsState.Success
-            )
-            if (state is SettingsState.Success) {
-                assertEquals(2, state.settings.size) // DarkMode + TimeFormat
+        viewModel.state.test {
+            val state = awaitItem()
+            if (state is SettingsState.Loading) {
+                val success = awaitItem()
+                assertTrue(
+                    "Expected Success state but got: ${success::class.simpleName}",
+                    success is SettingsState.Success
+                )
+                assertEquals(2, (success as SettingsState.Success).settings.size)
+            } else {
+                assertTrue(
+                    "Expected Success state but got: ${state::class.simpleName}",
+                    state is SettingsState.Success
+                )
+                assertEquals(2, (state as SettingsState.Success).settings.size)
             }
-        } catch (e: Exception) {
-            // If the flow behavior changed due to error handling, just verify the ViewModel was created successfully
-            // This shows the error handling integration works without breaking the basic functionality
-            assertTrue("ViewModel creation should succeed", true)
         }
+        viewModel.viewModelScope.cancel()
     }
 
     @Test

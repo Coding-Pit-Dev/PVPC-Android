@@ -216,10 +216,6 @@ class DevicesViewModelTest {
         // Test that the ViewModel can be created and has correct initial state
         val state = viewModel.state.value
         assertTrue("ViewModel should initialize with Loading state", state is DevicesState.Loading)
-
-        // Test that the ViewModel can handle basic flow setup
-        // Complex state flow testing is difficult due to Dispatchers.IO and WhileSubscribed timing
-        assertTrue("ViewModel should be properly initialized", viewModel != null)
     }
 
     @Test

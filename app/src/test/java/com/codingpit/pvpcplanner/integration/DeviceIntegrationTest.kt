@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.integration
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.DeviceRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
@@ -13,7 +14,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -55,11 +55,12 @@ class DeviceIntegrationTest {
         coEvery { mockLocalDataSource.deleteDevice(newDevice) } returns Unit
 
         // Act & Assert - Initial state
-        val initialFlow = getDevicesUseCase()
-        val initialResult = initialFlow.toList()
-        assertEquals(1, initialResult.size)
-        assertEquals(1, initialResult[0].size)
-        assertEquals("Washing Machine", initialResult[0][0].name)
+        getDevicesUseCase().test {
+            val list = awaitItem()
+            assertEquals(1, list.size)
+            assertEquals("Washing Machine", list[0].name)
+            awaitComplete()
+        }
 
         // Act & Assert - Add device
         addDeviceUseCase(newDevice)
@@ -88,17 +89,21 @@ class DeviceIntegrationTest {
             listOf(device1, device2)
         )
 
-        // Act
-        val devicesFlow = getDevicesUseCase()
-        val emissions = devicesFlow.toList()
+        // Act & Assert
+        getDevicesUseCase().test {
+            val empty = awaitItem()
+            assertEquals(0, empty.size)
 
-        // Assert
-        assertEquals(3, emissions.size)
-        assertEquals(0, emissions[0].size)
-        assertEquals(1, emissions[1].size)
-        assertEquals(2, emissions[2].size)
-        assertEquals("Device 1", emissions[1][0].name)
-        assertEquals("Device 2", emissions[2][1].name)
+            val oneDevice = awaitItem()
+            assertEquals(1, oneDevice.size)
+            assertEquals("Device 1", oneDevice[0].name)
+
+            val twoDevices = awaitItem()
+            assertEquals(2, twoDevices.size)
+            assertEquals("Device 2", twoDevices[1].name)
+
+            awaitComplete()
+        }
 
         verify { mockLocalDataSource.getDevices() }
     }

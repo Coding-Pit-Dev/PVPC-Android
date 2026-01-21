@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.ui.devices
 
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
@@ -37,6 +38,8 @@ class DevicesViewModelFunctionTest {
     private val mockDeleteDevice = mockk<DeleteDevice>(relaxed = true)
     private val mockCalculateBestTimeSlot = mockk<CalculateBestTimeSlot>()
 
+    private val mockErrorHandler = mockk<ErrorHandler>()
+
     private lateinit var viewModel: DevicesViewModel
     private val testDispatcher = StandardTestDispatcher()
 
@@ -57,6 +60,7 @@ class DevicesViewModelFunctionTest {
             mockAddDevice,
             mockDeleteDevice,
             mockCalculateBestTimeSlot,
+            mockErrorHandler,
             testDispatcher
         )
     }
@@ -123,7 +127,6 @@ class DevicesViewModelFunctionTest {
         viewModel = createViewModel()
 
         // Assert - ViewModel should be created without throwing
-        assertTrue("ViewModel should be initialized", viewModel != null)
         assertTrue("Initial state should be Loading", viewModel.state.value is DevicesState.Loading)
     }
 

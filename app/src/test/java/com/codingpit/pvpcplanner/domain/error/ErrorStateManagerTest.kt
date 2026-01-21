@@ -1,8 +1,8 @@
 package com.codingpit.pvpcplanner.domain.error
 
-import kotlinx.coroutines.flow.catch
+import app.cash.turbine.test
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -23,33 +23,27 @@ class ErrorStateManagerTest {
     @Test
     fun `handleErrors extension function catches exceptions and creates error state`() = runTest {
         // Arrange
-        val testFlow = flowOf("test")
+        val testFlow = flowOf(TestState("test"))
             .handleErrors(errorHandler, "test_context", TestState.Factory)
 
-        // Act
-        val results = testFlow.toList()
-
-        // Assert
-        assertEquals(1, results.size)
-        assertEquals("test", results.first().data)
+        // Act & Assert
+        testFlow.test {
+            assertEquals("test", awaitItem().data)
+            awaitComplete()
+        }
     }
 
     @Test
     fun `handleErrors creates error state when exception occurs`() = runTest {
         // Arrange
-        val errorFlow = flowOf("test")
-            .catch { emit(throw RuntimeException("Test error")) }
+        val errorFlow = flow<TestState> { throw RuntimeException("Test error") }
             .handleErrors(errorHandler, "test_context", TestState.Factory)
 
-        // Act
-        val results = try {
-            errorFlow.toList()
-        } catch (e: Exception) {
-            // The error handling should prevent this, but if it throws, we can still verify functionality
-            listOf(TestState.Factory.createErrorState(ErrorResult.UnknownError("Fallback error")))
+        // Act & Assert
+        errorFlow.test {
+            val item = awaitItem()
+            assertTrue(item.data.contains("ERROR"))
+            awaitComplete()
         }
-
-        // Assert
-        assertTrue("Should have results", results.isNotEmpty())
     }
 }

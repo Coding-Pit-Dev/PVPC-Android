@@ -12,7 +12,7 @@ import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalHour
 import com.codingpit.pvpcplanner.domain.usecase.date.IsValidDate
 import com.codingpit.pvpcplanner.utils.toParsedDate
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +34,7 @@ class HomeViewModel @Inject constructor(
     getLocalDate: GetLocalDate,
     getSettings: GetSettings,
     errorHandler: ErrorHandler,
+    coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(getDefaultDate())
     val state: StateFlow<HomeState> =
@@ -57,7 +58,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
             .handleErrors(errorHandler, "home_data", HomeState.Factory)
-            .flowOn(Dispatchers.IO)
+            .flowOn(coroutineDispatcher)
             .stateIn(viewModelScope, SharingStarted.Eagerly, HomeState.Loading)
 
     fun onPreviousClicked() {
