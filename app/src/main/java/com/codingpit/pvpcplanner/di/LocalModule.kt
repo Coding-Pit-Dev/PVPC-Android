@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.codingpit.pvpcplanner.data.local.db.PVPCDao
 import com.codingpit.pvpcplanner.data.local.db.PVPCDatabase
-import com.codingpit.pvpcplanner.data.local.sources.DefaultLocalDataSource
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.DefaultDeviceLocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.DefaultPriceLocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.DeviceLocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +33,12 @@ object LocalModule {
     fun providesPvpcDao(database: PVPCDatabase): PVPCDao = database.pvpcDao()
 
     @Provides
-    fun provideLocalDataSource(localDataSource: DefaultLocalDataSource): LocalDataSource {
+    fun providePriceLocalDataSource(localDataSource: DefaultPriceLocalDataSource): PriceLocalDataSource {
+        return localDataSource
+    }
+
+    @Provides
+    fun provideDeviceLocalDataSource(localDataSource: DefaultDeviceLocalDataSource): DeviceLocalDataSource {
         return localDataSource
     }
 }

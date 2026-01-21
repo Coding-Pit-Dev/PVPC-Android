@@ -61,27 +61,27 @@ practices based on comprehensive code analysis.
 
 ## SOLID Principle Fixes
 
-### 🟡 5. Reduce ViewModel Dependencies (SRP, DIP)
+### ✅ 5. Reduce ViewModel Dependencies (SRP, DIP) - COMPLETED
 
-- [ ] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/ui/home/HomeViewModel.kt` (lines
+- [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/ui/home/HomeViewModel.kt` (lines
   28-35)
-- [ ] **Action:** Create `HomeUseCaseProvider` that encapsulates related use cases
-- [ ] **Why:** Too many constructor parameters indicate class doing too much
-- [ ] **Details:** 8+ dependencies suggest SRP violation
+- [x] **Action:** Create `HomeUseCaseProvider` that encapsulates related use cases
+- [x] **Why:** Too many constructor parameters indicate class doing too much
+- [x] **Details:** Created `HomeUseCaseProvider` to group use cases and refactored ViewModel and Test.
 
-### 🟡 6. Extract Theme Management (SRP)
+### ✅ 6. Extract Theme Management (SRP) - COMPLETED
 
-- [ ] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/ui/main/MainActivity.kt` (lines 44-50)
-- [ ] **Action:** Create `ThemeManager` class to handle theme logic
-- [ ] **Why:** MainActivity should focus on activity lifecycle, not theme management
-- [ ] **Details:** Separate UI theme concerns from activity responsibilities
+- [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/ui/main/MainActivity.kt` (lines 44-50)
+- [x] **Action:** Create `ThemeManager` class to handle theme logic
+- [x] **Why:** MainActivity should focus on activity lifecycle, not theme management
+- [x] **Details:** Created `ThemeManager` in `ui.theme` package and refactored `MainActivity` to use it.
 
-### 🟡 7. Create Specific Data Sources (ISP)
+### ✅ 7. Create Specific Data Sources (ISP) - COMPLETED
 
-- [ ] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/data/local/sources/LocalDataSource.kt`
-- [ ] **Action:** Split into `PriceLocalDataSource` and `DeviceLocalDataSource`
-- [ ] **Why:** Different clients need different subsets of functionality
-- [ ] **Details:** Apply ISP to data source layer
+- [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/data/local/sources/LocalDataSource.kt`
+- [x] **Action:** Split into `PriceLocalDataSource` and `DeviceLocalDataSource`
+- [x] **Why:** Different clients need different subsets of functionality
+- [x] **Details:** Created `PriceLocalDataSource` and `DeviceLocalDataSource`, refactored repositories and modules to use them, and updated all tests. Removed old `LocalDataSource`.
 
 ---
 
@@ -258,6 +258,6 @@ practices based on comprehensive code analysis.
   completed)
 - [ ] **Phase 3:** Low Priority Items (14-15, 19-23) - Nice to have
 
-**Last Updated:** 2025-08-20
+**Last Updated:** 2026-01-21
 **Total TODOs:** 24 (added 1.1 - Repository Implementation Split)
 **Completed:** 8/24 (33%)

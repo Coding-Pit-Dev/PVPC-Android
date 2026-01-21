@@ -2,7 +2,7 @@ package com.codingpit.pvpcplanner.integration
 
 import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.DeviceRepositoryImpl
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.DeviceLocalDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.DeleteDevice
@@ -21,7 +21,7 @@ import org.junit.Test
 
 class DeviceIntegrationTest {
 
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<DeviceLocalDataSource>()
 
     private lateinit var repository: DeviceRepositoryImpl
     private lateinit var getDevicesUseCase: GetDevices

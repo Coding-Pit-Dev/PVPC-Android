@@ -1,6 +1,7 @@
 package com.codingpit.pvpcplanner.ui.settings
 
 import app.cash.turbine.test
+import org.junit.After
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
@@ -30,6 +31,8 @@ class SettingsViewModelTest {
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()
     private val testDispatcher = UnconfinedTestDispatcher()
+    
+    private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun setup() {
@@ -40,6 +43,19 @@ class SettingsViewModelTest {
         // Mock GetSettings to return default settings
         val defaultSettings = Settings(DarkMode.SYSTEM, TimeFormat.TWENTY_FOUR_HOURS)
         every { mockGetSettings() } returns flowOf(defaultSettings)
+        
+        // Mock error handler
+        every { mockErrorHandler.handleError(any(), any()) } answers {
+            val throwable = firstArg<Throwable>()
+            com.codingpit.pvpcplanner.domain.error.ErrorResult.UnknownError(throwable.message ?: "Unknown error")
+        }
+    }
+    
+    @After
+    fun tearDown() {
+        if (::viewModel.isInitialized) {
+            viewModel.viewModelScope.cancel()
+        }
     }
 
     @Test
@@ -49,7 +65,7 @@ class SettingsViewModelTest {
         every { mockGetSettings() } returns flowOf(settings)
 
         // Create new viewModel after mock setup
-        val viewModel = SettingsViewModel(
+        viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
             updateSetting = mockUpdateSetting,
@@ -74,7 +90,7 @@ class SettingsViewModelTest {
                 assertEquals(2, (state as SettingsState.Success).settings.size)
             }
         }
-        viewModel.viewModelScope.cancel()
+        // viewModelScope cancellation handled in tearDown
     }
 
     @Test
@@ -91,7 +107,7 @@ class SettingsViewModelTest {
         val option = SettingOption("Light")
 
         // Act
-        val viewModel = SettingsViewModel(
+        viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
             updateSetting = mockUpdateSetting,
@@ -113,7 +129,7 @@ class SettingsViewModelTest {
         val option = SettingOption("Dark")
 
         // Act
-        val viewModel = SettingsViewModel(
+        viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
             updateSetting = mockUpdateSetting,
@@ -135,7 +151,7 @@ class SettingsViewModelTest {
         val option = SettingOption("Unknown") // Should default to SYSTEM
 
         // Act
-        val viewModel = SettingsViewModel(
+        viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
             updateSetting = mockUpdateSetting,
@@ -157,7 +173,7 @@ class SettingsViewModelTest {
         val option = SettingOption("24 hours")
 
         // Act
-        val viewModel = SettingsViewModel(
+        viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
             updateSetting = mockUpdateSetting,
@@ -179,7 +195,7 @@ class SettingsViewModelTest {
         val option = SettingOption("Unknown") // Should default to TWELVE_HOURS
 
         // Act
-        val viewModel = SettingsViewModel(
+        viewModel = SettingsViewModel(
             getSettings = mockGetSettings,
             errorHandler = mockErrorHandler,
             updateSetting = mockUpdateSetting,

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.resetMain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.After
@@ -41,7 +42,7 @@ class HomeViewModelTest {
 
     @After
     fun tearDownDispatchers() {
-        Dispatchers.setMain(Dispatchers.Unconfined)
+        Dispatchers.resetMain()
     }
 
     private val mockGetPrices = mockk<GetPrices>()
@@ -72,13 +73,17 @@ class HomeViewModelTest {
             com.codingpit.pvpcplanner.domain.error.ErrorResult.UnknownError(throwable.message ?: "Unknown error")
         }
 
-        return HomeViewModel(
+        val useCaseProvider = HomeUseCaseProvider(
             getPrices = mockGetPrices,
             getDefaultDate = mockGetDefaultDate,
             isValidDate = mockIsValidDate,
             getLocalHour = mockGetLocalHour,
             getLocalDate = mockGetLocalDate,
-            getSettings = mockGetSettings,
+            getSettings = mockGetSettings
+        )
+
+        return HomeViewModel(
+            useCaseProvider = useCaseProvider,
             errorHandler = mockErrorHandler,
             coroutineDispatcher = testDispatcher
         )

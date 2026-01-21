@@ -1,6 +1,6 @@
 package com.codingpit.pvpcplanner.data
 
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import io.mockk.coEvery
@@ -15,7 +15,7 @@ import org.junit.Test
 class PriceRepositoryImplTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<PriceLocalDataSource>()
     private lateinit var repository: PriceRepositoryImpl
 
     @Before

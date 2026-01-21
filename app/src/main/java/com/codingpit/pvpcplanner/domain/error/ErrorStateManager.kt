@@ -16,8 +16,8 @@ fun <T, R> Flow<T>.handleErrors(
     errorHandler: ErrorHandler,
     context: String? = null,
     stateFactory: HasErrorState<R>
-): Flow<R> where R : Any {
-    return this.map { it as R }
+): Flow<R> where R : Any, T : R {
+    return (this as Flow<R>)
         .catch { throwable ->
             val errorResult = errorHandler.handleError(throwable, context)
             emit(stateFactory.createErrorState(errorResult))

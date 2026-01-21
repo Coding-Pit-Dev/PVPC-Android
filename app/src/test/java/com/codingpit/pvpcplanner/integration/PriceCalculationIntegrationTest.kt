@@ -2,7 +2,7 @@ package com.codingpit.pvpcplanner.integration
 
 import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
@@ -25,7 +25,7 @@ import java.time.LocalDate
 class PriceCalculationIntegrationTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<PriceLocalDataSource>()
     private val mockDateChecker = mockk<DateChecker>()
 
     private lateinit var priceRepository: PriceRepositoryImpl

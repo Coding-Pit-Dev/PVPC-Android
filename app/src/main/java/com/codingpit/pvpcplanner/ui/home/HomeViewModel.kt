@@ -27,33 +27,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getPrices: GetPrices,
-    getDefaultDate: GetDefaultDate,
-    isValidDate: IsValidDate,
-    getLocalHour: GetLocalHour,
-    getLocalDate: GetLocalDate,
-    getSettings: GetSettings,
+    private val useCaseProvider: HomeUseCaseProvider,
     errorHandler: ErrorHandler,
     coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(getDefaultDate())
+    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(useCaseProvider.getDefaultDate())
     val state: StateFlow<HomeState> =
         selectedDate
             .map {
-                getPrices(it.toParsedDate())
+                useCaseProvider.getPrices(it.toParsedDate())
             }
-            .combine(getSettings()) { prices, settings ->
+            .combine(useCaseProvider.getSettings()) { prices, settings ->
                 prices to settings
             }
             .map { (it, settings) ->
-                val currentHour = getLocalHour()
+                val currentHour = useCaseProvider.getLocalHour()
                 HomeState.Success(
                     selectedDate = selectedDate.value.toParsedDate(),
                     pvpcEntries = it.getOrThrow(),
-                    nextDateEnabled = isValidDate(selectedDate.value),
+                    nextDateEnabled = useCaseProvider.isValidDate(selectedDate.value),
                     currentPrice = it.getOrThrow().first { it.startHour == currentHour }.pcb,
                     currentHour = currentHour,
-                    currentDate = getLocalDate().toParsedDate(),
+                    currentDate = useCaseProvider.getLocalDate().toParsedDate(),
                     timeFormat = settings.timeFormat,
                 )
             }

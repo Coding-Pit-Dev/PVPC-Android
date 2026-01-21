@@ -1,7 +1,7 @@
 package com.codingpit.pvpcplanner.data
 
 import app.cash.turbine.test
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.DeviceLocalDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -16,7 +16,7 @@ import org.junit.Test
 
 class DeviceRepositoryImplTest {
 
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<DeviceLocalDataSource>()
     private lateinit var repository: DeviceRepositoryImpl
 
     @Before
