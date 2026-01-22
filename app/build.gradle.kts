@@ -51,11 +51,16 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    composeCompiler {
+        reportsDestination = layout.buildDirectory.dir("compose_reports")
+        metricsDestination = layout.buildDirectory.dir("compose_metrics")
+    }
+}
 
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
-        }
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xreturn-value-checker=full")
+        jvmTarget = JvmTarget.JVM_1_8
     }
 }
 
