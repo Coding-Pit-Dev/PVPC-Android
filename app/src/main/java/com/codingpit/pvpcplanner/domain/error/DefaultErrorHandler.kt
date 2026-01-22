@@ -3,6 +3,7 @@ package com.codingpit.pvpcplanner.domain.error
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 
 class DefaultErrorHandler @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider
@@ -13,7 +14,7 @@ class DefaultErrorHandler @Inject constructor(
     }
     
     override fun handleError(throwable: Throwable, context: String?): ErrorResult {
-        if (throwable is java.util.concurrent.CancellationException) {
+        if (throwable is CancellationException) {
             throw throwable
         }
 

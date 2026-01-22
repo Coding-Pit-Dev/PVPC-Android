@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import app.cash.turbine.TurbineTestContext
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,6 +37,11 @@ class SettingsViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     
     private lateinit var viewModel: SettingsViewModel
+
+    private suspend fun <T> TurbineTestContext<T>.awaitFinalState(): T {
+        val state = awaitItem()
+        return if (state is SettingsState.Loading) awaitItem() else state
+    }
 
     @Before
     fun setup() {
@@ -77,21 +83,12 @@ class SettingsViewModelTest {
 
         // Act & Assert
         viewModel.state.test {
-            val state = awaitItem()
-            if (state is SettingsState.Loading) {
-                val success = awaitItem()
-                assertTrue(
-                    "Expected Success state but got: ${success::class.simpleName}",
-                    success is SettingsState.Success
-                )
-                assertEquals(2, (success as SettingsState.Success).settings.size)
-            } else {
-                assertTrue(
-                    "Expected Success state but got: ${state::class.simpleName}",
-                    state is SettingsState.Success
-                )
-                assertEquals(2, (state as SettingsState.Success).settings.size)
-            }
+            val state = awaitFinalState()
+            assertTrue(
+                "Expected Success state but got: ${state::class.simpleName}",
+                state is SettingsState.Success
+            )
+            assertEquals(2, (state as SettingsState.Success).settings.size)
         }
         // viewModelScope cancellation handled in tearDown
     }
@@ -225,9 +222,7 @@ class SettingsViewModelTest {
 
         // Act & Assert
         viewModel.state.test {
-            val state = awaitItem()
-            // Handle potential Loading state
-            val finalState = if (state is SettingsState.Loading) awaitItem() else state
+            val finalState = awaitFinalState()
             assertTrue(
                 "Expected Error state but got: ${finalState::class.simpleName}",
                 finalState is SettingsState.Error

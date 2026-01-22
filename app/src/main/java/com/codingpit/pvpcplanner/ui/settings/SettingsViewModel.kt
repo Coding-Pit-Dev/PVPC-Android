@@ -40,8 +40,8 @@ class SettingsViewModel @Inject constructor(
 
                     updateSetting(
                         when (option.title) {
-                            "Light" -> DarkMode.LIGHT
-                            "Dark" -> DarkMode.DARK
+                            SettingOptions.LIGHT -> DarkMode.LIGHT
+                            SettingOptions.DARK -> DarkMode.DARK
                             else -> DarkMode.SYSTEM
                         }
                     )
@@ -50,7 +50,7 @@ class SettingsViewModel @Inject constructor(
                 is SettingValue.TimeFormat -> {
                     updateSetting(
                         when (option.title) {
-                            "24 hours" -> TimeFormat.TWENTY_FOUR_HOURS
+                            SettingOptions.TWENTY_FOUR_HOURS -> TimeFormat.TWENTY_FOUR_HOURS
                             else -> TimeFormat.TWELVE_HOURS
                         }
                     )
@@ -58,6 +58,14 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
+}
+
+private object SettingOptions {
+    const val LIGHT = "Light"
+    const val DARK = "Dark"
+    const val SYSTEM = "System"
+    const val TWENTY_FOUR_HOURS = "24 hours"
+    const val AM_PM = "AM/PM"
 }
 
 sealed class SealedSettings(
@@ -104,9 +112,9 @@ private fun Settings.toRender(settings: Settings): List<SettingRender> {
                 getSelectedOption(settings.darkMode).title
             ),
             options = listOf(
-                SettingOption("System", settings.darkMode == DarkMode.SYSTEM),
-                SettingOption("Light", settings.darkMode == DarkMode.LIGHT),
-                SettingOption("Dark", settings.darkMode == DarkMode.DARK),
+                SettingOption(SettingOptions.SYSTEM, settings.darkMode == DarkMode.SYSTEM),
+                SettingOption(SettingOptions.LIGHT, settings.darkMode == DarkMode.LIGHT),
+                SettingOption(SettingOptions.DARK, settings.darkMode == DarkMode.DARK),
             ),
         ),
         SettingRender(
@@ -115,8 +123,8 @@ private fun Settings.toRender(settings: Settings): List<SettingRender> {
                 getSelectedOption(settings.timeFormat).title
             ),
             options = listOf(
-                SettingOption("24 hours", settings.timeFormat == TimeFormat.TWENTY_FOUR_HOURS),
-                SettingOption("AM/PM", settings.timeFormat == TimeFormat.TWELVE_HOURS),
+                SettingOption(SettingOptions.TWENTY_FOUR_HOURS, settings.timeFormat == TimeFormat.TWENTY_FOUR_HOURS),
+                SettingOption(SettingOptions.AM_PM, settings.timeFormat == TimeFormat.TWELVE_HOURS),
             ),
         )
     )
@@ -124,16 +132,16 @@ private fun Settings.toRender(settings: Settings): List<SettingRender> {
 
 private fun getSelectedOption(darkMode: DarkMode): SettingOption {
     return when (darkMode) {
-        DarkMode.LIGHT -> SettingOption("Light")
-        DarkMode.DARK -> SettingOption("Dark")
-        DarkMode.SYSTEM -> SettingOption("System")
+        DarkMode.LIGHT -> SettingOption(SettingOptions.LIGHT)
+        DarkMode.DARK -> SettingOption(SettingOptions.DARK)
+        DarkMode.SYSTEM -> SettingOption(SettingOptions.SYSTEM)
     }
 }
 
 private fun getSelectedOption(timeFormat: TimeFormat): SettingOption {
     return when (timeFormat) {
-        TimeFormat.TWELVE_HOURS -> SettingOption("AM/PM")
-        TimeFormat.TWENTY_FOUR_HOURS -> SettingOption("24 hours")
+        TimeFormat.TWELVE_HOURS -> SettingOption(SettingOptions.AM_PM)
+        TimeFormat.TWENTY_FOUR_HOURS -> SettingOption(SettingOptions.TWENTY_FOUR_HOURS)
     }
 }
 

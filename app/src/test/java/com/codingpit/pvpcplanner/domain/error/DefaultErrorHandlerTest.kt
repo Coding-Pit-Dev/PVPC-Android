@@ -8,6 +8,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 import java.lang.RuntimeException
+import kotlinx.coroutines.CancellationException
 
 class DefaultErrorHandlerTest {
     
@@ -144,5 +145,14 @@ class DefaultErrorHandlerTest {
 
         assertTrue(result is ErrorResult.NetworkError)
         assertEquals(errorMessageProvider.getNetworkErrorMessage(500), result.message)
+    }
+
+    @Test(expected = CancellationException::class)
+    fun `handleError rethrows CancellationException`() {
+        val cancellationException = CancellationException("Cancelled")
+        
+        errorHandler.handleError(cancellationException)
+        
+        // Should throw, not return ErrorResult
     }
 }
