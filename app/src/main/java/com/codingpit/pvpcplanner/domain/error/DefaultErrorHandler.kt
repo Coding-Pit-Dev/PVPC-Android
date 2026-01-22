@@ -13,6 +13,10 @@ class DefaultErrorHandler @Inject constructor(
     }
     
     override fun handleError(throwable: Throwable, context: String?): ErrorResult {
+        if (throwable is java.util.concurrent.CancellationException) {
+            throw throwable
+        }
+
         return when (throwable) {
             is HttpException -> handleHttpException(throwable, context)
             is IOException -> handleNetworkException(throwable, context)

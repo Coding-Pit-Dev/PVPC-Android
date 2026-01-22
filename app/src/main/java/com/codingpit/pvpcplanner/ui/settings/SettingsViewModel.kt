@@ -23,7 +23,7 @@ class SettingsViewModel @Inject constructor(
     getSettings: GetSettings,
     errorHandler: ErrorHandler,
     private val updateSetting: UpdateSetting,
-    coroutineDispatcher: CoroutineDispatcher,
+    private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val state =
         getSettings().map {
@@ -34,7 +34,7 @@ class SettingsViewModel @Inject constructor(
 
 
     fun updateSetting(render: SettingRender, option: SettingOption) {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             when (render.setting) {
                 is SettingValue.DarkMode -> {
 

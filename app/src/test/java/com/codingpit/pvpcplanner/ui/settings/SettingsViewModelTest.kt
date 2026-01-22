@@ -15,6 +15,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
+import java.io.IOException
+import com.codingpit.pvpcplanner.domain.error.ErrorResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,7 +50,7 @@ class SettingsViewModelTest {
         // Mock error handler
         every { mockErrorHandler.handleError(any(), any()) } answers {
             val throwable = firstArg<Throwable>()
-            com.codingpit.pvpcplanner.domain.error.ErrorResult.UnknownError(throwable.message ?: "Unknown error")
+            ErrorResult.UnknownError(throwable.message ?: "Unknown error")
         }
     }
     
@@ -211,7 +214,7 @@ class SettingsViewModelTest {
     fun `state emits Error when settings retrieval fails`() = runTest(testDispatcher) {
         // Arrange
         val errorMessage = "Network error"
-        every { mockGetSettings() } returns kotlinx.coroutines.flow.flow { throw java.io.IOException(errorMessage) }
+        every { mockGetSettings() } returns flow { throw IOException(errorMessage) }
 
         viewModel = SettingsViewModel(
             getSettings = mockGetSettings,

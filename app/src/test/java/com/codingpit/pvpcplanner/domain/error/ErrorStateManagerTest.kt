@@ -18,7 +18,8 @@ class ErrorStateManagerTest {
         }
     }
 
-    private val errorHandler = DefaultErrorHandler(DefaultErrorMessageProvider())
+    private val errorMessageProvider = DefaultErrorMessageProvider()
+    private val errorHandler = DefaultErrorHandler(errorMessageProvider)
 
     @Test
     fun `handleErrors extension function catches exceptions and creates error state`() = runTest {
@@ -42,7 +43,7 @@ class ErrorStateManagerTest {
         // Act & Assert
         errorFlow.test {
             val item = awaitItem()
-            val expectedMessage = DefaultErrorMessageProvider().getGenericErrorMessage()
+            val expectedMessage = errorMessageProvider.getGenericErrorMessage()
             assertEquals("ERROR: $expectedMessage", item.data)
             awaitComplete()
         }
@@ -60,7 +61,7 @@ class ErrorStateManagerTest {
             assertTrue(result.isFailure)
             val exception = result.exceptionOrNull()
             assertTrue(exception is RuntimeException)
-            assertEquals(DefaultErrorMessageProvider().getGenericErrorMessage(), exception?.message)
+            assertEquals(errorMessageProvider.getGenericErrorMessage(), exception?.message)
             assertTrue(exception?.cause is RuntimeException)
             assertEquals("Test error", exception?.cause?.message)
             awaitComplete()

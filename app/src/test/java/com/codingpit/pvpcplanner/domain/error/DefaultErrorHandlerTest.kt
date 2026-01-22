@@ -35,6 +35,16 @@ class DefaultErrorHandlerTest {
     }
 
     @Test
+    fun `handleError returns NetworkError with timeout message for ConnectException`() {
+        val connectException = java.net.ConnectException("Connection refused")
+        
+        val result = errorHandler.handleError(connectException)
+        
+        assertTrue(result is ErrorResult.NetworkError)
+        assertEquals(errorMessageProvider.getTimeoutErrorMessage(), result.message)
+    }
+
+    @Test
     fun `handleError returns NetworkError with generic message for IOException without timeout`() {
         val ioException = IOException("Connection refused")
         
