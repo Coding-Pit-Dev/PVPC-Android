@@ -3,6 +3,7 @@ package com.codingpit.pvpcplanner.ui.settings
 import androidx.lifecycle.viewModelScope
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
+import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.error.ErrorResult
 import com.codingpit.pvpcplanner.domain.models.DarkMode
@@ -97,14 +98,14 @@ class SettingsViewModelTest {
     fun `updateSetting calls correct use case for DarkMode Light`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
-            setting = SettingValue.DarkMode("Dark mode", "Light"),
+            setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_light),
             options = listOf(
-                SettingOption("System", false),
-                SettingOption("Light", true),
-                SettingOption("Dark", false)
+                SettingOption(R.string.option_system, false),
+                SettingOption(R.string.option_light, true),
+                SettingOption(R.string.option_dark, false)
             )
         )
-        val option = SettingOption("Light")
+        val option = SettingOption(R.string.option_light)
 
         // Act
         viewModel = SettingsViewModel(
@@ -123,10 +124,10 @@ class SettingsViewModelTest {
     fun `updateSetting calls correct use case for DarkMode Dark`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
-            setting = SettingValue.DarkMode("Dark mode", "Dark"),
+            setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_dark),
             options = emptyList()
         )
-        val option = SettingOption("Dark")
+        val option = SettingOption(R.string.option_dark)
 
         // Act
         viewModel = SettingsViewModel(
@@ -146,10 +147,10 @@ class SettingsViewModelTest {
         runTest(testDispatcher) {
             // Arrange
             val render = SettingRender(
-                setting = SettingValue.DarkMode("Dark mode", "System"),
+                setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_system),
                 options = emptyList()
             )
-            val option = SettingOption("Unknown") // Should default to SYSTEM
+            val option = SettingOption(0) // Should default to SYSTEM
 
             // Act
             viewModel = SettingsViewModel(
@@ -168,10 +169,10 @@ class SettingsViewModelTest {
     fun `updateSetting calls correct use case for TimeFormat 24 hours`() = runTest(testDispatcher) {
         // Arrange
         val render = SettingRender(
-            setting = SettingValue.TimeFormat("Time format", "24 hours"),
+            setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_24h),
             options = emptyList()
         )
-        val option = SettingOption("24 hours")
+        val option = SettingOption(R.string.option_24h)
 
         // Act
         viewModel = SettingsViewModel(
@@ -191,10 +192,10 @@ class SettingsViewModelTest {
         runTest(testDispatcher) {
             // Arrange
             val render = SettingRender(
-                setting = SettingValue.TimeFormat("Time format", "AM/PM"),
+                setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_ampm),
                 options = emptyList()
             )
-            val option = SettingOption("Unknown") // Should default to TWELVE_HOURS
+            val option = SettingOption(0) // Should default to TWELVE_HOURS
 
             // Act
             viewModel = SettingsViewModel(

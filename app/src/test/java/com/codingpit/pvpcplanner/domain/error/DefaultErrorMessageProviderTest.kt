@@ -1,5 +1,9 @@
 package com.codingpit.pvpcplanner.domain.error
 
+import android.content.Context
+import com.codingpit.pvpcplanner.R
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -8,10 +12,23 @@ import org.junit.Test
 class DefaultErrorMessageProviderTest {
 
     private lateinit var errorMessageProvider: DefaultErrorMessageProvider
+    private val context: Context = mockk()
 
     @Before
     fun setup() {
-        errorMessageProvider = DefaultErrorMessageProvider()
+        errorMessageProvider = DefaultErrorMessageProvider(context)
+        every { context.getString(R.string.error_network_404) } returns "La información solicitada no está disponible."
+        every { context.getString(R.string.error_network_server) } returns "Error del servidor. Por favor, inténtalo de nuevo más tarde."
+        every { context.getString(R.string.error_network_generic) } returns "Error de conexión. Por favor, verifica tu conexión a Internet."
+        every { context.getString(R.string.error_data_price) } returns "No hay datos de precios disponibles para la fecha seleccionada."
+        every { context.getString(R.string.error_data_device) } returns "No se encontró información del dispositivo."
+        every { context.getString(R.string.error_data_generic) } returns "Los datos solicitados no están disponibles en este momento."
+        every { context.getString(R.string.error_validation_date) } returns "La fecha introducida no es válida."
+        every { context.getString(R.string.error_validation_device_name) } returns "El nombre del dispositivo no es válido."
+        every { context.getString(R.string.error_validation_generic) } returns "Los datos introducidos no son válidos."
+        every { context.getString(R.string.error_generic) } returns "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo."
+        every { context.getString(R.string.error_timeout) } returns "La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet."
+        every { context.getString(R.string.error_auth) } returns "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión."
     }
 
     @Test
