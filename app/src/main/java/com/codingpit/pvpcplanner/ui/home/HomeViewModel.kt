@@ -2,6 +2,8 @@ package com.codingpit.pvpcplanner.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
+import com.codingpit.pvpcplanner.domain.error.handleErrors
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.date.GetDefaultDate
@@ -10,11 +12,10 @@ import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalHour
 import com.codingpit.pvpcplanner.domain.usecase.date.IsValidDate
 import com.codingpit.pvpcplanner.utils.toParsedDate
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -26,36 +27,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getPrices: GetPrices,
-    getDefaultDate: GetDefaultDate,
-    isValidDate: IsValidDate,
-    getLocalHour: GetLocalHour,
-    getLocalDate: GetLocalDate,
-    getSettings: GetSettings,
+    private val useCaseProvider: HomeUseCaseProvider,
+    errorHandler: ErrorHandler,
+    coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(getDefaultDate())
+    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(useCaseProvider.getDefaultDate())
     val state: StateFlow<HomeState> =
         selectedDate
             .map {
-                getPrices(it.toParsedDate())
+                useCaseProvider.getPrices(it.toParsedDate())
             }
-            .combine(getSettings()) { prices, settings ->
+            .combine(useCaseProvider.getSettings()) { prices, settings ->
                 prices to settings
             }
             .map { (it, settings) ->
-                val currentHour = getLocalHour()
+                val currentHour = useCaseProvider.getLocalHour()
                 HomeState.Success(
                     selectedDate = selectedDate.value.toParsedDate(),
                     pvpcEntries = it.getOrThrow(),
-                    nextDateEnabled = isValidDate(selectedDate.value),
+                    nextDateEnabled = useCaseProvider.isValidDate(selectedDate.value),
                     currentPrice = it.getOrThrow().first { it.startHour == currentHour }.pcb,
                     currentHour = currentHour,
-                    currentDate = getLocalDate().toParsedDate(),
+                    currentDate = useCaseProvider.getLocalDate().toParsedDate(),
                     timeFormat = settings.timeFormat,
                 )
             }
-            .catch { HomeState.Error(it.message.orEmpty()) }
-            .flowOn(Dispatchers.IO)
+            .handleErrors(errorHandler, "home_data", HomeState.Factory)
+            .flowOn(coroutineDispatcher)
             .stateIn(viewModelScope, SharingStarted.Eagerly, HomeState.Loading)
 
     fun onPreviousClicked() {

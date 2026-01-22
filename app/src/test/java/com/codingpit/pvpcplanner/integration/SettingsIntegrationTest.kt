@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.integration
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.SettingsRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.store.SettingsStore
 import com.codingpit.pvpcplanner.domain.models.DarkMode
@@ -13,7 +14,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -45,16 +45,14 @@ class SettingsIntegrationTest {
         // Arrange
         every { mockSettingsStore.settings } returns flowOf(defaultSettings)
 
-        // Act
-        val settingsFlow = getSettingsUseCase()
-        val emissions = settingsFlow.toList()
-
-        // Assert
-        assertEquals(1, emissions.size)
-        val settings = emissions[0]
-        assertEquals(DarkMode.SYSTEM, settings.darkMode)
-        assertEquals(TimeFormat.TWELVE_HOURS, settings.timeFormat)
-        assertEquals(5, settings.yAxisSlots)
+        // Act & Assert
+        getSettingsUseCase().test {
+            val settings = awaitItem()
+            assertEquals(DarkMode.SYSTEM, settings.darkMode)
+            assertEquals(TimeFormat.TWELVE_HOURS, settings.timeFormat)
+            assertEquals(5, settings.yAxisSlots)
+            awaitComplete()
+        }
 
         verify { mockSettingsStore.settings }
     }
@@ -129,24 +127,26 @@ class SettingsIntegrationTest {
             finalSettings
         )
 
-        // Act
-        val settingsFlow = getSettingsUseCase()
-        val emissions = settingsFlow.toList()
+        // Act & Assert
+        getSettingsUseCase().test {
+            val s1 = awaitItem()
+            assertEquals(DarkMode.SYSTEM, s1.darkMode)
+            assertEquals(TimeFormat.TWELVE_HOURS, s1.timeFormat)
 
-        // Assert
-        assertEquals(4, emissions.size)
+            val s2 = awaitItem()
+            assertEquals(DarkMode.LIGHT, s2.darkMode)
+            assertEquals(TimeFormat.TWELVE_HOURS, s2.timeFormat)
 
-        assertEquals(DarkMode.SYSTEM, emissions[0].darkMode)
-        assertEquals(TimeFormat.TWELVE_HOURS, emissions[0].timeFormat)
+            val s3 = awaitItem()
+            assertEquals(DarkMode.DARK, s3.darkMode)
+            assertEquals(TimeFormat.TWELVE_HOURS, s3.timeFormat)
 
-        assertEquals(DarkMode.LIGHT, emissions[1].darkMode)
-        assertEquals(TimeFormat.TWELVE_HOURS, emissions[1].timeFormat)
+            val s4 = awaitItem()
+            assertEquals(DarkMode.DARK, s4.darkMode)
+            assertEquals(TimeFormat.TWENTY_FOUR_HOURS, s4.timeFormat)
 
-        assertEquals(DarkMode.DARK, emissions[2].darkMode)
-        assertEquals(TimeFormat.TWELVE_HOURS, emissions[2].timeFormat)
-
-        assertEquals(DarkMode.DARK, emissions[3].darkMode)
-        assertEquals(TimeFormat.TWENTY_FOUR_HOURS, emissions[3].timeFormat)
+            awaitComplete()
+        }
 
         verify { mockSettingsStore.settings }
     }
@@ -198,16 +198,14 @@ class SettingsIntegrationTest {
         )
         every { mockSettingsStore.settings } returns flowOf(customSettings)
 
-        // Act
-        val settingsFlow = getSettingsUseCase()
-        val result = settingsFlow.toList()
-
-        // Assert
-        assertEquals(1, result.size)
-        val settings = result[0]
-        assertEquals(DarkMode.LIGHT, settings.darkMode)
-        assertEquals(TimeFormat.TWENTY_FOUR_HOURS, settings.timeFormat)
-        assertEquals(10, settings.yAxisSlots)
+        // Act & Assert
+        getSettingsUseCase().test {
+            val settings = awaitItem()
+            assertEquals(DarkMode.LIGHT, settings.darkMode)
+            assertEquals(TimeFormat.TWENTY_FOUR_HOURS, settings.timeFormat)
+            assertEquals(10, settings.yAxisSlots)
+            awaitComplete()
+        }
 
         verify { mockSettingsStore.settings }
     }
@@ -225,9 +223,10 @@ class SettingsIntegrationTest {
         coEvery { mockSettingsStore.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS) } returns Unit
 
         // Act - Initial state check
-        val initialFlow = getSettingsUseCase()
-        val initialResult = initialFlow.toList()
-        assertEquals(DarkMode.SYSTEM, initialResult[0].darkMode)
+        getSettingsUseCase().test {
+            assertEquals(DarkMode.SYSTEM, awaitItem().darkMode)
+            awaitComplete()
+        }
 
         // Act - User switches to light mode
         updateSettingUseCase(DarkMode.LIGHT)
@@ -249,8 +248,7 @@ class SettingsIntegrationTest {
 
         // Act & Assert
         try {
-            val settingsFlow = getSettingsUseCase()
-            settingsFlow.toList()
+            getSettingsUseCase() // This call should throw immediately
             assert(false) { "Expected exception to be thrown" }
         } catch (e: RuntimeException) {
             assertEquals(exception, e)

@@ -1,7 +1,7 @@
 package com.codingpit.pvpcplanner.fixtures
 
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy
 import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
@@ -25,7 +25,7 @@ import org.junit.Test
 class FixtureUsageExampleTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<PriceLocalDataSource>()
 
     private lateinit var priceRepository: PriceRepositoryImpl
     private lateinit var getPricesUseCase: GetPrices

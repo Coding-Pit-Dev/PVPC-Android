@@ -1,5 +1,9 @@
 package com.codingpit.pvpcplanner.ui.devices
 
+import com.codingpit.pvpcplanner.domain.error.ErrorResult
+import com.codingpit.pvpcplanner.domain.error.ErrorState
+import com.codingpit.pvpcplanner.domain.error.HasErrorState
+
 sealed class DevicesState {
     object Loading : DevicesState()
 
@@ -9,6 +13,12 @@ sealed class DevicesState {
     ) : DevicesState()
 
     data class Error(
-        val error: String,
-    ) : DevicesState()
+        override val error: String,
+    ) : DevicesState(), ErrorState
+    
+    companion object Factory : HasErrorState<DevicesState> {
+        override fun createErrorState(errorResult: ErrorResult): DevicesState {
+            return Error(errorResult.message)
+        }
+    }
 }

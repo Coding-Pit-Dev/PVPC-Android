@@ -1,12 +1,12 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.DeviceRepository
 import com.codingpit.pvpcplanner.domain.models.Device
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -51,9 +51,10 @@ class GetDevicesTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertEquals(emptyList<Device>(), resultList.first())
+        result.test {
+            assertEquals(emptyList<Device>(), awaitItem())
+            awaitComplete()
+        }
         verify { mockRepository.getDevices() }
     }
 
@@ -72,10 +73,11 @@ class GetDevicesTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(2, resultList.size)
-        assertEquals(firstDevices, resultList[0])
-        assertEquals(secondDevices, resultList[1])
+        result.test {
+            assertEquals(firstDevices, awaitItem())
+            assertEquals(secondDevices, awaitItem())
+            awaitComplete()
+        }
         verify { mockRepository.getDevices() }
     }
 }

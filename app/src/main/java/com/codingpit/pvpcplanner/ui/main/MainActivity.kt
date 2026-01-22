@@ -5,17 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
-import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
 import com.codingpit.pvpcplanner.ui.theme.PVPCPlannerTheme
+import com.codingpit.pvpcplanner.ui.theme.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,26 +23,17 @@ class MainActivity : ComponentActivity() {
     private val settingsViewModel by viewModels<SettingsViewModel>()
 
     @Inject
-    lateinit var getSettings: GetSettings
+    lateinit var themeManager: ThemeManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val settings by getSettings().collectAsStateWithLifecycle(Settings())
+            val settings by themeManager.getSettings().collectAsStateWithLifecycle(Settings())
 
-            PVPCPlannerTheme(darkTheme = getDarkMode(settings.darkMode)) {
+            PVPCPlannerTheme(darkTheme = themeManager.shouldShowDarkTheme(settings.darkMode)) {
                 MainScreen(homeViewModel, devicesViewModel, settingsViewModel)
             }
-        }
-    }
-
-    @Composable
-    private fun getDarkMode(darkMode: DarkMode): Boolean {
-        return when (darkMode) {
-            DarkMode.LIGHT -> false
-            DarkMode.DARK -> true
-            DarkMode.SYSTEM -> isSystemInDarkTheme()
         }
     }
 }

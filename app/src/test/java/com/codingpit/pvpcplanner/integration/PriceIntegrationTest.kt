@@ -1,7 +1,7 @@
 package com.codingpit.pvpcplanner.integration
 
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
@@ -17,7 +17,7 @@ import org.junit.Test
 class PriceIntegrationTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<PriceLocalDataSource>()
 
     private lateinit var repository: PriceRepositoryImpl
     private lateinit var getPricesUseCase: GetPrices

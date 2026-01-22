@@ -1,12 +1,12 @@
 package com.codingpit.pvpcplanner.data
 
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.DeviceLocalDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DeviceRepositoryImpl @Inject constructor(
-    private val localDataSource: LocalDataSource,
+    private val localDataSource: DeviceLocalDataSource,
 ) : DeviceRepository {
 
     override fun getDevices(): Flow<List<Device>> {

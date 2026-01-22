@@ -2,6 +2,8 @@ package com.codingpit.pvpcplanner.ui.devices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
+import com.codingpit.pvpcplanner.domain.error.handleErrors
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
@@ -30,6 +32,7 @@ constructor(
     private val addDevice: AddDevice,
     private val deleteDevice: DeleteDevice,
     private val calculateBestTimeSlot: CalculateBestTimeSlot,
+    private val errorHandler: ErrorHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DevicesUIState())
@@ -39,6 +42,7 @@ constructor(
                 devices.map { DeviceRender(it, calculateBestTimeSlot(it, prices)) }
             } to _state
         }.map { DevicesState.Success(it.first.getOrThrow(), it.second.showModal) }
+            .handleErrors(errorHandler, "device_data", DevicesState.Factory)
             .flowOn(dispatcher)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
 

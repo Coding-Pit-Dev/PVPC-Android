@@ -1,5 +1,6 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.SettingsRepository
 import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
@@ -8,7 +9,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -54,12 +54,14 @@ class GetSettingsTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertEquals(defaultSettings, resultList.first())
-        assertEquals(DarkMode.SYSTEM, resultList.first().darkMode)
-        assertEquals(TimeFormat.TWELVE_HOURS, resultList.first().timeFormat)
-        assertEquals(5, resultList.first().yAxisSlots)
+        result.test {
+            val item = awaitItem()
+            assertEquals(defaultSettings, item)
+            assertEquals(DarkMode.SYSTEM, item.darkMode)
+            assertEquals(TimeFormat.TWELVE_HOURS, item.timeFormat)
+            assertEquals(5, item.yAxisSlots)
+            awaitComplete()
+        }
         verify { mockRepository.getSettings() }
     }
 
@@ -78,9 +80,10 @@ class GetSettingsTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertEquals(darkSettings, resultList.first())
+        result.test {
+            assertEquals(darkSettings, awaitItem())
+            awaitComplete()
+        }
         verify { mockRepository.getSettings() }
     }
 
@@ -99,9 +102,10 @@ class GetSettingsTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(1, resultList.size)
-        assertEquals(lightSettings, resultList.first())
+        result.test {
+            assertEquals(lightSettings, awaitItem())
+            awaitComplete()
+        }
         verify { mockRepository.getSettings() }
     }
 
@@ -118,10 +122,11 @@ class GetSettingsTest {
         val result = useCase()
 
         // Assert
-        val resultList = result.toList()
-        assertEquals(2, resultList.size)
-        assertEquals(firstSettings, resultList[0])
-        assertEquals(secondSettings, resultList[1])
+        result.test {
+            assertEquals(firstSettings, awaitItem())
+            assertEquals(secondSettings, awaitItem())
+            awaitComplete()
+        }
         verify { mockRepository.getSettings() }
     }
 }

@@ -1,7 +1,8 @@
 package com.codingpit.pvpcplanner.integration
 
+import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
-import com.codingpit.pvpcplanner.data.local.sources.LocalDataSource
+import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
@@ -14,7 +15,6 @@ import com.codingpit.pvpcplanner.utils.DateChecker
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -25,7 +25,7 @@ import java.time.LocalDate
 class PriceCalculationIntegrationTest {
 
     private val mockRemoteDataSource = mockk<RemoteDataSource>()
-    private val mockLocalDataSource = mockk<LocalDataSource>()
+    private val mockLocalDataSource = mockk<PriceLocalDataSource>()
     private val mockDateChecker = mockk<DateChecker>()
 
     private lateinit var priceRepository: PriceRepositoryImpl
@@ -82,14 +82,13 @@ class PriceCalculationIntegrationTest {
         every { mockDateChecker.getDefaultDate() } returns defaultDate
         coEvery { mockLocalDataSource.getPrices("2023-10-15") } returns prices
 
-        // Act
-        val pricesFlow = getPricesFlowUseCase()
-        val emissions = pricesFlow.toList()
-
-        // Assert
-        assertEquals(1, emissions.size)
-        assertTrue(emissions[0].isSuccess)
-        assertEquals(2, emissions[0].getOrNull()?.size)
+        // Act & Assert
+        getPricesFlowUseCase().test {
+            val item = awaitItem()
+            assertTrue(item.isSuccess)
+            assertEquals(2, item.getOrNull()?.size)
+            awaitComplete()
+        }
     }
 
     @Test
@@ -221,13 +220,12 @@ class PriceCalculationIntegrationTest {
         coEvery { mockLocalDataSource.getPrices("2023-10-15") } returns emptyList()
         coEvery { mockRemoteDataSource.getPrices("2023-10-15") } throws exception
 
-        // Act
-        val pricesFlow = getPricesFlowUseCase()
-        val emissions = pricesFlow.toList()
-
-        // Assert
-        assertEquals(1, emissions.size)
-        assertTrue(emissions[0].isFailure)
-        assertEquals(exception, emissions[0].exceptionOrNull())
+        // Act & Assert
+        getPricesFlowUseCase().test {
+            val item = awaitItem()
+            assertTrue(item.isFailure)
+            assertEquals(exception, item.exceptionOrNull())
+            awaitComplete()
+        }
     }
 }
