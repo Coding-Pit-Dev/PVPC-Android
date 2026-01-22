@@ -44,32 +44,50 @@ object Constants {
         )
 }
 
+data class DeviceIcon(
+    val id: String,
+    val icon: ImageVector,
+    val labelRes: Int
+)
+
+@Composable
+fun getDeviceIcons(): List<DeviceIcon> =
+    listOf(
+        DeviceIcon("Fan", Icons.Default.WindPower, R.string.device_fan),
+        DeviceIcon("Battery", Icons.Default.Battery5Bar, R.string.device_battery),
+        DeviceIcon("Lightbulb", Icons.Default.Lightbulb, R.string.device_lightbulb),
+        DeviceIcon("Electric Car", Icons.Default.ElectricCar, R.string.device_electric_car),
+        DeviceIcon(
+            "Electric Motorbike",
+            Icons.Default.ElectricMoped,
+            R.string.device_electric_motorbike
+        ),
+        DeviceIcon("Scooter", Icons.Default.ElectricScooter, R.string.device_scooter),
+        DeviceIcon("Electric bike", Icons.Default.ElectricBike, R.string.device_electric_bike),
+        DeviceIcon("Camera", Icons.Default.Camera, R.string.device_camera),
+        DeviceIcon("Dry machine", Icons.Default.DryCleaning, R.string.device_dry_machine),
+        DeviceIcon("Phone", Icons.Default.PhoneIphone, R.string.device_phone),
+        DeviceIcon("Laptop", Icons.Default.Laptop, R.string.device_laptop),
+        DeviceIcon("Desktop", Icons.Default.DesktopMac, R.string.device_desktop),
+        DeviceIcon("Tv", Icons.Default.Tv, R.string.device_tv),
+        DeviceIcon("Default", Icons.Default.Power, R.string.device_default),
+        DeviceIcon("Console", Icons.Default.Gamepad, R.string.device_console),
+        DeviceIcon("Fridge", Icons.Default.Kitchen, R.string.device_fridge),
+        DeviceIcon("Vitro", ImageVector.vectorResource(R.drawable.ic_vitro), R.string.device_vitro),
+        DeviceIcon("Coffee Machine", Icons.Default.CoffeeMaker, R.string.device_coffee_machine),
+        DeviceIcon("Blender", Icons.Default.Blender, R.string.device_blender),
+        DeviceIcon("Microwave", Icons.Default.Microwave, R.string.device_microwave),
+        DeviceIcon("Oven", ImageVector.vectorResource(R.drawable.ic_oven), R.string.device_oven),
+        DeviceIcon(
+            "Dishwasher",
+            ImageVector.vectorResource(R.drawable.ic_dishwasher),
+            R.string.device_dishwasher
+        ),
+        DeviceIcon("Air Conditioner", Icons.Default.Air, R.string.device_air_conditioner),
+        DeviceIcon("Iron", Icons.Default.Iron, R.string.device_iron),
+        DeviceIcon("Laundry", Icons.Default.LocalLaundryService, R.string.device_laundry),
+    )
+
 @Composable
 fun getIcons(): Map<String, ImageVector> =
-    mapOf(
-        "Fan" to Icons.Default.WindPower,
-        "Battery" to Icons.Default.Battery5Bar,
-        "Lightbulb" to Icons.Default.Lightbulb,
-        "Electric Car" to Icons.Default.ElectricCar,
-        "Electric Motorbike" to Icons.Default.ElectricMoped,
-        "Scooter" to Icons.Default.ElectricScooter,
-        "Electric bike" to Icons.Default.ElectricBike,
-        "Camera" to Icons.Default.Camera,
-        "Dry machine" to Icons.Default.DryCleaning,
-        "Phone" to Icons.Default.PhoneIphone,
-        "Laptop" to Icons.Default.Laptop,
-        "Desktop" to Icons.Default.DesktopMac,
-        "Tv" to Icons.Default.Tv,
-        "Default" to Icons.Default.Power,
-        "Console" to Icons.Default.Gamepad,
-        "Fridge" to Icons.Default.Kitchen,
-        "Vitro" to ImageVector.vectorResource(R.drawable.ic_vitro),
-        "Coffee Machine" to Icons.Default.CoffeeMaker,
-        "Blender" to Icons.Default.Blender,
-        "Microwave" to Icons.Default.Microwave,
-        "Oven" to ImageVector.vectorResource(R.drawable.ic_oven),
-        "Dishwasher" to ImageVector.vectorResource(R.drawable.ic_dishwasher),
-        "Air Conditioner" to Icons.Default.Air,
-        "Iron" to Icons.Default.Iron,
-        "Laundry" to Icons.Default.LocalLaundryService,
-    )
+    getDeviceIcons().associate { it.id to it.icon }

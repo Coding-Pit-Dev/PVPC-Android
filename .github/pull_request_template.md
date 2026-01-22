@@ -5,6 +5,7 @@
 ### Finalidad de la PR
 ---
  <!-- Marca con una X el tipo de finalidad correspondiente '[x]' -->
+
 - [ ] 🐛 (Bug)
 - [ ] 🧑🏻‍💻 (Feature)
 - [ ] 🌶️ (Hotfix)
@@ -12,13 +13,13 @@
 ### Tipo de cambio
 ---
  <!-- Marca con una X el tipo de cambio correspondiente '[x]' -->
-- [ ] Corrección de errores 
-- [ ] Nueva característica
-- [ ] Mejora 
-- [ ] Refactorización 
-- [ ] Documentación 
-- [ ] Otros
 
+- [ ] Corrección de errores
+- [ ] Nueva característica
+- [ ] Mejora
+- [ ] Refactorización
+- [ ] Documentación
+- [ ] Otros
 
 ### Checklist
 ---

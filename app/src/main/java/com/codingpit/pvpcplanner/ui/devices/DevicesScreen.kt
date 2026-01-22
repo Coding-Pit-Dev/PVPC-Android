@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,6 +50,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.ui.components.AnimatedBottomSheet
+import com.codingpit.pvpcplanner.utils.DeviceIcon
+import com.codingpit.pvpcplanner.utils.getDeviceIcons
 import com.codingpit.pvpcplanner.utils.getIcons
 
 @Composable
@@ -174,7 +175,7 @@ private fun DeviceItem(
             ) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "Localized description",
+                    contentDescription = stringResource(R.string.action_delete),
                     modifier = Modifier.scale(scale),
                 )
             }
@@ -223,7 +224,7 @@ private fun DeviceItem(
                             .padding(8.dp),
                 ) {
                     Text(
-                        text = "${render.device.name} (${render.device.hours} hours)",
+                        text = "${render.device.name} (${render.device.hours} ${stringResource(R.string.unit_hours)})",
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
@@ -278,7 +279,7 @@ private fun SheetContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        val icons = getIcons().map { Pair(it.key, it.value) }
+        val icons = getDeviceIcons()
         var selected by remember { mutableStateOf(icons.first()) }
 
         LazyVerticalGrid(
@@ -287,10 +288,15 @@ private fun SheetContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(icons) {
-                DeviceModalItem(it, selected == it) {
-                    selected = it
-                    name = it.first
+            items(icons) { icon ->
+                val label = stringResource(icon.labelRes)
+                DeviceModalItem(
+                    icon = icon,
+                    label = label,
+                    selected = selected == icon
+                ) {
+                    selected = icon
+                    name = label
                 }
             }
 
@@ -303,24 +309,24 @@ private fun SheetContent(
                         onValueChange = { name = it },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text("Name")
+                            Text(stringResource(R.string.label_name))
                         },
                     )
                     OutlinedTextField(
-                        value = hours.toString(),
+                        value = hours,
                         onValueChange = { hours = it },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text("Hours")
+                            Text(stringResource(R.string.label_hours))
                         },
                     )
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = buttonEnabled,
-                        onClick = { addDevice(name, hours.toInt(), selected.first) },
+                        onClick = { addDevice(name, hours.toInt(), selected.id) },
                     ) {
-                        Text("Add")
+                        Text(stringResource(R.string.action_add))
                     }
                 }
             }
@@ -330,7 +336,8 @@ private fun SheetContent(
 
 @Composable
 private fun DeviceModalItem(
-    item: Pair<String, ImageVector>,
+    icon: DeviceIcon,
+    label: String,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
@@ -348,8 +355,8 @@ private fun DeviceModalItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(item.second, contentDescription = item.first)
-            Text(item.first)
+            Icon(icon.icon, contentDescription = label)
+            Text(label)
         }
     }
 }

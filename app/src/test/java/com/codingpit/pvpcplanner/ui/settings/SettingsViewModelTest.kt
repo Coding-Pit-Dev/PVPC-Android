@@ -1,31 +1,31 @@
 package com.codingpit.pvpcplanner.ui.settings
 
+import androidx.lifecycle.viewModelScope
+import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
-import org.junit.After
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
+import com.codingpit.pvpcplanner.domain.error.ErrorResult
 import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.cancel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flow
-import java.io.IOException
-import com.codingpit.pvpcplanner.domain.error.ErrorResult
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import app.cash.turbine.TurbineTestContext
+import java.io.IOException
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,7 +35,7 @@ class SettingsViewModelTest {
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()
     private val testDispatcher = UnconfinedTestDispatcher()
-    
+
     private lateinit var viewModel: SettingsViewModel
 
     private suspend fun <T> TurbineTestContext<T>.awaitFinalState(): T {
@@ -52,14 +52,14 @@ class SettingsViewModelTest {
         // Mock GetSettings to return default settings
         val defaultSettings = Settings(DarkMode.SYSTEM, TimeFormat.TWENTY_FOUR_HOURS)
         every { mockGetSettings() } returns flowOf(defaultSettings)
-        
+
         // Mock error handler
         every { mockErrorHandler.handleError(any(), any()) } answers {
             val throwable = firstArg<Throwable>()
             ErrorResult.UnknownError(throwable.message ?: "Unknown error")
         }
     }
-    
+
     @After
     fun tearDown() {
         if (::viewModel.isInitialized) {
@@ -142,26 +142,27 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for DarkMode System (default)`() = runTest(testDispatcher) {
-        // Arrange
-        val render = SettingRender(
-            setting = SettingValue.DarkMode("Dark mode", "System"),
-            options = emptyList()
-        )
-        val option = SettingOption("Unknown") // Should default to SYSTEM
+    fun `updateSetting calls correct use case for DarkMode System (default)`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val render = SettingRender(
+                setting = SettingValue.DarkMode("Dark mode", "System"),
+                options = emptyList()
+            )
+            val option = SettingOption("Unknown") // Should default to SYSTEM
 
-        // Act
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
-        viewModel.updateSetting(render, option)
+            // Act
+            viewModel = SettingsViewModel(
+                getSettings = mockGetSettings,
+                errorHandler = mockErrorHandler,
+                updateSetting = mockUpdateSetting,
+                coroutineDispatcher = testDispatcher
+            )
+            viewModel.updateSetting(render, option)
 
-        // Assert
-        coVerify { mockUpdateSetting(DarkMode.SYSTEM) }
-    }
+            // Assert
+            coVerify { mockUpdateSetting(DarkMode.SYSTEM) }
+        }
 
     @Test
     fun `updateSetting calls correct use case for TimeFormat 24 hours`() = runTest(testDispatcher) {
@@ -186,26 +187,27 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSetting calls correct use case for TimeFormat AM PM (default)`() = runTest(testDispatcher) {
-        // Arrange
-        val render = SettingRender(
-            setting = SettingValue.TimeFormat("Time format", "AM/PM"),
-            options = emptyList()
-        )
-        val option = SettingOption("Unknown") // Should default to TWELVE_HOURS
+    fun `updateSetting calls correct use case for TimeFormat AM PM (default)`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val render = SettingRender(
+                setting = SettingValue.TimeFormat("Time format", "AM/PM"),
+                options = emptyList()
+            )
+            val option = SettingOption("Unknown") // Should default to TWELVE_HOURS
 
-        // Act
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
-        viewModel.updateSetting(render, option)
+            // Act
+            viewModel = SettingsViewModel(
+                getSettings = mockGetSettings,
+                errorHandler = mockErrorHandler,
+                updateSetting = mockUpdateSetting,
+                coroutineDispatcher = testDispatcher
+            )
+            viewModel.updateSetting(render, option)
 
-        // Assert
-        coVerify { mockUpdateSetting(TimeFormat.TWELVE_HOURS) }
-    }
+            // Assert
+            coVerify { mockUpdateSetting(TimeFormat.TWELVE_HOURS) }
+        }
 
     @Test
     fun `state emits Error when settings retrieval fails`() = runTest(testDispatcher) {

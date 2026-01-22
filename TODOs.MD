@@ -67,21 +67,24 @@ practices based on comprehensive code analysis.
   28-35)
 - [x] **Action:** Create `HomeUseCaseProvider` that encapsulates related use cases
 - [x] **Why:** Too many constructor parameters indicate class doing too much
-- [x] **Details:** Created `HomeUseCaseProvider` to group use cases and refactored ViewModel and Test.
+- [x] **Details:** Created `HomeUseCaseProvider` to group use cases and refactored ViewModel and
+  Test.
 
 ### ✅ 6. Extract Theme Management (SRP) - COMPLETED
 
 - [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/ui/main/MainActivity.kt` (lines 44-50)
 - [x] **Action:** Create `ThemeManager` class to handle theme logic
 - [x] **Why:** MainActivity should focus on activity lifecycle, not theme management
-- [x] **Details:** Created `ThemeManager` in `ui.theme` package and refactored `MainActivity` to use it.
+- [x] **Details:** Created `ThemeManager` in `ui.theme` package and refactored `MainActivity` to use
+  it.
 
 ### ✅ 7. Create Specific Data Sources (ISP) - COMPLETED
 
 - [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/data/local/sources/LocalDataSource.kt`
 - [x] **Action:** Split into `PriceLocalDataSource` and `DeviceLocalDataSource`
 - [x] **Why:** Different clients need different subsets of functionality
-- [x] **Details:** Created `PriceLocalDataSource` and `DeviceLocalDataSource`, refactored repositories and modules to use them, and updated all tests. Removed old `LocalDataSource`.
+- [x] **Details:** Created `PriceLocalDataSource` and `DeviceLocalDataSource`, refactored
+  repositories and modules to use them, and updated all tests. Removed old `LocalDataSource`.
 
 ---
 
@@ -90,7 +93,7 @@ practices based on comprehensive code analysis.
 ### ✅ 8. Extract Constants and Magic Numbers - COMPLETED
 
 - [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/data/mappers/PvpcDtoMapper.kt` (line
-  20)
+    20)
 - [x] **Action:** Extract `PRICE_CONVERSION_FACTOR = 1000` constant with documentation
 - [x] **Why:** Magic numbers make code unclear and error-prone
 - [x] **Details:** Created `MappingConstants` class with documented constants. Extracted
@@ -126,7 +129,7 @@ practices based on comprehensive code analysis.
 ### ✅ 12. Improve Entity ID Generation (Clean Code) - COMPLETED
 
 - [x] **File:** `/app/src/main/java/com/codingpit/pvpcplanner/data/mappers/PvpcDtoMapper.kt` (line
-  36)
+    36)
 - [x] **Action:** Replace `day + startHour` string concatenation with proper ID generation
 - [x] **Why:** Current approach is fragile and could cause conflicts
 - [x] **Details:** Replaced string concatenation with proper formatted ID using `ID_SEPARATOR`

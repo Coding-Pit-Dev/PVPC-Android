@@ -1,34 +1,34 @@
 package com.codingpit.pvpcplanner.ui.home
 
+import androidx.lifecycle.viewModelScope
 import app.cash.turbine.test
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
-import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.date.GetDefaultDate
 import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalDate
 import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalHour
 import com.codingpit.pvpcplanner.domain.usecase.date.IsValidDate
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.cancel
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.test.resetMain
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
 import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,11 +70,13 @@ class HomeViewModelTest {
         every { mockGetLocalDate() } returns testDate
         every { mockGetSettings() } returns flowOf(testSettings)
         coEvery { mockGetPrices(any()) } returns prices
-        
+
         // Mock error handler
         every { mockErrorHandler.handleError(any(), any()) } answers {
             val throwable = firstArg<Throwable>()
-            com.codingpit.pvpcplanner.domain.error.ErrorResult.UnknownError(throwable.message ?: "Unknown error")
+            com.codingpit.pvpcplanner.domain.error.ErrorResult.UnknownError(
+                throwable.message ?: "Unknown error"
+            )
         }
 
         val useCaseProvider = HomeUseCaseProvider(
@@ -109,18 +111,18 @@ class HomeViewModelTest {
             // StateFlow replay=1 gives the latest value.
             val state = awaitItem()
             if (state is HomeState.Loading) {
-                 val success = awaitItem()
-                 assertTrue(success is HomeState.Success)
-                 val successState = success as HomeState.Success
-                 assertEquals(prices, successState.pvpcEntries)
-                 assertEquals(0.15, successState.currentPrice, 0.001)
-                 assertEquals(10, successState.currentHour)
+                val success = awaitItem()
+                assertTrue(success is HomeState.Success)
+                val successState = success as HomeState.Success
+                assertEquals(prices, successState.pvpcEntries)
+                assertEquals(0.15, successState.currentPrice, 0.001)
+                assertEquals(10, successState.currentHour)
             } else {
-                 assertTrue(state is HomeState.Success)
-                 val successState = state as HomeState.Success
-                 assertEquals(prices, successState.pvpcEntries)
-                 assertEquals(0.15, successState.currentPrice, 0.001)
-                 assertEquals(10, successState.currentHour)
+                assertTrue(state is HomeState.Success)
+                val successState = state as HomeState.Success
+                assertEquals(prices, successState.pvpcEntries)
+                assertEquals(0.15, successState.currentPrice, 0.001)
+                assertEquals(10, successState.currentHour)
             }
         }
     }
@@ -181,7 +183,7 @@ class HomeViewModelTest {
         // Arrange
         val prices = listOf(PVPCModel("2023-10-14", 10, 11, 0.15, 0.18))
         val viewModel = createViewModel(Result.success(prices))
-        
+
         // Mock the prices for the new date
         coEvery { mockGetPrices("2023-10-14") } returns Result.success(prices)
 
@@ -202,7 +204,7 @@ class HomeViewModelTest {
             if (state is HomeState.Loading) {
                 state = awaitItem()
             }
-            
+
             assertTrue(state is HomeState.Success)
             assertEquals("2023-10-14", (state as HomeState.Success).selectedDate)
         }
@@ -231,10 +233,10 @@ class HomeViewModelTest {
 
             // New state
             state = awaitItem()
-             if (state is HomeState.Loading) {
+            if (state is HomeState.Loading) {
                 state = awaitItem()
             }
-            
+
             assertTrue(state is HomeState.Success)
             assertEquals("2023-10-16", (state as HomeState.Success).selectedDate)
         }

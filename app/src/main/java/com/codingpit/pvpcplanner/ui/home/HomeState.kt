@@ -22,7 +22,7 @@ sealed class HomeState {
     data class Error(
         override val error: String,
     ) : HomeState(), ErrorState
-    
+
     companion object Factory : HasErrorState<HomeState> {
         override fun createErrorState(errorResult: ErrorResult): HomeState {
             return Error(errorResult.message)

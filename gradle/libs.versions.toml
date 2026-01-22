@@ -56,16 +56,16 @@ material3 = { module = "androidx.compose.material3:material3", version.ref = "ma
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter-scalars ={ group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
+retrofit-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "retrofit" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
-moshi-kotlin = {group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi"}
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp3-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "interceptor" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
-junit-engine = {group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter"}
+junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
