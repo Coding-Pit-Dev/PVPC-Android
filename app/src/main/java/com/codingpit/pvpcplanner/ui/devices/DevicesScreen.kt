@@ -272,7 +272,7 @@ private fun SheetContent(
     var name by remember { mutableStateOf("") }
     var hours by remember { mutableStateOf("") }
 
-    val buttonEnabled by remember { derivedStateOf { name.isNotEmpty() && hours.isNotEmpty() } }
+    val buttonEnabled by remember { derivedStateOf { name.isNotEmpty() && hours.toIntOrNull() != null } }
 
     Column(
         modifier = modifier.padding(16.dp),
@@ -324,7 +324,11 @@ private fun SheetContent(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = buttonEnabled,
-                        onClick = { addDevice(name, hours.toInt(), selected.id) },
+                        onClick = {
+                            hours.toIntOrNull()?.let { validHours ->
+                                addDevice(name, validHours, selected.id)
+                            }
+                        },
                     ) {
                         Text(stringResource(R.string.action_add))
                     }
