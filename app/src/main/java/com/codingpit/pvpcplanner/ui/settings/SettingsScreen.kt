@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.ui.components.AnimatedBottomSheet
@@ -59,8 +60,8 @@ private fun SettingsScreen_Success(
     ) {
         items(state.settings) {
             SettingsItem(
-                title = it.setting.title,
-                subTitle = it.options.first { it.selected }.title,
+                title = stringResource(it.setting.titleRes),
+                subTitle = stringResource(it.options.first { it.selected }.labelRes),
                 onClick = {
                     selectedSetting = it
                 },
@@ -131,7 +132,7 @@ private fun SettingsOptionItem(
             },
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = option.title)
+        Text(text = stringResource(option.labelRes))
 
         if (option.selected) {
             Icon(imageVector = Icons.Filled.Check, contentDescription = null)

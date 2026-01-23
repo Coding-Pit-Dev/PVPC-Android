@@ -4,12 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.error.handleErrors
-import com.codingpit.pvpcplanner.domain.usecase.GetPrices
-import com.codingpit.pvpcplanner.domain.usecase.GetSettings
-import com.codingpit.pvpcplanner.domain.usecase.date.GetDefaultDate
-import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalDate
-import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalHour
-import com.codingpit.pvpcplanner.domain.usecase.date.IsValidDate
 import com.codingpit.pvpcplanner.utils.toParsedDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,7 +25,8 @@ class HomeViewModel @Inject constructor(
     errorHandler: ErrorHandler,
     coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(useCaseProvider.getDefaultDate())
+    private val selectedDate: MutableStateFlow<LocalDate> =
+        MutableStateFlow(useCaseProvider.getDefaultDate())
     val state: StateFlow<HomeState> =
         selectedDate
             .map {

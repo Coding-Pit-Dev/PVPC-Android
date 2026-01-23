@@ -1,11 +1,14 @@
 package com.codingpit.pvpcplanner.domain.error
 
 import app.cash.turbine.test
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class ErrorStateManagerTest {
@@ -18,8 +21,13 @@ class ErrorStateManagerTest {
         }
     }
 
-    private val errorMessageProvider = DefaultErrorMessageProvider()
+    private val errorMessageProvider = mockk<ErrorMessageProvider>()
     private val errorHandler = DefaultErrorHandler(errorMessageProvider)
+
+    @Before
+    fun setup() {
+        every { errorMessageProvider.getGenericErrorMessage() } returns "Generic Error"
+    }
 
     @Test
     fun `handleErrors extension function catches exceptions and creates error state`() = runTest {
@@ -43,8 +51,7 @@ class ErrorStateManagerTest {
         // Act & Assert
         errorFlow.test {
             val item = awaitItem()
-            val expectedMessage = errorMessageProvider.getGenericErrorMessage()
-            assertEquals("ERROR: $expectedMessage", item.data)
+            assertEquals("ERROR: Generic Error", item.data)
             awaitComplete()
         }
     }
@@ -61,7 +68,7 @@ class ErrorStateManagerTest {
             assertTrue(result.isFailure)
             val exception = result.exceptionOrNull()
             assertTrue(exception is RuntimeException)
-            assertEquals(errorMessageProvider.getGenericErrorMessage(), exception?.message)
+            assertEquals("Generic Error", exception?.message)
             assertTrue(exception?.cause is RuntimeException)
             assertEquals("Test error", exception?.cause?.message)
             awaitComplete()

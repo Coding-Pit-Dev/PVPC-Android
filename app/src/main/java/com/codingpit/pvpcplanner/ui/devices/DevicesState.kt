@@ -15,7 +15,7 @@ sealed class DevicesState {
     data class Error(
         override val error: String,
     ) : DevicesState(), ErrorState
-    
+
     companion object Factory : HasErrorState<DevicesState> {
         override fun createErrorState(errorResult: ErrorResult): DevicesState {
             return Error(errorResult.message)
