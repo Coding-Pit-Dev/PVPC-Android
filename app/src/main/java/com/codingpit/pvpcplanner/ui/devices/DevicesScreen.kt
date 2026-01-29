@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.Device
+import com.codingpit.pvpcplanner.domain.models.DeviceConsumptionInput
 import com.codingpit.pvpcplanner.domain.usecase.CalculateTotalConsumption
 import com.codingpit.pvpcplanner.utils.getIcons
 
@@ -102,7 +103,16 @@ private fun DevicesScreen_Success(
     onSearchQueryChanged: (String) -> Unit,
 ) {
     val calculateTotalConsumption = CalculateTotalConsumption()
-    val summary = calculateTotalConsumption(state.devicesSlot)
+    val summary =
+        calculateTotalConsumption(
+            state.devicesSlot.map {
+                DeviceConsumptionInput(
+                    watts = it.device.watts,
+                    hours = it.device.hours,
+                    cost = it.cost,
+                )
+            },
+        )
     val filteredDevices = state.filteredDevices
 
     Column(Modifier.fillMaxSize()) {
@@ -389,8 +399,7 @@ private fun DeviceItem(
                     .background(
                         color,
                         RoundedCornerShape(16.dp),
-                    )
-                    .padding(horizontal = 24.dp),
+                    ).padding(horizontal = 24.dp),
                 contentAlignment = alignment,
             ) {
                 Icon(
@@ -422,8 +431,7 @@ private fun DeviceItem(
                             .background(
                                 MaterialTheme.colorScheme.secondaryContainer,
                                 RoundedCornerShape(12.dp),
-                            )
-                            .size(52.dp),
+                            ).size(52.dp),
                     contentAlignment = Alignment.Center,
                 ) {
                     icon?.let {

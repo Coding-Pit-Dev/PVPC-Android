@@ -25,7 +25,6 @@ sealed class HomeState {
         ErrorState
 
     companion object Factory : HasErrorState<HomeState> {
-        override fun createErrorState(errorResult: ErrorResult): HomeState =
-            Error(errorResult.message)
+        override fun createErrorState(errorResult: ErrorResult): HomeState = Error(errorResult.message)
     }
 }

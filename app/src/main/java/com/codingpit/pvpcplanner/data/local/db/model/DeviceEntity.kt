@@ -11,4 +11,5 @@ data class DeviceEntity(
     val icon: String,
     val watts: Int = 0,
     val category: String = "appliances",
+    val notes: String? = null,
 )

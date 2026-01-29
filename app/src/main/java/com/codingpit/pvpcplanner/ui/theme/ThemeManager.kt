@@ -9,17 +9,17 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ThemeManager
-@Inject
-constructor(
-    private val getSettings: GetSettings,
-) {
-    fun getSettings(): Flow<Settings> = getSettings.invoke()
+    @Inject
+    constructor(
+        private val getSettings: GetSettings,
+    ) {
+        fun getSettings(): Flow<Settings> = getSettings.invoke()
 
-    @Composable
-    fun shouldShowDarkTheme(darkMode: DarkMode): Boolean =
-        when (darkMode) {
-            DarkMode.LIGHT -> false
-            DarkMode.DARK -> true
-            DarkMode.SYSTEM -> isSystemInDarkTheme()
-        }
-}
+        @Composable
+        fun shouldShowDarkTheme(darkMode: DarkMode): Boolean =
+            when (darkMode) {
+                DarkMode.LIGHT -> false
+                DarkMode.DARK -> true
+                DarkMode.SYSTEM -> isSystemInDarkTheme()
+            }
+    }

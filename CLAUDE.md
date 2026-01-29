@@ -242,7 +242,7 @@ Key points:
 
 ## Design Integration
 
-The project uses Pencil for design specifications. Design files are located at `/Users/juanje/Documents/pvpc-planner.pen`.
+The project uses Pencil for design specifications. Design files are located at `./designs/pvpc-planner.pen` (or a similar location relative to the project root).
 
 When implementing UI from designs:
 1. Use the Pencil MCP tools to read design specifications

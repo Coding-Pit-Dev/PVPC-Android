@@ -6,11 +6,13 @@ import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.strategy.PriceCalculationStrategy
 import javax.inject.Inject
 
-class CalculateBestTimeSlot @Inject constructor(
-    private val priceCalculationStrategy: PriceCalculationStrategy,
-) {
-    operator fun invoke(
-        device: Device,
-        prices: List<PVPCModel>,
-    ): TimeSlot = priceCalculationStrategy.calculateBestTimeSlot(device, prices)
-}
+class CalculateBestTimeSlot
+    @Inject
+    constructor(
+        private val priceCalculationStrategy: PriceCalculationStrategy,
+    ) {
+        operator fun invoke(
+            device: Device,
+            prices: List<PVPCModel>,
+        ): TimeSlot = priceCalculationStrategy.calculateBestTimeSlot(device, prices)
+    }

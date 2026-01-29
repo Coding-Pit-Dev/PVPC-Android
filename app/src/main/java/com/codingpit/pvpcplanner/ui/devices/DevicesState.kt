@@ -12,13 +12,14 @@ sealed class DevicesState {
         val searchQuery: String = "",
     ) : DevicesState() {
         val filteredDevices: List<DeviceRender>
-            get() = if (searchQuery.isBlank()) {
-                devicesSlot
-            } else {
-                devicesSlot.filter { device ->
-                    device.device.name.contains(searchQuery, ignoreCase = true)
+            get() =
+                if (searchQuery.isBlank()) {
+                    devicesSlot
+                } else {
+                    devicesSlot.filter { device ->
+                        device.device.name.contains(searchQuery, ignoreCase = true)
+                    }
                 }
-            }
     }
 
     data class Error(
@@ -27,7 +28,6 @@ sealed class DevicesState {
         ErrorState
 
     companion object Factory : HasErrorState<DevicesState> {
-        override fun createErrorState(errorResult: ErrorResult): DevicesState =
-            Error(errorResult.message)
+        override fun createErrorState(errorResult: ErrorResult): DevicesState = Error(errorResult.message)
     }
 }

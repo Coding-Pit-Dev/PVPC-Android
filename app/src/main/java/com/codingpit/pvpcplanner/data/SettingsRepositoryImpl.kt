@@ -7,16 +7,18 @@ import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class SettingsRepositoryImpl @Inject constructor(
-    private val settingsStore: SettingsStore,
-) : SettingsRepository {
-    override fun getSettings(): Flow<Settings> = settingsStore.settings
+class SettingsRepositoryImpl
+    @Inject
+    constructor(
+        private val settingsStore: SettingsStore,
+    ) : SettingsRepository {
+        override fun getSettings(): Flow<Settings> = settingsStore.settings
 
-    override suspend fun updateDarkMode(darkMode: DarkMode) {
-        settingsStore.updateDarkMode(darkMode)
-    }
+        override suspend fun updateDarkMode(darkMode: DarkMode) {
+            settingsStore.updateDarkMode(darkMode)
+        }
 
-    override suspend fun updateTimeFormat(timeFormat: TimeFormat) {
-        settingsStore.updateTimeFormat(timeFormat)
+        override suspend fun updateTimeFormat(timeFormat: TimeFormat) {
+            settingsStore.updateTimeFormat(timeFormat)
+        }
     }
-}

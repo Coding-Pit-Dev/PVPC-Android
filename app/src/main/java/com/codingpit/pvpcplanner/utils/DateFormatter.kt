@@ -31,8 +31,7 @@ object DateFormatter {
      * @param date The LocalDate to format
      * @return Formatted date string in YYYY-MM-DD format
      */
-    fun formatDate(date: LocalDate): String =
-        DEFAULT_DATE_FORMAT.format(date.year, date.monthValue, date.dayOfMonth)
+    fun formatDate(date: LocalDate): String = DEFAULT_DATE_FORMAT.format(date.year, date.monthValue, date.dayOfMonth)
 
     /**
      * Formats a LocalDate using year, month, and day components.
@@ -81,8 +80,8 @@ object DateFormatter {
         date2: LocalDate,
     ): Boolean =
         date1.dayOfMonth == date2.dayOfMonth &&
-                date1.monthValue == date2.monthValue &&
-                date1.year == date2.year
+            date1.monthValue == date2.monthValue &&
+            date1.year == date2.year
 
     /**
      * Determines the default date for price queries based on current time.

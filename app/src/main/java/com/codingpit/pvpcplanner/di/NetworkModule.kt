@@ -52,6 +52,5 @@ object NetworkModule {
     fun providePVPCApi(retrofit: Retrofit): PVPCApi = retrofit.create(PVPCApi::class.java)
 
     @Provides
-    fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource =
-        remoteDataSourceImpl
+    fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource = remoteDataSourceImpl
 }

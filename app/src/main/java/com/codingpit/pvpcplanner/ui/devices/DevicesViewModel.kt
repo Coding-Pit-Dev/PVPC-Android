@@ -26,58 +26,58 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DevicesViewModel
-@Inject
-constructor(
-    getDevices: GetDevices,
-    getPricesFlow: GetPricesFlow,
-    private val addDevice: AddDevice,
-    private val deleteDevice: DeleteDevice,
-    private val calculateBestTimeSlot: CalculateBestTimeSlot,
-    private val calculateDeviceCost: CalculateDeviceCost,
-    private val errorHandler: ErrorHandler,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : ViewModel() {
-    private val searchQuery = MutableStateFlow("")
+    @Inject
+    constructor(
+        getDevices: GetDevices,
+        getPricesFlow: GetPricesFlow,
+        private val addDevice: AddDevice,
+        private val deleteDevice: DeleteDevice,
+        private val calculateBestTimeSlot: CalculateBestTimeSlot,
+        private val calculateDeviceCost: CalculateDeviceCost,
+        private val errorHandler: ErrorHandler,
+        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    ) : ViewModel() {
+        private val searchQuery = MutableStateFlow("")
 
-    val state =
-        combine(
-            getDevices(),
-            getPricesFlow(),
-            searchQuery,
-        ) { devices, prices, query ->
-            prices.map { prices ->
-                val devicesSlot =
-                    devices.map { device ->
-                        val bestSlot = calculateBestTimeSlot(device, prices)
-                        val cost = calculateDeviceCost(device, bestSlot, prices)
-                        DeviceRender(device, bestSlot, cost)
-                    }
-                DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query)
-            }
-        }.map { it.getOrThrow() }
-            .handleErrors(errorHandler, "device_data", DevicesState.Factory)
-            .flowOn(dispatcher)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
+        val state =
+            combine(
+                getDevices(),
+                getPricesFlow(),
+                searchQuery,
+            ) { devices, prices, query ->
+                prices.map { prices ->
+                    val devicesSlot =
+                        devices.map { device ->
+                            val bestSlot = calculateBestTimeSlot(device, prices)
+                            val cost = calculateDeviceCost(device, bestSlot, prices)
+                            DeviceRender(device, bestSlot, cost)
+                        }
+                    DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query)
+                }
+            }.map { it.getOrThrow() }
+                .handleErrors(errorHandler, "device_data", DevicesState.Factory)
+                .flowOn(dispatcher)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
 
-    fun updateSearchQuery(query: String) {
-        searchQuery.value = query
-    }
-
-    fun addDevice(
-        name: String,
-        hours: Int,
-        icon: String,
-    ) {
-        viewModelScope.launch {
-            addDevice.invoke(Device(name = name, hours = hours, icon = icon))
+        fun updateSearchQuery(query: String) {
+            searchQuery.value = query
         }
-    }
 
-    fun removeDevice(device: Device) {
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                deleteDevice.invoke(device)
+        fun addDevice(
+            name: String,
+            hours: Int,
+            icon: String,
+        ) {
+            viewModelScope.launch {
+                addDevice.invoke(Device(name = name, hours = hours, icon = icon))
             }
         }
+
+        fun removeDevice(device: Device) {
+            viewModelScope.launch {
+                withContext(dispatcher) {
+                    deleteDevice.invoke(device)
+                }
+            }
+        }
     }
-}

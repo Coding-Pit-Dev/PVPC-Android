@@ -7,4 +7,5 @@ data class Device(
     val icon: String,
     val watts: Int = 0,
     val category: String = "appliances",
+    val notes: String? = null,
 )

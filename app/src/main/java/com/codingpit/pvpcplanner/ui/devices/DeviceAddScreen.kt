@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -410,19 +411,23 @@ private fun ConsumptionRow(
                     shape = RoundedCornerShape(12.dp),
                     suffix = { Text(stringResource(R.string.unit_hours)) },
                     isError = hoursError != null,
-                    supportingText = if (hoursError != null) {
-                        {
-                            Text(
-                                text = stringResource(
-                                    when (hoursError) {
-                                        "error_validation_device_hours_max" -> R.string.error_validation_device_hours_max
-                                        else -> R.string.error_validation_generic
-                                    }
-                                ),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    } else null,
+                    supportingText =
+                        if (hoursError != null) {
+                            {
+                                Text(
+                                    text =
+                                        stringResource(
+                                            when (hoursError) {
+                                                "error_validation_device_hours_max" -> R.string.error_validation_device_hours_max
+                                                else -> R.string.error_validation_generic
+                                            },
+                                        ),
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        } else {
+                            null
+                        },
                 )
             }
         }
@@ -527,7 +532,7 @@ private fun ButtonsSection(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .size(height = 52.dp, width = 0.dp),
+                    .height(52.dp),
             enabled = saveEnabled && !isSaving,
             shape = RoundedCornerShape(12.dp),
         ) {
@@ -560,7 +565,7 @@ private fun ButtonsSection(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .size(height = 52.dp, width = 0.dp),
+                    .height(52.dp),
             enabled = !isSaving,
             shape = RoundedCornerShape(12.dp),
         ) {
@@ -601,7 +606,7 @@ private fun IconPickerModal(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = stringResource(R.string.action_close)
+                            contentDescription = stringResource(R.string.action_close),
                         )
                     }
                 }
@@ -697,9 +702,10 @@ private fun CategoryPickerModal(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 48.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 48.dp),
             color = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(24.dp),
         ) {
@@ -720,7 +726,7 @@ private fun CategoryPickerModal(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = stringResource(R.string.action_close)
+                            contentDescription = stringResource(R.string.action_close),
                         )
                     }
                 }

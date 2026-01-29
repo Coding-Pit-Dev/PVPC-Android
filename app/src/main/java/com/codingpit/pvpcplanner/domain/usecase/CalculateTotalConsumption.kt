@@ -1,6 +1,6 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
-import com.codingpit.pvpcplanner.ui.devices.DeviceRender
+import com.codingpit.pvpcplanner.domain.models.DeviceConsumptionInput
 import javax.inject.Inject
 
 data class ConsumptionSummary(
@@ -8,21 +8,23 @@ data class ConsumptionSummary(
     val totalCost: Double,
 )
 
-class CalculateTotalConsumption @Inject constructor() {
-    operator fun invoke(devices: List<DeviceRender>): ConsumptionSummary {
-        if (devices.isEmpty()) {
-            return ConsumptionSummary(0.0, 0.0)
-        }
-
-        // Calculate total kWh: sum of (watts * hours / 1000) for each device
-        val totalKWh =
-            devices.sumOf { device ->
-                (device.device.watts * device.device.hours) / 1000.0
+class CalculateTotalConsumption
+    @Inject
+    constructor() {
+        operator fun invoke(devices: List<DeviceConsumptionInput>): ConsumptionSummary {
+            if (devices.isEmpty()) {
+                return ConsumptionSummary(0.0, 0.0)
             }
 
-        // Calculate total cost: sum of cost for each device
-        val totalCost = devices.sumOf { it.cost }
+            // Calculate total kWh: sum of (watts * hours / 1000) for each device
+            val totalKWh =
+                devices.sumOf { device ->
+                    (device.watts * device.hours) / 1000.0
+                }
 
-        return ConsumptionSummary(totalKWh, totalCost)
+            // Calculate total cost: sum of cost for each device
+            val totalCost = devices.sumOf { it.cost }
+
+            return ConsumptionSummary(totalKWh, totalCost)
+        }
     }
-}

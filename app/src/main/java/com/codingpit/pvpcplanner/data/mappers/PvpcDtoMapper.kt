@@ -59,6 +59,7 @@ fun DeviceEntity.toDomain(): Device =
         icon = icon,
         watts = watts,
         category = category,
+        notes = notes,
     )
 
 fun Device.toEntity(): DeviceEntity =
@@ -69,4 +70,5 @@ fun Device.toEntity(): DeviceEntity =
         icon = icon,
         watts = watts,
         category = category,
+        notes = notes,
     )

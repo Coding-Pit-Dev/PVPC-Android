@@ -122,4 +122,26 @@ class CalculateDeviceCostTest {
         // 0.1 kWh * 0.50 = 0.05
         assertEquals(0.05, result, 0.001)
     }
+
+    @Test
+    fun `calculate cost correctly for midnight wrapping time slot`() {
+        // 1000W = 1 kWh per hour
+        // Slot: 23:00 to 01:00 (2 hours)
+        // Hour 23: 1 kWh * 0.10 = 0.10
+        // Hour 0: 1 kWh * 0.20 = 0.20
+        // Total: 0.30
+        val device = Device(1, "Test Device", 2, "test_icon", watts = 1000)
+        val timeSlot = TimeSlot(startHour = 23, endHour = 1)
+        val prices =
+            listOf(
+                PVPCModel("2023-10-15", 22, 23, 0.15, 0.18),
+                PVPCModel("2023-10-15", 23, 0, 0.10, 0.18), // 23:00-00:00
+                PVPCModel("2023-10-16", 0, 1, 0.20, 0.18),
+                PVPCModel("2023-10-16", 1, 2, 0.25, 0.18),
+            )
+
+        val result = calculateDeviceCost(device, timeSlot, prices)
+
+        assertEquals(0.30, result, 0.001)
+    }
 }

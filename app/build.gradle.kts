@@ -43,6 +43,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDirs("$projectDir/schemas")
+        }
+    }
+
     buildFeatures {
         compose = true
     }
@@ -62,6 +68,10 @@ kotlin {
         freeCompilerArgs.add("-Xreturn-value-checker=full")
         jvmTarget = JvmTarget.JVM_1_8
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 ktlint {
@@ -140,6 +150,8 @@ dependencies {
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.kotlinx.serialization.json)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

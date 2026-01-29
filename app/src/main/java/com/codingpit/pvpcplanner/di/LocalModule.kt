@@ -37,10 +37,8 @@ object LocalModule {
     fun providesPvpcDao(database: PVPCDatabase): PVPCDao = database.pvpcDao()
 
     @Provides
-    fun providePriceLocalDataSource(localDataSource: DefaultPriceLocalDataSource): PriceLocalDataSource =
-        localDataSource
+    fun providePriceLocalDataSource(localDataSource: DefaultPriceLocalDataSource): PriceLocalDataSource = localDataSource
 
     @Provides
-    fun provideDeviceLocalDataSource(localDataSource: DefaultDeviceLocalDataSource): DeviceLocalDataSource =
-        localDataSource
+    fun provideDeviceLocalDataSource(localDataSource: DefaultDeviceLocalDataSource): DeviceLocalDataSource = localDataSource
 }
