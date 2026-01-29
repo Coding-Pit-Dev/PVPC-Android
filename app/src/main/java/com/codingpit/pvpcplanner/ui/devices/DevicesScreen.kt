@@ -16,17 +16,21 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
@@ -36,29 +40,28 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.R
-import com.codingpit.pvpcplanner.ui.components.AnimatedBottomSheet
-import com.codingpit.pvpcplanner.utils.DeviceIcon
-import com.codingpit.pvpcplanner.utils.getDeviceIcons
+import com.codingpit.pvpcplanner.domain.models.Device
+import com.codingpit.pvpcplanner.domain.usecase.CalculateTotalConsumption
 import com.codingpit.pvpcplanner.utils.getIcons
 
 @Composable
-fun DevicesScreen(viewModel: DevicesViewModel) {
+fun DevicesScreen(
+    viewModel: DevicesViewModel,
+    onDeviceClick: (Device) -> Unit,
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -79,8 +82,12 @@ fun DevicesScreen(viewModel: DevicesViewModel) {
                 DevicesScreen_Success(
                     state = state,
                     addDevice = { name, hours, icon -> viewModel.addDevice(name, hours, icon) },
-                    hideAddDeviceModal = { viewModel.hideAddDeviceModal() },
+                    hideAddDeviceModal = {
+                        // viewModel.hideAddDeviceModal()
+                    },
                     onSwiped = { viewModel.removeDevice(it.device) },
+                    onDeviceClick = onDeviceClick,
+                    onSearchQueryChanged = viewModel::updateSearchQuery,
                 )
         }
     }
@@ -93,7 +100,13 @@ private fun DevicesScreen_Success(
     addDevice: (String, Int, String) -> Unit,
     hideAddDeviceModal: () -> Unit,
     onSwiped: (DeviceRender) -> Unit,
+    onDeviceClick: (Device) -> Unit,
+    onSearchQueryChanged: (String) -> Unit,
 ) {
+    val calculateTotalConsumption = CalculateTotalConsumption()
+    val summary = calculateTotalConsumption(state.devicesSlot)
+    val filteredDevices = state.filteredDevices
+
     Column(Modifier.fillMaxSize()) {
         if (state.devicesSlot.isNotEmpty()) {
             LazyVerticalGrid(
@@ -102,21 +115,32 @@ private fun DevicesScreen_Success(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 item(span = { GridItemSpan(1) }) {
-                    SearchBar()
+                    SearchBar(
+                        searchQuery = state.searchQuery,
+                        onSearchQueryChanged = onSearchQueryChanged,
+                    )
                 }
 
                 item(span = { GridItemSpan(1) }) {
-                    SummarySection()
+                    SummarySection(totalKWh = summary.totalKWh, totalCost = summary.totalCost)
                 }
 
                 item(span = { GridItemSpan(1) }) {
-                    SectionHeader(deviceCount = state.devicesSlot.size)
+                    SectionHeader(deviceCount = filteredDevices.size)
                 }
 
-                items(state.devicesSlot) {
-                    Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                        DeviceItem(it) {
-                            onSwiped(it)
+                if (filteredDevices.isEmpty()) {
+                    item(span = { GridItemSpan(1) }) {
+                        NoResultsState()
+                    }
+                } else {
+                    items(filteredDevices) {
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            DeviceItem(
+                                render = it,
+                                onSwiped = { onSwiped(it) },
+                                onClick = { onDeviceClick(it.device) },
+                            )
                         }
                     }
                 }
@@ -124,12 +148,6 @@ private fun DevicesScreen_Success(
         } else {
             EmptyState()
         }
-
-        AddDeviceModal(
-            isVisible = state.showModal,
-            onDismissRequest = hideAddDeviceModal,
-            addDevice = addDevice,
-        )
     }
 }
 
@@ -144,44 +162,98 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SearchBar(modifier: Modifier = Modifier) {
-    OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-    ) {
-        Row(
-            modifier = Modifier
+private fun SearchBar(
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val focusManager = LocalFocusManager.current
+
+    OutlinedTextField(
+        value = searchQuery,
+        onValueChange = onSearchQueryChanged,
+        modifier =
+            modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(horizontal = 24.dp),
+        placeholder = {
+            Text(
+                text = stringResource(R.string.search_device_placeholder),
+                fontSize = 15.sp,
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+            )
+        },
+        trailingIcon = {
+            if (searchQuery.isNotEmpty()) {
+                IconButton(onClick = { onSearchQueryChanged("") }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.action_close),
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+            }
+        },
+        shape = RoundedCornerShape(12.dp),
+        singleLine = true,
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Search,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = {
+                    focusManager.clearFocus()
+                },
+            ),
+    )
+}
+
+@Composable
+private fun NoResultsState(modifier: Modifier = Modifier) {
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = 48.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = stringResource(R.string.search_device_placeholder),
+                text = stringResource(R.string.no_devices_found),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 15.sp,
+                fontSize = 14.sp,
             )
         }
     }
 }
 
 @Composable
-private fun SummarySection(modifier: Modifier = Modifier) {
+private fun SummarySection(
+    totalKWh: Double,
+    totalCost: Double,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
@@ -194,9 +266,10 @@ private fun SummarySection(modifier: Modifier = Modifier) {
             shape = RoundedCornerShape(16.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(18.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Column(
@@ -204,7 +277,7 @@ private fun SummarySection(modifier: Modifier = Modifier) {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "4.45 kWh",
+                        text = "%.2f kWh".format(totalKWh),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                     )
@@ -216,9 +289,10 @@ private fun SummarySection(modifier: Modifier = Modifier) {
                 }
 
                 Box(
-                    modifier = Modifier
-                        .size(width = 1.dp, height = 40.dp)
-                        .background(MaterialTheme.colorScheme.outlineVariant),
+                    modifier =
+                        Modifier
+                            .size(width = 1.dp, height = 40.dp)
+                            .background(MaterialTheme.colorScheme.outlineVariant),
                 )
 
                 Column(
@@ -226,7 +300,7 @@ private fun SummarySection(modifier: Modifier = Modifier) {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "€1.12",
+                        text = "€%.2f".format(totalCost),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.primary,
@@ -243,12 +317,16 @@ private fun SummarySection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SectionHeader(deviceCount: Int, modifier: Modifier = Modifier) {
+private fun SectionHeader(
+    deviceCount: Int,
+    modifier: Modifier = Modifier,
+) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
-            .padding(top = 12.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .padding(top = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -271,6 +349,7 @@ private fun DeviceItem(
     render: DeviceRender,
     modifier: Modifier = Modifier,
     onSwiped: (DeviceRender) -> Unit,
+    onClick: () -> Unit,
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
 
@@ -290,16 +369,18 @@ private fun DeviceItem(
                     SwipeToDismissBoxValue.StartToEnd -> Color.Red
                 },
             )
-            val alignment = when (direction) {
-                SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
-                SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
-                SwipeToDismissBoxValue.Settled -> Alignment.Center
-            }
-            val icon = when (direction) {
-                SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
-                SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Delete
-                SwipeToDismissBoxValue.Settled -> Icons.Default.Delete
-            }
+            val alignment =
+                when (direction) {
+                    SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
+                    SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
+                    SwipeToDismissBoxValue.Settled -> Alignment.Center
+                }
+            val icon =
+                when (direction) {
+                    SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
+                    SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Delete
+                    SwipeToDismissBoxValue.Settled -> Icons.Default.Delete
+                }
             val scale by animateFloatAsState(
                 if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
             )
@@ -310,8 +391,7 @@ private fun DeviceItem(
                     .background(
                         color,
                         RoundedCornerShape(16.dp),
-                    )
-                    .padding(horizontal = 24.dp),
+                    ).padding(horizontal = 24.dp),
                 contentAlignment = alignment,
             ) {
                 Icon(
@@ -325,6 +405,7 @@ private fun DeviceItem(
         Card(
             modifier = modifier,
             shape = RoundedCornerShape(16.dp),
+            onClick = onClick,
         ) {
             Row(
                 modifier =
@@ -337,12 +418,12 @@ private fun DeviceItem(
                 val icon = getIcons()[render.device.icon]
 
                 Box(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.secondaryContainer,
-                            RoundedCornerShape(12.dp),
-                        )
-                        .size(52.dp),
+                    modifier =
+                        Modifier
+                            .background(
+                                MaterialTheme.colorScheme.secondaryContainer,
+                                RoundedCornerShape(12.dp),
+                            ).size(52.dp),
                     contentAlignment = Alignment.Center,
                 ) {
                     icon?.let {
@@ -354,7 +435,9 @@ private fun DeviceItem(
                         )
                     } ?: run {
                         Text(
-                            render.device.name.first().uppercase(),
+                            render.device.name
+                                .first()
+                                .uppercase(),
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -364,7 +447,7 @@ private fun DeviceItem(
 
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     Text(
                         text = render.device.name,
@@ -373,14 +456,67 @@ private fun DeviceItem(
                     )
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text(
-                            text = "${render.device.hours}h/programa",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        Icon(
+                            imageVector = Icons.Default.AccessTime,
+                            contentDescription = null,
+                            modifier = Modifier.size(12.dp),
+                            tint = MaterialTheme.colorScheme.primary,
                         )
+                        Text(
+                            text =
+                                stringResource(
+                                    R.string.best_time_slot,
+                                    render.bestSlot.startHour,
+                                    render.bestSlot.endHour,
+                                ),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Bolt,
+                                contentDescription = null,
+                                modifier = Modifier.size(12.dp),
+                                tint = MaterialTheme.colorScheme.tertiary,
+                            )
+                            Text(
+                                text = "${render.device.watts}W",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Text(
+                                text = "€",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 12.sp,
+                                color = Color(0xFF4CAF50),
+                            )
+                            Text(
+                                text = "~€%.2f".format(render.cost),
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 12.sp,
+                                color = Color(0xFF4CAF50),
+                            )
+                        }
                     }
                 }
 
@@ -391,124 +527,6 @@ private fun DeviceItem(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun AddDeviceModal(
-    modifier: Modifier = Modifier,
-    isVisible: Boolean?,
-    onDismissRequest: () -> Unit,
-    addDevice: (String, Int, String) -> Unit,
-) {
-    AnimatedBottomSheet(
-        modifier = modifier,
-        value = isVisible,
-        onDismissRequest = onDismissRequest,
-    ) {
-        SheetContent(addDevice)
-    }
-}
-
-@Composable
-private fun SheetContent(
-    addDevice: (String, Int, String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var name by remember { mutableStateOf("") }
-    var hours by remember { mutableStateOf("") }
-
-    val buttonEnabled by remember { derivedStateOf { name.isNotEmpty() && hours.toIntOrNull() != null } }
-
-    Column(
-        modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        val icons = getDeviceIcons()
-        var selected by remember { mutableStateOf(icons.first()) }
-
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
-            columns = GridCells.Adaptive(140.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(icons) { icon ->
-                val label = stringResource(icon.labelRes)
-                DeviceModalItem(
-                    icon = icon,
-                    label = label,
-                    selected = selected == icon
-                ) {
-                    selected = icon
-                    name = label
-                }
-            }
-
-            item(span = {
-                GridItemSpan(2)
-            }) {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        label = {
-                            Text(stringResource(R.string.label_name))
-                        },
-                    )
-                    OutlinedTextField(
-                        value = hours,
-                        onValueChange = { hours = it },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth(),
-                        label = {
-                            Text(stringResource(R.string.label_hours))
-                        },
-                    )
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = buttonEnabled,
-                        onClick = {
-                            hours.toIntOrNull()?.let { validHours ->
-                                addDevice(name, validHours, selected.id)
-                            }
-                        },
-                    ) {
-                        Text(stringResource(R.string.action_add))
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DeviceModalItem(
-    icon: DeviceIcon,
-    label: String,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    OutlinedCard(
-        modifier = modifier,
-        onClick = onClick,
-        border = CardDefaults.outlinedCardBorder(enabled = selected),
-    ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Icon(icon.icon, contentDescription = label)
-            Text(label)
         }
     }
 }

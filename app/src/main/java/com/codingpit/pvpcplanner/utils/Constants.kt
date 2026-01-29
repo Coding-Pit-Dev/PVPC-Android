@@ -34,6 +34,7 @@ import com.codingpit.pvpcplanner.R
 object Constants {
     const val HOME_SCREEN = "Prices"
     const val DEVICES_SCREEN = "Devices"
+    const val DEVICE_ADD_SCREEN = "DeviceAdd"
     const val SETTINGS_SCREEN = "Settings"
 
     val ROUTES_NAVIGATION_BOTTOM_BAR =
@@ -47,7 +48,7 @@ object Constants {
 data class DeviceIcon(
     val id: String,
     val icon: ImageVector,
-    val labelRes: Int
+    val labelRes: Int,
 )
 
 @Composable
@@ -60,7 +61,7 @@ fun getDeviceIcons(): List<DeviceIcon> =
         DeviceIcon(
             "Electric Motorbike",
             Icons.Default.ElectricMoped,
-            R.string.device_electric_motorbike
+            R.string.device_electric_motorbike,
         ),
         DeviceIcon("Scooter", Icons.Default.ElectricScooter, R.string.device_scooter),
         DeviceIcon("Electric bike", Icons.Default.ElectricBike, R.string.device_electric_bike),
@@ -81,7 +82,7 @@ fun getDeviceIcons(): List<DeviceIcon> =
         DeviceIcon(
             "Dishwasher",
             ImageVector.vectorResource(R.drawable.ic_dishwasher),
-            R.string.device_dishwasher
+            R.string.device_dishwasher,
         ),
         DeviceIcon("Air Conditioner", Icons.Default.Air, R.string.device_air_conditioner),
         DeviceIcon("Iron", Icons.Default.Iron, R.string.device_iron),
@@ -89,5 +90,22 @@ fun getDeviceIcons(): List<DeviceIcon> =
     )
 
 @Composable
-fun getIcons(): Map<String, ImageVector> =
-    getDeviceIcons().associate { it.id to it.icon }
+fun getIcons(): Map<String, ImageVector> = getDeviceIcons().associate { it.id to it.icon }
+
+data class DeviceCategory(
+    val id: String,
+    val labelRes: Int,
+)
+
+fun getDeviceCategories(): List<DeviceCategory> =
+    listOf(
+        DeviceCategory("appliances", R.string.category_appliances),
+        DeviceCategory("lighting", R.string.category_lighting),
+        DeviceCategory("hvac", R.string.category_hvac),
+        DeviceCategory("kitchen", R.string.category_kitchen),
+        DeviceCategory("laundry", R.string.category_laundry),
+        DeviceCategory("entertainment", R.string.category_entertainment),
+        DeviceCategory("computing", R.string.category_computing),
+        DeviceCategory("mobility", R.string.category_mobility),
+        DeviceCategory("other", R.string.category_other),
+    )

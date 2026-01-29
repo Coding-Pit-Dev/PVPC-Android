@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Test
 
 class DefaultErrorMessageProviderTest {
-
     private lateinit var errorMessageProvider: DefaultErrorMessageProvider
     private val context: Context = mockk()
 
@@ -27,7 +26,8 @@ class DefaultErrorMessageProviderTest {
         every { context.getString(R.string.error_validation_device_name) } returns "El nombre del dispositivo no es válido."
         every { context.getString(R.string.error_validation_generic) } returns "Los datos introducidos no son válidos."
         every { context.getString(R.string.error_generic) } returns "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo."
-        every { context.getString(R.string.error_timeout) } returns "La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet."
+        every { context.getString(R.string.error_timeout) } returns
+            "La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet."
         every { context.getString(R.string.error_auth) } returns "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión."
     }
 
@@ -147,7 +147,7 @@ class DefaultErrorMessageProviderTest {
         // Assert
         assertEquals(
             "La operación ha tardado demasiado tiempo. Por favor, verifica tu conexión a Internet.",
-            result
+            result,
         )
     }
 

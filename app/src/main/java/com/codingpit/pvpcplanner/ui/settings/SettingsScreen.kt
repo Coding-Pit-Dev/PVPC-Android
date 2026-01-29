@@ -36,9 +36,10 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     Surface(modifier = Modifier.fillMaxSize()) {
         when (val state = state) {
             is SettingsState.Loading -> SettingsScreen_Loading()
-            is SettingsState.Success -> SettingsScreen_Success(state) { setting, option ->
-                viewModel.updateSetting(setting, option)
-            }
+            is SettingsState.Success ->
+                SettingsScreen_Success(state) { setting, option ->
+                    viewModel.updateSetting(setting, option)
+                }
 
             is SettingsState.Error -> SettingsScreen_Error()
         }
@@ -48,7 +49,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 @Composable
 private fun SettingsScreen_Success(
     state: SettingsState.Success,
-    onSettingUpdate: (SettingRender, SettingOption) -> Unit
+    onSettingUpdate: (SettingRender, SettingOption) -> Unit,
 ) {
     var selectedSetting by remember {
         mutableStateOf<SettingRender?>(null)
@@ -121,16 +122,17 @@ private fun SheetContent(
 private fun SettingsOptionItem(
     option: SettingOption,
     modifier: Modifier = Modifier,
-    onClick: (SettingOption) -> Unit
+    onClick: (SettingOption) -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable {
-                onClick(option)
-            },
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clickable {
+                    onClick(option)
+                },
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(text = stringResource(option.labelRes))
 
@@ -139,7 +141,6 @@ private fun SettingsOptionItem(
         }
     }
 }
-
 
 @Composable
 private fun SettingsScreen_Error() {

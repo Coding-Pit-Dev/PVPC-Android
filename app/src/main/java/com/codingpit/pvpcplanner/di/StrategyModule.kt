@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class StrategyModule {
     @Binds
-    abstract fun bindPriceCalculationStrategy(
-        bestTimeSlotCalculationStrategy: BestTimeSlotCalculationStrategy
-    ): PriceCalculationStrategy
+    abstract fun bindPriceCalculationStrategy(bestTimeSlotCalculationStrategy: BestTimeSlotCalculationStrategy): PriceCalculationStrategy
 }

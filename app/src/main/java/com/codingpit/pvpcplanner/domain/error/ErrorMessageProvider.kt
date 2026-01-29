@@ -11,7 +11,6 @@ import javax.inject.Singleton
  * Enables consistent error messaging and easy localization.
  */
 interface ErrorMessageProvider {
-
     /**
      * Gets a user-friendly error message for network-related errors.
      */
@@ -48,60 +47,51 @@ interface ErrorMessageProvider {
  * This implementation provides consistent, user-friendly error messages.
  */
 @Singleton
-class DefaultErrorMessageProvider @Inject constructor(
-    @ApplicationContext private val context: Context
-) : ErrorMessageProvider {
+class DefaultErrorMessageProvider
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) : ErrorMessageProvider {
+        override fun getNetworkErrorMessage(errorCode: Int?): String =
+            when (errorCode) {
+                400 -> context.getString(R.string.error_network_400)
+                401 -> context.getString(R.string.error_network_401)
+                403 -> context.getString(R.string.error_network_403)
+                404 -> context.getString(R.string.error_network_404)
+                429 -> context.getString(R.string.error_network_429)
+                500, 502, 503 -> context.getString(R.string.error_network_server)
+                else -> context.getString(R.string.error_network_generic)
+            }
 
-    override fun getNetworkErrorMessage(errorCode: Int?): String {
-        return when (errorCode) {
-            400 -> context.getString(R.string.error_network_400)
-            401 -> context.getString(R.string.error_network_401)
-            403 -> context.getString(R.string.error_network_403)
-            404 -> context.getString(R.string.error_network_404)
-            429 -> context.getString(R.string.error_network_429)
-            500, 502, 503 -> context.getString(R.string.error_network_server)
-            else -> context.getString(R.string.error_network_generic)
-        }
-    }
+        override fun getDataErrorMessage(context: String?): String =
+            when (context) {
+                "price_data" -> this.context.getString(R.string.error_data_price)
+                "device_data" -> this.context.getString(R.string.error_data_device)
+                "current_hour" -> this.context.getString(R.string.error_data_current_hour)
+                "settings_data" -> this.context.getString(R.string.error_data_settings)
+                else -> this.context.getString(R.string.error_data_generic)
+            }
 
-    override fun getDataErrorMessage(context: String?): String {
-        return when (context) {
-            "price_data" -> this.context.getString(R.string.error_data_price)
-            "device_data" -> this.context.getString(R.string.error_data_device)
-            "current_hour" -> this.context.getString(R.string.error_data_current_hour)
-            "settings_data" -> this.context.getString(R.string.error_data_settings)
-            else -> this.context.getString(R.string.error_data_generic)
-        }
-    }
+        override fun getValidationErrorMessage(field: String?): String =
+            when (field) {
+                "date" -> context.getString(R.string.error_validation_date)
+                "device_name" -> context.getString(R.string.error_validation_device_name)
+                "device_hours" -> context.getString(R.string.error_validation_device_hours)
+                "price" -> context.getString(R.string.error_validation_price)
+                else -> context.getString(R.string.error_validation_generic)
+            }
 
-    override fun getValidationErrorMessage(field: String?): String {
-        return when (field) {
-            "date" -> context.getString(R.string.error_validation_date)
-            "device_name" -> context.getString(R.string.error_validation_device_name)
-            "device_hours" -> context.getString(R.string.error_validation_device_hours)
-            "price" -> context.getString(R.string.error_validation_price)
-            else -> context.getString(R.string.error_validation_generic)
-        }
-    }
+        override fun getGenericErrorMessage(): String = context.getString(R.string.error_generic)
 
-    override fun getGenericErrorMessage(): String {
-        return context.getString(R.string.error_generic)
-    }
+        override fun getTimeoutErrorMessage(): String = context.getString(R.string.error_timeout)
 
-    override fun getTimeoutErrorMessage(): String {
-        return context.getString(R.string.error_timeout)
+        override fun getAuthenticationErrorMessage(): String = context.getString(R.string.error_auth)
     }
-
-    override fun getAuthenticationErrorMessage(): String {
-        return context.getString(R.string.error_auth)
-    }
-}
 
 /**
  * Extension functions to make error message retrieval more convenient.
  */
 object ErrorMessages {
-
     /**
      * Common error message categories for easy access.
      */
@@ -111,7 +101,7 @@ object ErrorMessages {
         VALIDATION,
         TIMEOUT,
         AUTHENTICATION,
-        GENERIC
+        GENERIC,
     }
 
     /**
@@ -120,9 +110,9 @@ object ErrorMessages {
     fun ErrorMessageProvider.getMessage(
         category: Category,
         context: String? = null,
-        errorCode: Int? = null
-    ): String {
-        return when (category) {
+        errorCode: Int? = null,
+    ): String =
+        when (category) {
             Category.NETWORK -> getNetworkErrorMessage(errorCode)
             Category.DATA -> getDataErrorMessage(context)
             Category.VALIDATION -> getValidationErrorMessage(context)
@@ -130,5 +120,4 @@ object ErrorMessages {
             Category.AUTHENTICATION -> getAuthenticationErrorMessage()
             Category.GENERIC -> getGenericErrorMessage()
         }
-    }
 }

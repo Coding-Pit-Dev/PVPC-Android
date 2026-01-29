@@ -11,7 +11,6 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class DefaultErrorHandlerTest {
-
     private val errorMessageProvider = mockk<ErrorMessageProvider>()
     private val errorHandler = DefaultErrorHandler(errorMessageProvider)
 

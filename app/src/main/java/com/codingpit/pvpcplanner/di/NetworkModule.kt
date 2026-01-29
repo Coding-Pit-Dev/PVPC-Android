@@ -23,10 +23,11 @@ object NetworkModule {
     fun providesOkHttpClient(): OkHttpClient =
         OkHttpClient
             .Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .build()
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                },
+            ).build()
 
     @Provides
     fun providesMoshi(): Moshi =
@@ -51,7 +52,5 @@ object NetworkModule {
     fun providePVPCApi(retrofit: Retrofit): PVPCApi = retrofit.create(PVPCApi::class.java)
 
     @Provides
-    fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource {
-        return remoteDataSourceImpl
-    }
+    fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource = remoteDataSourceImpl
 }

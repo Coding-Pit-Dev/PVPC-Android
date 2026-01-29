@@ -5,5 +5,8 @@ import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 
 interface PriceCalculationStrategy {
-    fun calculateBestTimeSlot(device: Device, prices: List<PVPCModel>): TimeSlot
+    fun calculateBestTimeSlot(
+        device: Device,
+        prices: List<PVPCModel>,
+    ): TimeSlot
 }

@@ -5,4 +5,6 @@ data class Device(
     val name: String,
     val hours: Int,
     val icon: String,
+    val watts: Int = 0,
+    val category: String = "appliances",
 )

@@ -6,7 +6,7 @@ import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibility
 
 class MarkerVisibilityListener(
     private val responseData: List<PVPCModel>,
-    private val onMarkerChanged: (Int, Double) -> Unit
+    private val onMarkerChanged: (Int, Double) -> Unit,
 ) : CartesianMarkerVisibilityListener {
     override fun onShown(
         marker: CartesianMarker,

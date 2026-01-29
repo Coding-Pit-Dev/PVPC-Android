@@ -28,12 +28,13 @@ fun MainBottomBarNav(
         modifier = Modifier.background(Color.Red),
     ) {
         ROUTES_NAVIGATION_BOTTOM_BAR.forEach { screen ->
-            val label = when (screen.key) {
-                Constants.HOME_SCREEN -> stringResource(R.string.nav_prices)
-                Constants.DEVICES_SCREEN -> stringResource(R.string.nav_devices)
-                Constants.SETTINGS_SCREEN -> stringResource(R.string.nav_settings)
-                else -> screen.key
-            }
+            val label =
+                when (screen.key) {
+                    Constants.HOME_SCREEN -> stringResource(R.string.nav_prices)
+                    Constants.DEVICES_SCREEN -> stringResource(R.string.nav_devices)
+                    Constants.SETTINGS_SCREEN -> stringResource(R.string.nav_settings)
+                    else -> screen.key
+                }
 
             NavigationBarItem(
                 selected = selectedScreen == screen.key,

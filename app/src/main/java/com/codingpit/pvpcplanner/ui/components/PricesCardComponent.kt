@@ -65,13 +65,12 @@ fun PriceCardComponent(
     }
 }
 
-private fun getBackground(price: Double): Color {
-    return when {
+private fun getBackground(price: Double): Color =
+    when {
         price < 0.10 -> Color.Green
         price < 0.15 -> Color.Yellow
         else -> Color.Red
     }
-}
 
 @Preview
 @Composable

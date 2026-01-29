@@ -6,5 +6,6 @@ import com.codingpit.pvpcplanner.domain.models.TimeSlot
 data class DeviceRender(
     val device: Device,
     val bestSlot: TimeSlot,
+    val cost: Double = 0.0,
     val swiped: Boolean = false,
 )

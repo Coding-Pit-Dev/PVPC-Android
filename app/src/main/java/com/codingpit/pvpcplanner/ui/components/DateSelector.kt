@@ -44,7 +44,7 @@ fun DateSelector(
         IconButton(modifier = Modifier, onClick = onPreviousClicked) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                contentDescription = stringResource(R.string.a11y_previous_day)
+                contentDescription = stringResource(R.string.a11y_previous_day),
             )
         }
         val selectedDateText =

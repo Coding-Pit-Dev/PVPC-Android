@@ -7,6 +7,7 @@ import com.codingpit.pvpcplanner.domain.error.handleErrors
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
+import com.codingpit.pvpcplanner.domain.usecase.CalculateDeviceCost
 import com.codingpit.pvpcplanner.domain.usecase.DeleteDevice
 import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
@@ -25,56 +26,58 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DevicesViewModel
-@Inject
-constructor(
-    getDevices: GetDevices,
-    getPricesFlow: GetPricesFlow,
-    private val addDevice: AddDevice,
-    private val deleteDevice: DeleteDevice,
-    private val calculateBestTimeSlot: CalculateBestTimeSlot,
-    private val errorHandler: ErrorHandler,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : ViewModel() {
-    private val _state = MutableStateFlow(DevicesUIState())
-    val state =
-        combine(getDevices(), getPricesFlow(), _state) { devices, prices, _state ->
-            prices.map { prices ->
-                devices.map { DeviceRender(it, calculateBestTimeSlot(it, prices)) }
-            } to _state
-        }.map { DevicesState.Success(it.first.getOrThrow(), it.second.showModal) }
-            .handleErrors(errorHandler, "device_data", DevicesState.Factory)
-            .flowOn(dispatcher)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
+    @Inject
+    constructor(
+        getDevices: GetDevices,
+        getPricesFlow: GetPricesFlow,
+        private val addDevice: AddDevice,
+        private val deleteDevice: DeleteDevice,
+        private val calculateBestTimeSlot: CalculateBestTimeSlot,
+        private val calculateDeviceCost: CalculateDeviceCost,
+        private val errorHandler: ErrorHandler,
+        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    ) : ViewModel() {
+        private val searchQuery = MutableStateFlow("")
 
-    fun addDevice(
-        name: String,
-        hours: Int,
-        icon: String,
-    ) {
-        viewModelScope.launch {
-            addDevice.invoke(Device(name = name, hours = hours, icon = icon))
-            hideAddDeviceModal()
+        val state =
+            combine(
+                getDevices(),
+                getPricesFlow(),
+                searchQuery,
+            ) { devices, prices, query ->
+                prices.map { prices ->
+                    val devicesSlot =
+                        devices.map { device ->
+                            val bestSlot = calculateBestTimeSlot(device, prices)
+                            val cost = calculateDeviceCost(device, bestSlot, prices)
+                            DeviceRender(device, bestSlot, cost)
+                        }
+                    DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query)
+                }
+            }.map { it.getOrThrow() }
+                .handleErrors(errorHandler, "device_data", DevicesState.Factory)
+                .flowOn(dispatcher)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DevicesState.Loading)
+
+        fun updateSearchQuery(query: String) {
+            searchQuery.value = query
         }
-    }
 
-
-    fun showAddDeviceModal() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(showModal = true)
+        fun addDevice(
+            name: String,
+            hours: Int,
+            icon: String,
+        ) {
+            viewModelScope.launch {
+                addDevice.invoke(Device(name = name, hours = hours, icon = icon))
+            }
         }
-    }
 
-    fun hideAddDeviceModal() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(showModal = null)
-        }
-    }
-
-    fun removeDevice(device: Device) {
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                deleteDevice.invoke(device)
+        fun removeDevice(device: Device) {
+            viewModelScope.launch {
+                withContext(dispatcher) {
+                    deleteDevice.invoke(device)
+                }
             }
         }
     }
-}

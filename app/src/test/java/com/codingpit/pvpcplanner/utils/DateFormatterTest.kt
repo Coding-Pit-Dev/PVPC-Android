@@ -7,7 +7,6 @@ import org.junit.Test
 import java.time.LocalDate
 
 class DateFormatterTest {
-
     @Test
     fun `formatDate with LocalDate returns correct format`() {
         // Arrange

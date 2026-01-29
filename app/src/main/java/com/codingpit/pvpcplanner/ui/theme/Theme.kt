@@ -60,15 +60,18 @@ fun PVPCPlannerTheme(
         SideEffect {
             val activity = view.context as Activity
             activity.window.navigationBarColor =
-                colorScheme.primary.copy(alpha = 0.08f).compositeOver(colorScheme.surface.copy())
+                colorScheme.primary
+                    .copy(alpha = 0.08f)
+                    .compositeOver(colorScheme.surface.copy())
                     .toArgb()
             activity.window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars =
                 !darkTheme
-            WindowCompat.getInsetsController(
-                activity.window,
-                view
-            ).isAppearanceLightNavigationBars = !darkTheme
+            WindowCompat
+                .getInsetsController(
+                    activity.window,
+                    view,
+                ).isAppearanceLightNavigationBars = !darkTheme
         }
     }
 

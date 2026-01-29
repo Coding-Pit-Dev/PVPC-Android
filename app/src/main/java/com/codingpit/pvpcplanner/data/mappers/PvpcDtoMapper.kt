@@ -21,10 +21,14 @@ fun PVPCDTO.toDomain(): PVPCModel =
             day = this.day,
             startHour = it.first().toInt(),
             endHour = it[1].toInt(),
-            pcb = this.pcb.replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT)
-                .toDouble() / PRICE_CONVERSION_FACTOR,
-            cym = this.cym.replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT)
-                .toDouble() / PRICE_CONVERSION_FACTOR,
+            pcb =
+                this.pcb
+                    .replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT)
+                    .toDouble() / PRICE_CONVERSION_FACTOR,
+            cym =
+                this.cym
+                    .replace(ORIGINAL_DECIMAL_SEPARATOR, DECIMAL_SEPARATOR_REPLACEMENT)
+                    .toDouble() / PRICE_CONVERSION_FACTOR,
         )
     }
 
@@ -39,7 +43,7 @@ fun PVPCEntity.toDomain(): PVPCModel =
 
 fun PVPCModel.toEntity(): PVPCEntity =
     PVPCEntity(
-        id = "${day}${ID_SEPARATOR}${startHour}",
+        id = "${day}${ID_SEPARATOR}$startHour",
         day = this.day,
         startHour = this.startHour,
         endHour = this.endHour,
@@ -53,6 +57,8 @@ fun DeviceEntity.toDomain(): Device =
         name = name,
         hours = hours,
         icon = icon,
+        watts = watts,
+        category = category,
     )
 
 fun Device.toEntity(): DeviceEntity =
@@ -61,4 +67,6 @@ fun Device.toEntity(): DeviceEntity =
         name = name,
         hours = hours,
         icon = icon,
+        watts = watts,
+        category = category,
     )
