@@ -67,4 +67,10 @@
     <string name="device_air_conditioner">Aire acondicionado</string>
     <string name="device_iron">Plancha</string>
     <string name="device_laundry">Lavadora</string>
+    <string name="search_device_placeholder">Buscar dispositivo…</string>
+    <string name="consumption_summary">Resumen de consumo</string>
+    <string name="consumed">Consumida</string>
+    <string name="estimated_cost">Coste estimado</string>
+    <string name="appliances_section">Electrodomésticos</string>
+    <string name="device_count">%d dispositivos</string>
 </resources>

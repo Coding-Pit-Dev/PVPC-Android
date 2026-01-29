@@ -67,4 +67,10 @@
     <string name="device_air_conditioner">Air Conditioner</string>
     <string name="device_iron">Iron</string>
     <string name="device_laundry">Washing Machine</string>
+    <string name="search_device_placeholder">Search device…</string>
+    <string name="consumption_summary">Consumption Summary</string>
+    <string name="consumed">Consumed</string>
+    <string name="estimated_cost">Estimated cost</string>
+    <string name="appliances_section">Appliances</string>
+    <string name="device_count">%d devices</string>
 </resources>

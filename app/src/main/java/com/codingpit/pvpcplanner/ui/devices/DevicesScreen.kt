@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,7 +18,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -91,15 +94,30 @@ private fun DevicesScreen_Success(
     hideAddDeviceModal: () -> Unit,
     onSwiped: (DeviceRender) -> Unit,
 ) {
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxSize()) {
         if (state.devicesSlot.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                item(span = { GridItemSpan(1) }) {
+                    SearchBar()
+                }
+
+                item(span = { GridItemSpan(1) }) {
+                    SummarySection()
+                }
+
+                item(span = { GridItemSpan(1) }) {
+                    SectionHeader(deviceCount = state.devicesSlot.size)
+                }
+
                 items(state.devicesSlot) {
-                    DeviceItem(it) {
-                        onSwiped(it)
+                    Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                        DeviceItem(it) {
+                            onSwiped(it)
+                        }
                     }
                 }
             }
@@ -121,6 +139,129 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.no_devices),
             modifier = Modifier.align(Alignment.Center),
+        )
+    }
+}
+
+@Composable
+private fun SearchBar(modifier: Modifier = Modifier) {
+    OutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = stringResource(R.string.search_device_placeholder),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 15.sp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SummarySection(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.consumption_summary),
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 18.sp,
+        )
+
+        Card(
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "4.45 kWh",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                    )
+                    Text(
+                        text = stringResource(R.string.consumed),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(width = 1.dp, height = 40.dp)
+                        .background(MaterialTheme.colorScheme.outlineVariant),
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "€1.12",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = stringResource(R.string.estimated_cost),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionHeader(deviceCount: Int, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(top = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.appliances_section),
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 18.sp,
+        )
+        Text(
+            text = stringResource(R.string.device_count, deviceCount),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -168,9 +309,9 @@ private fun DeviceItem(
                     .fillMaxSize()
                     .background(
                         color,
-                        CardDefaults.shape,
+                        RoundedCornerShape(16.dp),
                     )
-                    .padding(horizontal = 20.dp),
+                    .padding(horizontal = 24.dp),
                 contentAlignment = alignment,
             ) {
                 Icon(
@@ -181,67 +322,74 @@ private fun DeviceItem(
             }
         },
     ) {
-        Card(modifier = modifier) {
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(16.dp),
+        ) {
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 val icon = getIcons()[render.device.icon]
 
-                icon?.let {
-                    Icon(
-                        imageVector = it,
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .background(
-                                    MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp),
-                                )
-                                .padding(16.dp),
-                        tint = MaterialTheme.colorScheme.onSecondary,
-                    )
-                } ?: run {
-                    Text(
-                        render.device.name.first().uppercase(),
-                        modifier =
-                            Modifier
-                                .background(
-                                    MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp),
-                                )
-                                .padding(16.dp),
-                        color = MaterialTheme.colorScheme.onSecondary,
-                    )
+                Box(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.secondaryContainer,
+                            RoundedCornerShape(12.dp),
+                        )
+                        .size(52.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    icon?.let {
+                        Icon(
+                            imageVector = it,
+                            contentDescription = null,
+                            modifier = Modifier.size(28.dp),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    } ?: run {
+                        Text(
+                            render.device.name.first().uppercase(),
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
 
                 Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "${render.device.name} (${render.device.hours} ${stringResource(R.string.unit_hours)})",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
+                        text = render.device.name,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp,
                     )
 
-                    Text(
-                        text =
-                            stringResource(
-                                R.string.best_time_from_to,
-                                render.bestSlot.startHour,
-                                render.bestSlot.endHour,
-                            ),
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        lineHeight = 21.sp,
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(
+                            text = "${render.device.hours}h/programa",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
+
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
