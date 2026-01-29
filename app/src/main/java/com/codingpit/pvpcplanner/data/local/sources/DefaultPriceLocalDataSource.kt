@@ -6,6 +6,7 @@ import com.codingpit.pvpcplanner.data.mappers.toEntity
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
 class DefaultPriceLocalDataSource @Inject constructor(
@@ -15,7 +16,7 @@ class DefaultPriceLocalDataSource @Inject constructor(
         try {
             val formattedDate = LocalDate.parse(date, inputDateFormatter).format(queryDateFormatter)
             pvpcDao.getPrices(formattedDate).map { it.toDomain() }
-        } catch (e: Exception) {
+        } catch (e: DateTimeParseException) {
             emptyList()
         }
 

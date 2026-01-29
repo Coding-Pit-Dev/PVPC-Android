@@ -10,6 +10,7 @@ class BestTimeSlotCalculationStrategy @Inject constructor() : PriceCalculationSt
         device: Device,
         prices: List<PVPCModel>,
     ): TimeSlot {
+        require(prices.isNotEmpty()) { "Prices list cannot be empty" }
         var bestSlot = prices.first().startHour
         var bestPrice = Double.MAX_VALUE
 
