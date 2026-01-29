@@ -54,29 +54,28 @@ fun PriceChart(
 
     CartesianChartHost(
         modifier = modifier,
-        chart =
-            rememberCartesianChart(
-                rememberLineCartesianLayer(),
-                marker =
-                    rememberDefaultCartesianMarker(
-                        label = TextComponent(),
-                        labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
-                    ),
-                markerVisibilityListener = MarkerVisibilityListener(responseData, onMarkerChanged),
-                startAxis =
-                    VerticalAxis.rememberStart(
-                        label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
-                        guideline = null,
-                        itemPlacer = VerticalAxis.ItemPlacer.step(step = { yAxisStep.toDouble() }),
-                    ),
-                bottomAxis =
-                    HorizontalAxis.rememberBottom(
-                        label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
-                        guideline = null,
-                        valueFormatter = getValueFormatter(calendar, timeFormat, simpleDateFormat),
-                        itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 }),
-                    ),
-            ),
+        chart = rememberCartesianChart(
+            rememberLineCartesianLayer(),
+            marker =
+                rememberDefaultCartesianMarker(
+                    label = TextComponent(),
+                    labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
+                ),
+            markerVisibilityListener = MarkerVisibilityListener(responseData, onMarkerChanged),
+            startAxis =
+                VerticalAxis.rememberStart(
+                    label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
+                    guideline = null,
+                    itemPlacer = VerticalAxis.ItemPlacer.step(step = { yAxisStep.toDouble() }),
+                ),
+            bottomAxis =
+                HorizontalAxis.rememberBottom(
+                    label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
+                    guideline = null,
+                    valueFormatter = getValueFormatter(calendar, timeFormat, simpleDateFormat),
+                    itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 }),
+                ),
+        ),
         zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
         scrollState = rememberVicoScrollState(scrollEnabled = false),
         modelProducer = modelProducer,
@@ -101,8 +100,8 @@ private fun rememberYAxis(values: List<Float>) =
                 // Optional: Round to a nicer number, e.g., nearest 0.01 or 0.05
                 // This is a simple example; you might want more sophisticated rounding
                 (calculatedStep * 100).roundToInt() /
-                    100f // Round to 2 decimal places
-                        .coerceAtLeast(0.01f) // Ensure step is not too small
+                        100f // Round to 2 decimal places
+                            .coerceAtLeast(0.01f) // Ensure step is not too small
             }
         }
     }

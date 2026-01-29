@@ -5,10 +5,8 @@ import com.codingpit.pvpcplanner.domain.models.Device
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetDevices
-    @Inject
-    constructor(
-        private val repository: DeviceRepository,
-    ) {
-        operator fun invoke(): Flow<List<Device>> = repository.getDevices()
-    }
+class GetDevices @Inject constructor(
+    private val repository: DeviceRepository,
+) {
+    operator fun invoke(): Flow<List<Device>> = repository.getDevices()
+}

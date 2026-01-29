@@ -26,13 +26,11 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
@@ -391,7 +389,8 @@ private fun DeviceItem(
                     .background(
                         color,
                         RoundedCornerShape(16.dp),
-                    ).padding(horizontal = 24.dp),
+                    )
+                    .padding(horizontal = 24.dp),
                 contentAlignment = alignment,
             ) {
                 Icon(
@@ -423,7 +422,8 @@ private fun DeviceItem(
                             .background(
                                 MaterialTheme.colorScheme.secondaryContainer,
                                 RoundedCornerShape(12.dp),
-                            ).size(52.dp),
+                            )
+                            .size(52.dp),
                     contentAlignment = Alignment.Center,
                 ) {
                     icon?.let {
