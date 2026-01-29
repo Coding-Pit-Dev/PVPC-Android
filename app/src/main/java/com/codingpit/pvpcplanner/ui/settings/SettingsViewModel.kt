@@ -21,49 +21,49 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
-    @Inject
-    constructor(
-        getSettings: GetSettings,
-        errorHandler: ErrorHandler,
-        private val updateSetting: UpdateSetting,
-        private val coroutineDispatcher: CoroutineDispatcher,
-    ) : ViewModel() {
-        val state =
-            getSettings()
-                .map {
-                    SettingsState.Success(it.toRender(it))
-                }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
-                .flowOn(coroutineDispatcher)
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
+@Inject
+constructor(
+    getSettings: GetSettings,
+    errorHandler: ErrorHandler,
+    private val updateSetting: UpdateSetting,
+    private val coroutineDispatcher: CoroutineDispatcher,
+) : ViewModel() {
+    val state =
+        getSettings()
+            .map {
+                SettingsState.Success(it.toRender(it))
+            }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
+            .flowOn(coroutineDispatcher)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
 
-        fun updateSetting(
-            render: SettingRender,
-            option: SettingOption,
-        ) {
-            viewModelScope.launch(coroutineDispatcher) {
-                when (render.setting) {
-                    is SettingValue.DarkMode -> {
-                        updateSetting(
-                            when (option.labelRes) {
-                                R.string.option_light -> DarkMode.LIGHT
-                                R.string.option_dark -> DarkMode.DARK
-                                else -> DarkMode.SYSTEM
-                            },
-                        )
-                    }
+    fun updateSetting(
+        render: SettingRender,
+        option: SettingOption,
+    ) {
+        viewModelScope.launch(coroutineDispatcher) {
+            when (render.setting) {
+                is SettingValue.DarkMode -> {
+                    updateSetting(
+                        when (option.labelRes) {
+                            R.string.option_light -> DarkMode.LIGHT
+                            R.string.option_dark -> DarkMode.DARK
+                            else -> DarkMode.SYSTEM
+                        },
+                    )
+                }
 
-                    is SettingValue.TimeFormat -> {
-                        updateSetting(
-                            when (option.labelRes) {
-                                R.string.option_24h -> TimeFormat.TWENTY_FOUR_HOURS
-                                else -> TimeFormat.TWELVE_HOURS
-                            },
-                        )
-                    }
+                is SettingValue.TimeFormat -> {
+                    updateSetting(
+                        when (option.labelRes) {
+                            R.string.option_24h -> TimeFormat.TWENTY_FOUR_HOURS
+                            else -> TimeFormat.TWELVE_HOURS
+                        },
+                    )
                 }
             }
         }
     }
+}
 
 sealed class SettingValue(
     val titleRes: Int,
@@ -117,7 +117,10 @@ private fun Settings.toRender(settings: Settings): List<SettingRender> =
                         R.string.option_24h,
                         settings.timeFormat == TimeFormat.TWENTY_FOUR_HOURS,
                     ),
-                    SettingOption(R.string.option_ampm, settings.timeFormat == TimeFormat.TWELVE_HOURS),
+                    SettingOption(
+                        R.string.option_ampm,
+                        settings.timeFormat == TimeFormat.TWELVE_HOURS
+                    ),
                 ),
         ),
     )

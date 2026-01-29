@@ -177,6 +177,9 @@ class MyViewModelTest {
 }
 ```
 
+## Kotlin Guidelines
+- Use runCatching instead of default try/catch
+
 ## Jetpack Compose Guidelines
 
 ### Component Organization

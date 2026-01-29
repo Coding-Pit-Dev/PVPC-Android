@@ -64,72 +64,70 @@ sealed class ValidationResult {
 /**
  * Default implementation of DateValidator using application business rules.
  */
-class DefaultDateValidator
-    @Inject
-    constructor() : DateValidator {
-        override fun validateQueryDate(date: LocalDate): ValidationResult {
-            val isValid = DateFormatter.isValidQueryDate(date)
+class DefaultDateValidator @Inject constructor() : DateValidator {
+    override fun validateQueryDate(date: LocalDate): ValidationResult {
+        val isValid = DateFormatter.isValidQueryDate(date)
 
-            return if (isValid) {
-                ValidationResult.Success
-            } else {
-                ValidationResult.Error(
-                    reason = "Price data is not yet available for this date. Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time.",
-                    errorCode = "PRICE_DATA_NOT_AVAILABLE",
-                )
-            }
-        }
-
-        override fun validateDateRange(
-            date: LocalDate,
-            startDate: LocalDate,
-            endDate: LocalDate,
-        ): ValidationResult =
-            when {
-                date.isBefore(startDate) ->
-                    ValidationResult.Error(
-                        reason = "Date is before the allowed range. Earliest date: ${
-                            DateFormatter.formatDate(
-                                startDate,
-                            )
-                        }",
-                        errorCode = "DATE_TOO_EARLY",
-                    )
-
-                date.isAfter(endDate) ->
-                    ValidationResult.Error(
-                        reason = "Date is after the allowed range. Latest date: ${
-                            DateFormatter.formatDate(
-                                endDate,
-                            )
-                        }",
-                        errorCode = "DATE_TOO_LATE",
-                    )
-
-                else -> ValidationResult.Success
-            }
-
-        override fun validateNotTooFarInFuture(date: LocalDate): ValidationResult {
-            val maxFutureDate = DateFormatter.getCurrentDate().plusDays(MAX_FUTURE_DAYS)
-
-            return if (date.isAfter(maxFutureDate)) {
-                ValidationResult.Error(
-                    reason = "Date is too far in the future. Maximum allowed: ${
-                        DateFormatter.formatDate(
-                            maxFutureDate,
-                        )
-                    }",
-                    errorCode = "DATE_TOO_FAR_FUTURE",
-                )
-            } else {
-                ValidationResult.Success
-            }
-        }
-
-        companion object {
-            /**
-             * Maximum number of days in the future that are allowed for validation.
-             */
-            private const val MAX_FUTURE_DAYS = 7L
+        return if (isValid) {
+            ValidationResult.Success
+        } else {
+            ValidationResult.Error(
+                reason = "Price data is not yet available for this date. Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time.",
+                errorCode = "PRICE_DATA_NOT_AVAILABLE",
+            )
         }
     }
+
+    override fun validateDateRange(
+        date: LocalDate,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): ValidationResult =
+        when {
+            date.isBefore(startDate) ->
+                ValidationResult.Error(
+                    reason = "Date is before the allowed range. Earliest date: ${
+                        DateFormatter.formatDate(
+                            startDate,
+                        )
+                    }",
+                    errorCode = "DATE_TOO_EARLY",
+                )
+
+            date.isAfter(endDate) ->
+                ValidationResult.Error(
+                    reason = "Date is after the allowed range. Latest date: ${
+                        DateFormatter.formatDate(
+                            endDate,
+                        )
+                    }",
+                    errorCode = "DATE_TOO_LATE",
+                )
+
+            else -> ValidationResult.Success
+        }
+
+    override fun validateNotTooFarInFuture(date: LocalDate): ValidationResult {
+        val maxFutureDate = DateFormatter.getCurrentDate().plusDays(MAX_FUTURE_DAYS)
+
+        return if (date.isAfter(maxFutureDate)) {
+            ValidationResult.Error(
+                reason = "Date is too far in the future. Maximum allowed: ${
+                    DateFormatter.formatDate(
+                        maxFutureDate,
+                    )
+                }",
+                errorCode = "DATE_TOO_FAR_FUTURE",
+            )
+        } else {
+            ValidationResult.Success
+        }
+    }
+
+    companion object {
+        /**
+         * Maximum number of days in the future that are allowed for validation.
+         */
+        private const val MAX_FUTURE_DAYS = 7L
+    }
+}

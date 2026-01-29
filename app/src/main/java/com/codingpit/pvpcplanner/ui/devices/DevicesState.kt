@@ -27,6 +27,7 @@ sealed class DevicesState {
         ErrorState
 
     companion object Factory : HasErrorState<DevicesState> {
-        override fun createErrorState(errorResult: ErrorResult): DevicesState = Error(errorResult.message)
+        override fun createErrorState(errorResult: ErrorResult): DevicesState =
+            Error(errorResult.message)
     }
 }

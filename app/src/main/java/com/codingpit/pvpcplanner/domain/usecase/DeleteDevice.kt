@@ -4,10 +4,8 @@ import com.codingpit.pvpcplanner.data.DeviceRepository
 import com.codingpit.pvpcplanner.domain.models.Device
 import javax.inject.Inject
 
-class DeleteDevice
-    @Inject
-    constructor(
-        private val repository: DeviceRepository,
-    ) {
-        suspend operator fun invoke(device: Device) = repository.deleteDevice(device)
-    }
+class DeleteDevice @Inject constructor(
+    private val repository: DeviceRepository,
+) {
+    suspend operator fun invoke(device: Device) = repository.deleteDevice(device)
+}
