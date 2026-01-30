@@ -24,7 +24,7 @@ class SettingsViewModel
     @Inject
     constructor(
         getSettings: GetSettings,
-        errorHandler: ErrorHandler,
+        private val errorHandler: ErrorHandler,
         private val updateSettingUseCase: UpdateSetting,
         private val coroutineDispatcher: CoroutineDispatcher,
     ) : ViewModel() {
@@ -41,25 +41,29 @@ class SettingsViewModel
             option: SettingOption,
         ) {
             viewModelScope.launch(coroutineDispatcher) {
-                when (render.setting) {
-                    is SettingValue.DarkMode -> {
-                        updateSettingUseCase(
-                            when (option.labelRes) {
-                                R.string.option_light -> DarkMode.LIGHT
-                                R.string.option_dark -> DarkMode.DARK
-                                else -> DarkMode.SYSTEM
-                            },
-                        )
-                    }
+                try {
+                    when (render.setting) {
+                        is SettingValue.DarkMode -> {
+                            updateSettingUseCase(
+                                when (option.labelRes) {
+                                    R.string.option_light -> DarkMode.LIGHT
+                                    R.string.option_dark -> DarkMode.DARK
+                                    else -> DarkMode.SYSTEM
+                                },
+                            )
+                        }
 
-                    is SettingValue.TimeFormat -> {
-                        updateSettingUseCase(
-                            when (option.labelRes) {
-                                R.string.option_24h -> TimeFormat.TWENTY_FOUR_HOURS
-                                else -> TimeFormat.TWELVE_HOURS
-                            },
-                        )
+                        is SettingValue.TimeFormat -> {
+                            updateSettingUseCase(
+                                when (option.labelRes) {
+                                    R.string.option_24h -> TimeFormat.TWENTY_FOUR_HOURS
+                                    else -> TimeFormat.TWELVE_HOURS
+                                },
+                            )
+                        }
                     }
+                } catch (e: Exception) {
+                    errorHandler.handleError(e, "update_setting")
                 }
             }
         }

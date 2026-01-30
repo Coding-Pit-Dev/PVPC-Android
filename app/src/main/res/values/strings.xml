@@ -79,7 +79,7 @@
         <item quantity="one">%d device</item>
         <item quantity="other">%d devices</item>
     </plurals>
-    <string name="best_time_slot">Best time: %1$d:00 - %2$d:00</string>
+    <string name="best_time_slot">Best time: %1$s - %2$s</string>
     <string name="add_device_title">Add Device</string>
     <string name="edit_device_title">Edit Device</string>
     <string name="action_back">Back</string>

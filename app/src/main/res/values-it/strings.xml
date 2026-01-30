@@ -78,7 +78,7 @@
         <item quantity="one">%d dispositivo</item>
         <item quantity="other">%d dispositivi</item>
     </plurals>
-    <string name="best_time_slot">Miglior orario: %1$d:00 - %2$d:00</string>
+    <string name="best_time_slot">Miglior orario: %1$s - %2$s</string>
     <string name="add_device_title">Aggiungi dispositivo</string>
     <string name="edit_device_title">Modifica dispositivo</string>
     <string name="action_back">Indietro</string>

@@ -78,7 +78,7 @@
         <item quantity="one">%d Gerät</item>
         <item quantity="other">%d Geräte</item>
     </plurals>
-    <string name="best_time_slot">Beste Zeit: %1$d:00 - %2$d:00</string>
+    <string name="best_time_slot">Beste Zeit: %1$s - %2$s</string>
     <string name="add_device_title">Gerät hinzufügen</string>
     <string name="edit_device_title">Gerät bearbeiten</string>
     <string name="action_back">Zurück</string>

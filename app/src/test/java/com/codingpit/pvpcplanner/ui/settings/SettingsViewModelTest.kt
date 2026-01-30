@@ -30,6 +30,9 @@ import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
+    companion object {
+        private const val UNKNOWN_LABEL_RES = 0
+    }
     private val mockGetSettings = mockk<GetSettings>()
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()
@@ -158,7 +161,7 @@ class SettingsViewModelTest {
                     setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_system),
                     options = emptyList(),
                 )
-            val option = SettingOption(0) // Should default to SYSTEM
+            val option = SettingOption(UNKNOWN_LABEL_RES) // Should default to SYSTEM
 
             // Act
             viewModel =
@@ -208,7 +211,7 @@ class SettingsViewModelTest {
                     setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_ampm),
                     options = emptyList(),
                 )
-            val option = SettingOption(0) // Should default to TWELVE_HOURS
+            val option = SettingOption(UNKNOWN_LABEL_RES) // Should default to TWELVE_HOURS
 
             // Act
             viewModel =

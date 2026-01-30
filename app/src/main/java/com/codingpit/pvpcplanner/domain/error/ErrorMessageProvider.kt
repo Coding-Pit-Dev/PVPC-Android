@@ -63,14 +63,14 @@ class DefaultErrorMessageProvider
                 else -> context.getString(R.string.error_network_generic)
             }
 
-            override fun getDataErrorMessage(errorData: String?): String =
-                when (errorData) {
-                    "price_data" -> context.getString(R.string.error_data_price)
-                    "device_data" -> context.getString(R.string.error_data_device)
-                    "current_hour" -> context.getString(R.string.error_data_current_hour)
-                    "settings_data" -> context.getString(R.string.error_data_settings)
-                    else -> context.getString(R.string.error_data_generic)
-                }
+        override fun getDataErrorMessage(errorData: String?): String =
+            when (errorData) {
+                "price_data" -> context.getString(R.string.error_data_price)
+                "device_data" -> context.getString(R.string.error_data_device)
+                "current_hour" -> context.getString(R.string.error_data_current_hour)
+                "settings_data" -> context.getString(R.string.error_data_settings)
+                else -> context.getString(R.string.error_data_generic)
+            }
         override fun getValidationErrorMessage(field: String?): String =
             when (field) {
                 "date" -> context.getString(R.string.error_validation_date)

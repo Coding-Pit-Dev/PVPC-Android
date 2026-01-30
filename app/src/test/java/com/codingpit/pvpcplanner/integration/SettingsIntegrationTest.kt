@@ -191,7 +191,7 @@ class SettingsIntegrationTest {
             // Act & Assert
             try {
                 updateSettingUseCase(DarkMode.DARK)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockSettingsStore.updateDarkMode(DarkMode.DARK) }
@@ -262,8 +262,12 @@ class SettingsIntegrationTest {
 
             // Act & Assert
             try {
-                getSettingsUseCase() // This call should throw immediately
-                assert(false) { "Expected exception to be thrown" }
+                // We need to collect the flow to trigger the exception if it happens during collection,
+                // or just call the function if it throws immediately.
+                // Given the test setup 'every { ... } throws', it likely throws on invocation.
+                // But to be safe and follow instructions:
+                getSettingsUseCase().collect { }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 verify { mockSettingsStore.settings }

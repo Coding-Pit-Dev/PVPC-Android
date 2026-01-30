@@ -58,7 +58,6 @@ import com.codingpit.pvpcplanner.domain.models.DeviceConsumptionInput
 import com.codingpit.pvpcplanner.domain.usecase.CalculateTotalConsumption
 import com.codingpit.pvpcplanner.utils.getIcons
 import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun DevicesScreen(
@@ -101,7 +100,7 @@ private fun DevicesScreen_Success(
     onSearchQueryChanged: (String) -> Unit,
 ) {
     val calculateTotalConsumption = remember { CalculateTotalConsumption() }
-    val summary =
+    val summary = remember(state.devicesSlot) {
         calculateTotalConsumption(
             state.devicesSlot.map {
                 DeviceConsumptionInput(
@@ -111,6 +110,7 @@ private fun DevicesScreen_Success(
                 )
             },
         )
+    }
     val filteredDevices = state.filteredDevices
 
     Column(Modifier.fillMaxSize()) {
@@ -144,7 +144,7 @@ private fun DevicesScreen_Success(
                         Box(modifier = Modifier.padding(horizontal = 24.dp)) {
                             DeviceItem(
                                 render = it,
-                                onSwiped = { onSwiped(it) },
+                                onSwiped = onSwiped,
                                 onClick = { onDeviceClick(it.device) },
                             )
                         }
@@ -374,6 +374,7 @@ private fun DeviceItem(
 
             val color by animateColorAsState(
                 Color.Red,
+                label = "dismissBackgroundColor",
             )
             val alignment =
                 when (direction) {
@@ -384,6 +385,7 @@ private fun DeviceItem(
             val icon = Icons.Default.Delete
             val scale by animateFloatAsState(
                 if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
+                label = "dismissIconScale",
             )
 
             Box(
@@ -468,12 +470,27 @@ private fun DeviceItem(
                             modifier = Modifier.size(12.dp),
                             tint = MaterialTheme.colorScheme.primary,
                         )
+                        val context = androidx.compose.ui.platform.LocalContext.current
+                        val timeFormat = remember { android.text.format.DateFormat.getTimeFormat(context) }
+                        val start = remember(render.bestSlot.startHour) {
+                            java.util.Calendar.getInstance().apply {
+                                set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.startHour)
+                                set(java.util.Calendar.MINUTE, 0)
+                            }.time
+                        }
+                        val end = remember(render.bestSlot.endHour) {
+                            java.util.Calendar.getInstance().apply {
+                                set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.endHour)
+                                set(java.util.Calendar.MINUTE, 0)
+                            }.time
+                        }
+
                         Text(
                             text =
                                 stringResource(
                                     R.string.best_time_slot,
-                                    render.bestSlot.startHour,
-                                    render.bestSlot.endHour,
+                                    timeFormat.format(start),
+                                    timeFormat.format(end),
                                 ),
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 12.sp,
