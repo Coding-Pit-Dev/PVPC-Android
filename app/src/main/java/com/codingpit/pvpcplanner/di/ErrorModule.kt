@@ -11,10 +11,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ErrorModule {
-
     @Binds
     @Singleton
-    abstract fun bindErrorHandler(
-        defaultErrorHandler: DefaultErrorHandler
-    ): ErrorHandler
+    abstract fun bindErrorHandler(defaultErrorHandler: DefaultErrorHandler): ErrorHandler
 }

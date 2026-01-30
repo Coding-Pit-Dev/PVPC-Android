@@ -28,10 +28,11 @@ import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
-
+    companion object {
+        private const val UNKNOWN_LABEL_RES = 0
+    }
     private val mockGetSettings = mockk<GetSettings>()
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()
@@ -69,96 +70,107 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `state emits Success when settings are retrieved successfully`() = runTest(testDispatcher) {
-        // Arrange
-        val settings = Settings(DarkMode.DARK, TimeFormat.TWELVE_HOURS)
-        every { mockGetSettings() } returns flowOf(settings)
+    fun `state emits Success when settings are retrieved successfully`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val settings = Settings(DarkMode.DARK, TimeFormat.TWELVE_HOURS)
+            every { mockGetSettings() } returns flowOf(settings)
 
-        // Create new viewModel after mock setup
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
+            // Create new viewModel after mock setup
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
 
-        // Act & Assert
-        viewModel.state.test {
-            val state = awaitFinalState()
-            assertTrue(
-                "Expected Success state but got: ${state::class.simpleName}",
-                state is SettingsState.Success
-            )
-            assertEquals(2, (state as SettingsState.Success).settings.size)
+            // Act & Assert
+            viewModel.state.test {
+                val state = awaitFinalState()
+                assertTrue(
+                    "Expected Success state but got: ${state::class.simpleName}",
+                    state is SettingsState.Success,
+                )
+                assertEquals(2, (state as SettingsState.Success).settings.size)
+            }
+            // viewModelScope cancellation handled in tearDown
         }
-        // viewModelScope cancellation handled in tearDown
-    }
 
     @Test
-    fun `updateSetting calls correct use case for DarkMode Light`() = runTest(testDispatcher) {
-        // Arrange
-        val render = SettingRender(
-            setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_light),
-            options = listOf(
-                SettingOption(R.string.option_system, false),
-                SettingOption(R.string.option_light, true),
-                SettingOption(R.string.option_dark, false)
-            )
-        )
-        val option = SettingOption(R.string.option_light)
+    fun `updateSetting calls correct use case for DarkMode Light`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val render =
+                SettingRender(
+                    setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_light),
+                    options =
+                        listOf(
+                            SettingOption(R.string.option_system, false),
+                            SettingOption(R.string.option_light, true),
+                            SettingOption(R.string.option_dark, false),
+                        ),
+                )
+            val option = SettingOption(R.string.option_light)
 
-        // Act
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
-        viewModel.updateSetting(render, option)
+            // Act
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
+            viewModel.updateSetting(render, option)
 
-        // Assert
-        coVerify { mockUpdateSetting(DarkMode.LIGHT) }
-    }
+            // Assert
+            coVerify { mockUpdateSetting(DarkMode.LIGHT) }
+        }
 
     @Test
-    fun `updateSetting calls correct use case for DarkMode Dark`() = runTest(testDispatcher) {
-        // Arrange
-        val render = SettingRender(
-            setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_dark),
-            options = emptyList()
-        )
-        val option = SettingOption(R.string.option_dark)
+    fun `updateSetting calls correct use case for DarkMode Dark`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val render =
+                SettingRender(
+                    setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_dark),
+                    options = emptyList(),
+                )
+            val option = SettingOption(R.string.option_dark)
 
-        // Act
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
-        viewModel.updateSetting(render, option)
+            // Act
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
+            viewModel.updateSetting(render, option)
 
-        // Assert
-        coVerify { mockUpdateSetting(DarkMode.DARK) }
-    }
+            // Assert
+            coVerify { mockUpdateSetting(DarkMode.DARK) }
+        }
 
     @Test
     fun `updateSetting calls correct use case for DarkMode System (default)`() =
         runTest(testDispatcher) {
             // Arrange
-            val render = SettingRender(
-                setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_system),
-                options = emptyList()
-            )
-            val option = SettingOption(0) // Should default to SYSTEM
+            val render =
+                SettingRender(
+                    setting = SettingValue.DarkMode(R.string.setting_dark_mode, R.string.option_system),
+                    options = emptyList(),
+                )
+            val option = SettingOption(UNKNOWN_LABEL_RES) // Should default to SYSTEM
 
             // Act
-            viewModel = SettingsViewModel(
-                getSettings = mockGetSettings,
-                errorHandler = mockErrorHandler,
-                updateSetting = mockUpdateSetting,
-                coroutineDispatcher = testDispatcher
-            )
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
             viewModel.updateSetting(render, option)
 
             // Assert
@@ -166,44 +178,49 @@ class SettingsViewModelTest {
         }
 
     @Test
-    fun `updateSetting calls correct use case for TimeFormat 24 hours`() = runTest(testDispatcher) {
-        // Arrange
-        val render = SettingRender(
-            setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_24h),
-            options = emptyList()
-        )
-        val option = SettingOption(R.string.option_24h)
+    fun `updateSetting calls correct use case for TimeFormat 24 hours`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val render =
+                SettingRender(
+                    setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_24h),
+                    options = emptyList(),
+                )
+            val option = SettingOption(R.string.option_24h)
 
-        // Act
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
-        viewModel.updateSetting(render, option)
+            // Act
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
+            viewModel.updateSetting(render, option)
 
-        // Assert
-        coVerify { mockUpdateSetting(TimeFormat.TWENTY_FOUR_HOURS) }
-    }
+            // Assert
+            coVerify { mockUpdateSetting(TimeFormat.TWENTY_FOUR_HOURS) }
+        }
 
     @Test
     fun `updateSetting calls correct use case for TimeFormat AM PM (default)`() =
         runTest(testDispatcher) {
             // Arrange
-            val render = SettingRender(
-                setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_ampm),
-                options = emptyList()
-            )
-            val option = SettingOption(0) // Should default to TWELVE_HOURS
+            val render =
+                SettingRender(
+                    setting = SettingValue.TimeFormat(R.string.setting_time_format, R.string.option_ampm),
+                    options = emptyList(),
+                )
+            val option = SettingOption(UNKNOWN_LABEL_RES) // Should default to TWELVE_HOURS
 
             // Act
-            viewModel = SettingsViewModel(
-                getSettings = mockGetSettings,
-                errorHandler = mockErrorHandler,
-                updateSetting = mockUpdateSetting,
-                coroutineDispatcher = testDispatcher
-            )
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
             viewModel.updateSetting(render, option)
 
             // Assert
@@ -211,26 +228,28 @@ class SettingsViewModelTest {
         }
 
     @Test
-    fun `state emits Error when settings retrieval fails`() = runTest(testDispatcher) {
-        // Arrange
-        val errorMessage = "Network error"
-        every { mockGetSettings() } returns flow { throw IOException(errorMessage) }
+    fun `state emits Error when settings retrieval fails`() =
+        runTest(testDispatcher) {
+            // Arrange
+            val errorMessage = "Network error"
+            every { mockGetSettings() } returns flow { throw IOException(errorMessage) }
 
-        viewModel = SettingsViewModel(
-            getSettings = mockGetSettings,
-            errorHandler = mockErrorHandler,
-            updateSetting = mockUpdateSetting,
-            coroutineDispatcher = testDispatcher
-        )
+            viewModel =
+                SettingsViewModel(
+                    getSettings = mockGetSettings,
+                    errorHandler = mockErrorHandler,
+                    updateSettingUseCase = mockUpdateSetting,
+                    coroutineDispatcher = testDispatcher,
+                )
 
-        // Act & Assert
-        viewModel.state.test {
-            val finalState = awaitFinalState()
-            assertTrue(
-                "Expected Error state but got: ${finalState::class.simpleName}",
-                finalState is SettingsState.Error
-            )
-            assertEquals(errorMessage, (finalState as SettingsState.Error).error)
+            // Act & Assert
+            viewModel.state.test {
+                val finalState = awaitFinalState()
+                assertTrue(
+                    "Expected Error state but got: ${finalState::class.simpleName}",
+                    finalState is SettingsState.Error,
+                )
+                assertEquals(errorMessage, (finalState as SettingsState.Error).error)
+            }
         }
-    }
 }

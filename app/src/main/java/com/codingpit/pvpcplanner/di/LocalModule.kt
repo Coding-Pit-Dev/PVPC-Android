@@ -2,6 +2,9 @@ package com.codingpit.pvpcplanner.di
 
 import android.content.Context
 import androidx.room.Room
+import com.codingpit.pvpcplanner.data.local.db.MIGRATION_1_2
+import com.codingpit.pvpcplanner.data.local.db.MIGRATION_2_3
+import com.codingpit.pvpcplanner.data.local.db.MIGRATION_3_4
 import com.codingpit.pvpcplanner.data.local.db.PVPCDao
 import com.codingpit.pvpcplanner.data.local.db.PVPCDatabase
 import com.codingpit.pvpcplanner.data.local.sources.DefaultDeviceLocalDataSource
@@ -23,22 +26,20 @@ object LocalModule {
     fun providesRoomDatabase(
         @ApplicationContext applicationContext: Context,
     ): PVPCDatabase =
-        Room.databaseBuilder(
-            applicationContext,
-            PVPCDatabase::class.java,
-            "pvpc-database",
-        ).build()
+        Room
+            .databaseBuilder(
+                applicationContext,
+                PVPCDatabase::class.java,
+                "pvpc-database",
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .build()
 
     @Provides
     fun providesPvpcDao(database: PVPCDatabase): PVPCDao = database.pvpcDao()
 
     @Provides
-    fun providePriceLocalDataSource(localDataSource: DefaultPriceLocalDataSource): PriceLocalDataSource {
-        return localDataSource
-    }
+    fun providePriceLocalDataSource(localDataSource: DefaultPriceLocalDataSource): PriceLocalDataSource = localDataSource
 
     @Provides
-    fun provideDeviceLocalDataSource(localDataSource: DefaultDeviceLocalDataSource): DeviceLocalDataSource {
-        return localDataSource
-    }
+    fun provideDeviceLocalDataSource(localDataSource: DefaultDeviceLocalDataSource): DeviceLocalDataSource = localDataSource
 }

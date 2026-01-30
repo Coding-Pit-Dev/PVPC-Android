@@ -4,7 +4,6 @@ package com.codingpit.pvpcplanner.data.mappers
  * Constants used in data mapping operations.
  */
 object MappingConstants {
-
     /**
      * Price conversion factor for PVPC data.
      *

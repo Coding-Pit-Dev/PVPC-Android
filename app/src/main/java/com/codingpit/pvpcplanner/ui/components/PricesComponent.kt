@@ -70,7 +70,7 @@ fun PricesComponent(
             PriceChart(
                 responseData = pvpcEntries,
                 timeFormat = timeFormat,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
             ) { x, y ->
                 selectedPrice = y
                 selectedHour = x
@@ -99,7 +99,7 @@ fun PricesComponent(
                     formatHour(
                         pvpcItem.endHour,
                         currentHour,
-                        timeFormat
+                        timeFormat,
                     )
                 }",
                 price = pvpcItem.pcb,
@@ -138,40 +138,44 @@ private fun CurrentPriceLabel(
 private fun formatHour(
     hour: Int,
     currentHour: Int,
-    timeFormat: TimeFormat
+    timeFormat: TimeFormat,
 ): String {
-    val formattedHour = if (timeFormat == TimeFormat.TWELVE_HOURS) {
-        val sdf = SimpleDateFormat("h a", Locale.getDefault())
-        sdf.format(
-            Calendar.getInstance()
-                .apply { set(Calendar.HOUR_OF_DAY, hour) }.time
-        )
-    } else {
-        hour.toString()
-    }
+    val formattedHour =
+        if (timeFormat == TimeFormat.TWELVE_HOURS) {
+            val sdf = SimpleDateFormat("h a", Locale.getDefault())
+            sdf.format(
+                Calendar
+                    .getInstance()
+                    .apply { set(Calendar.HOUR_OF_DAY, hour) }
+                    .time,
+            )
+        } else {
+            hour.toString()
+        }
 
-    val hourText = if (hour == currentHour) {
-        stringResource(R.string.current_hour_template).format(formattedHour)
-    } else {
-        formattedHour
-    }
+    val hourText =
+        if (hour == currentHour) {
+            stringResource(R.string.current_hour_template).format(formattedHour)
+        } else {
+            formattedHour
+        }
     return hourText
 }
-
 
 @Preview
 @Composable
 private fun PricesView_Preview() {
     PricesComponent(
-        pvpcEntries = List(24) {
-            PVPCModel(
-                startHour = it,
-                endHour = it + 1,
-                pcb = it * 0.01,
-                day = "2023-09-01",
-                cym = it.toDouble(),
-            )
-        },
+        pvpcEntries =
+            List(24) {
+                PVPCModel(
+                    startHour = it,
+                    endHour = it + 1,
+                    pcb = it * 0.01,
+                    day = "2023-09-01",
+                    cym = it.toDouble(),
+                )
+            },
         selectedDate = "2023-09-01",
         nextDayEnabled = true,
         onPreviousClicked = { },

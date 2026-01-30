@@ -4,6 +4,7 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("plugin.serialization") version "2.3.0"
     alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
     alias(libs.plugins.ksp)
@@ -43,6 +44,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDirs("$projectDir/schemas")
+        }
+    }
+
     buildFeatures {
         compose = true
     }
@@ -62,6 +69,10 @@ kotlin {
         freeCompilerArgs.add("-Xreturn-value-checker=full")
         jvmTarget = JvmTarget.JVM_1_8
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 ktlint {
@@ -136,10 +147,13 @@ dependencies {
 
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
+    implementation(libs.kotlinx.serialization.json)
 
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.kotlinx.serialization.json)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

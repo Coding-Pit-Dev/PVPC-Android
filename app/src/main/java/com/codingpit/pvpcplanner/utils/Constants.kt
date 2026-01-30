@@ -30,10 +30,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.codingpit.pvpcplanner.R
+import com.codingpit.pvpcplanner.domain.models.DeviceCategory
 
 object Constants {
     const val HOME_SCREEN = "Prices"
     const val DEVICES_SCREEN = "Devices"
+    const val DEVICE_ADD_SCREEN = "DeviceAdd"
     const val SETTINGS_SCREEN = "Settings"
 
     val ROUTES_NAVIGATION_BOTTOM_BAR =
@@ -47,7 +49,7 @@ object Constants {
 data class DeviceIcon(
     val id: String,
     val icon: ImageVector,
-    val labelRes: Int
+    val labelRes: Int,
 )
 
 @Composable
@@ -60,7 +62,7 @@ fun getDeviceIcons(): List<DeviceIcon> =
         DeviceIcon(
             "Electric Motorbike",
             Icons.Default.ElectricMoped,
-            R.string.device_electric_motorbike
+            R.string.device_electric_motorbike,
         ),
         DeviceIcon("Scooter", Icons.Default.ElectricScooter, R.string.device_scooter),
         DeviceIcon("Electric bike", Icons.Default.ElectricBike, R.string.device_electric_bike),
@@ -81,7 +83,7 @@ fun getDeviceIcons(): List<DeviceIcon> =
         DeviceIcon(
             "Dishwasher",
             ImageVector.vectorResource(R.drawable.ic_dishwasher),
-            R.string.device_dishwasher
+            R.string.device_dishwasher,
         ),
         DeviceIcon("Air Conditioner", Icons.Default.Air, R.string.device_air_conditioner),
         DeviceIcon("Iron", Icons.Default.Iron, R.string.device_iron),
@@ -89,5 +91,22 @@ fun getDeviceIcons(): List<DeviceIcon> =
     )
 
 @Composable
-fun getIcons(): Map<String, ImageVector> =
-    getDeviceIcons().associate { it.id to it.icon }
+fun getIcons(): Map<String, ImageVector> = getDeviceIcons().associate { it.id to it.icon }
+
+data class CategoryUiModel(
+    val id: String,
+    val labelRes: Int,
+)
+
+val DEVICE_CATEGORIES =
+    listOf(
+        CategoryUiModel(DeviceCategory.APPLIANCES, R.string.category_appliances),
+        CategoryUiModel(DeviceCategory.LIGHTING, R.string.category_lighting),
+        CategoryUiModel(DeviceCategory.HVAC, R.string.category_hvac),
+        CategoryUiModel(DeviceCategory.KITCHEN, R.string.category_kitchen),
+        CategoryUiModel(DeviceCategory.LAUNDRY, R.string.category_laundry),
+        CategoryUiModel(DeviceCategory.ENTERTAINMENT, R.string.category_entertainment),
+        CategoryUiModel(DeviceCategory.COMPUTING, R.string.category_computing),
+        CategoryUiModel(DeviceCategory.MOBILITY, R.string.category_mobility),
+        CategoryUiModel(DeviceCategory.OTHER, R.string.category_other),
+    )

@@ -7,7 +7,6 @@ import org.junit.Test
 import java.time.LocalDate
 
 class DefaultDateValidatorTest {
-
     private lateinit var dateValidator: DefaultDateValidator
 
     @Before

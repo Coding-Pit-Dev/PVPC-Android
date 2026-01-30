@@ -11,7 +11,6 @@ import org.junit.Before
 import org.junit.Test
 
 class AddDeviceTest {
-
     private val mockRepository = mockk<DeviceRepository>()
     private lateinit var useCase: AddDevice
 
@@ -21,67 +20,72 @@ class AddDeviceTest {
     }
 
     @Test
-    fun `invoke adds device to repository`() = runTest {
-        // Arrange
-        val device = Device(1, "Washing Machine", 3, "washing_machine")
-        coEvery { mockRepository.addDevice(device) } returns Unit
+    fun `invoke adds device to repository`() =
+        runTest {
+            // Arrange
+            val device = Device(1, "Washing Machine", 3, "washing_machine")
+            coEvery { mockRepository.addDevice(device) } returns Unit
 
-        // Act
-        useCase(device)
-
-        // Assert
-        coVerify { mockRepository.addDevice(device) }
-    }
-
-    @Test
-    fun `invoke adds device with all properties`() = runTest {
-        // Arrange
-        val device = Device(
-            id = 42,
-            name = "High Efficiency Dryer",
-            hours = 2,
-            icon = "dryer_premium"
-        )
-        coEvery { mockRepository.addDevice(device) } returns Unit
-
-        // Act
-        useCase(device)
-
-        // Assert
-        coVerify { mockRepository.addDevice(device) }
-    }
-
-    @Test
-    fun `invoke propagates repository exception`() = runTest {
-        // Arrange
-        val device = Device(1, "Invalid Device", -1, "")
-        val exception = IllegalArgumentException("Invalid device data")
-        coEvery { mockRepository.addDevice(device) } throws exception
-
-        // Act & Assert
-        try {
+            // Act
             useCase(device)
-            assert(false) { "Expected exception to be thrown" }
-        } catch (e: IllegalArgumentException) {
-            assertEquals(exception, e)
+
+            // Assert
             coVerify { mockRepository.addDevice(device) }
         }
-    }
 
     @Test
-    fun `invoke handles database constraint exceptions`() = runTest {
-        // Arrange
-        val device = Device(1, "Duplicate Device", 2, "icon")
-        val exception = RuntimeException("UNIQUE constraint failed: device.id")
-        coEvery { mockRepository.addDevice(device) } throws exception
+    fun `invoke adds device with all properties`() =
+        runTest {
+            // Arrange
+            val device =
+                Device(
+                    id = 42,
+                    name = "High Efficiency Dryer",
+                    hours = 2,
+                    icon = "dryer_premium",
+                )
+            coEvery { mockRepository.addDevice(device) } returns Unit
 
-        // Act & Assert
-        try {
+            // Act
             useCase(device)
-            assert(false) { "Expected exception to be thrown" }
-        } catch (e: RuntimeException) {
-            assertEquals(exception, e)
+
+            // Assert
             coVerify { mockRepository.addDevice(device) }
         }
-    }
+
+    @Test
+    fun `invoke propagates repository exception`() =
+        runTest {
+            // Arrange
+            val device = Device(1, "Invalid Device", -1, "")
+            val exception = IllegalArgumentException("Invalid device data")
+            coEvery { mockRepository.addDevice(device) } throws exception
+
+            // Act & Assert
+            try {
+                useCase(device)
+                org.junit.Assert.fail("Expected exception to be thrown")
+            } catch (e: IllegalArgumentException) {
+                assertEquals(exception, e)
+                coVerify { mockRepository.addDevice(device) }
+            }
+        }
+
+    @Test
+    fun `invoke handles database constraint exceptions`() =
+        runTest {
+            // Arrange
+            val device = Device(1, "Duplicate Device", 2, "icon")
+            val exception = RuntimeException("UNIQUE constraint failed: device.id")
+            coEvery { mockRepository.addDevice(device) } throws exception
+
+            // Act & Assert
+            try {
+                useCase(device)
+                org.junit.Assert.fail("Expected exception to be thrown")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
+                coVerify { mockRepository.addDevice(device) }
+            }
+        }
 }

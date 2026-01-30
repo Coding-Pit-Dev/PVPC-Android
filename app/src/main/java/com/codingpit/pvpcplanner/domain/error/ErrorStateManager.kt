@@ -14,20 +14,18 @@ interface HasErrorState<T> {
 fun <R : Any> Flow<R>.handleErrors(
     errorHandler: ErrorHandler,
     context: String? = null,
-    stateFactory: HasErrorState<R>
-): Flow<R> {
-    return this.catch { throwable ->
+    stateFactory: HasErrorState<R>,
+): Flow<R> =
+    this.catch { throwable ->
         val errorResult = errorHandler.handleError(throwable, context)
         emit(stateFactory.createErrorState(errorResult))
     }
-}
 
 fun <T> Flow<Result<T>>.handleResultErrors(
     errorHandler: ErrorHandler,
-    context: String? = null
-): Flow<Result<T>> {
-    return this.catch { throwable ->
+    context: String? = null,
+): Flow<Result<T>> =
+    this.catch { throwable ->
         val errorResult = errorHandler.handleError(throwable, context)
         emit(Result.failure(RuntimeException(errorResult.message, throwable)))
     }
-}

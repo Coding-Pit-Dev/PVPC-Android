@@ -8,11 +8,13 @@ import com.codingpit.pvpcplanner.domain.usecase.date.GetLocalHour
 import com.codingpit.pvpcplanner.domain.usecase.date.IsValidDate
 import javax.inject.Inject
 
-class HomeUseCaseProvider @Inject constructor(
-    val getPrices: GetPrices,
-    val getDefaultDate: GetDefaultDate,
-    val isValidDate: IsValidDate,
-    val getLocalHour: GetLocalHour,
-    val getLocalDate: GetLocalDate,
-    val getSettings: GetSettings
-)
+class HomeUseCaseProvider
+    @Inject
+    constructor(
+        val getPrices: GetPrices,
+        val getDefaultDate: GetDefaultDate,
+        val isValidDate: IsValidDate,
+        val getLocalHour: GetLocalHour,
+        val getLocalDate: GetLocalDate,
+        val getSettings: GetSettings,
+    )

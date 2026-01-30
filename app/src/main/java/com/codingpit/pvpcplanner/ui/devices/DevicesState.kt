@@ -9,16 +9,25 @@ sealed class DevicesState {
 
     data class Success(
         val devicesSlot: List<DeviceRender> = emptyList(),
-        val showModal: Boolean? = null,
-    ) : DevicesState()
+        val searchQuery: String = "",
+    ) : DevicesState() {
+        val filteredDevices: List<DeviceRender>
+            get() =
+                if (searchQuery.isBlank()) {
+                    devicesSlot
+                } else {
+                    devicesSlot.filter { device ->
+                        device.device.name.contains(searchQuery, ignoreCase = true)
+                    }
+                }
+    }
 
     data class Error(
         override val error: String,
-    ) : DevicesState(), ErrorState
+    ) : DevicesState(),
+        ErrorState
 
     companion object Factory : HasErrorState<DevicesState> {
-        override fun createErrorState(errorResult: ErrorResult): DevicesState {
-            return Error(errorResult.message)
-        }
+        override fun createErrorState(errorResult: ErrorResult): DevicesState = Error(errorResult.message)
     }
 }

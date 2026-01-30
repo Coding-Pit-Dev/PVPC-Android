@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
     fun getSettings(): Flow<Settings>
+
     suspend fun updateDarkMode(darkMode: DarkMode)
+
     suspend fun updateTimeFormat(timeFormat: TimeFormat)
 }

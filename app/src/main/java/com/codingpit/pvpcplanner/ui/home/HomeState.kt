@@ -21,11 +21,10 @@ sealed class HomeState {
 
     data class Error(
         override val error: String,
-    ) : HomeState(), ErrorState
+    ) : HomeState(),
+        ErrorState
 
     companion object Factory : HasErrorState<HomeState> {
-        override fun createErrorState(errorResult: ErrorResult): HomeState {
-            return Error(errorResult.message)
-        }
+        override fun createErrorState(errorResult: ErrorResult): HomeState = Error(errorResult.message)
     }
 }

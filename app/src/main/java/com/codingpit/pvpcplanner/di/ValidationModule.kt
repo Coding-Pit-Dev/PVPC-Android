@@ -13,16 +13,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ValidationModule {
+    @Binds
+    @Singleton
+    abstract fun bindDateValidator(defaultDateValidator: DefaultDateValidator): DateValidator
 
     @Binds
     @Singleton
-    abstract fun bindDateValidator(
-        defaultDateValidator: DefaultDateValidator
-    ): DateValidator
-
-    @Binds
-    @Singleton
-    abstract fun bindErrorMessageProvider(
-        defaultErrorMessageProvider: DefaultErrorMessageProvider
-    ): ErrorMessageProvider
+    abstract fun bindErrorMessageProvider(defaultErrorMessageProvider: DefaultErrorMessageProvider): ErrorMessageProvider
 }

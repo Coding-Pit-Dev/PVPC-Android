@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.domain.models.Settings
+import com.codingpit.pvpcplanner.ui.devices.DeviceAddViewModel
 import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     private val homeViewModel by viewModels<HomeViewModel>()
     private val devicesViewModel by viewModels<DevicesViewModel>()
+    private val deviceAddViewModel by viewModels<DeviceAddViewModel>()
     private val settingsViewModel by viewModels<SettingsViewModel>()
 
     @Inject
@@ -32,7 +34,12 @@ class MainActivity : ComponentActivity() {
             val settings by themeManager.getSettings().collectAsStateWithLifecycle(Settings())
 
             PVPCPlannerTheme(darkTheme = themeManager.shouldShowDarkTheme(settings.darkMode)) {
-                MainScreen(homeViewModel, devicesViewModel, settingsViewModel)
+                MainScreen(
+                    homeViewModel = homeViewModel,
+                    devicesViewModel = devicesViewModel,
+                    deviceAddViewModel = deviceAddViewModel,
+                    settingsViewModel = settingsViewModel,
+                )
             }
         }
     }

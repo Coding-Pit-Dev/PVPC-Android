@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetPricesFlow
-@Inject
-constructor(
+class GetPricesFlow @Inject constructor(
     private val repository: PriceRepository,
     private val dateChecker: DateChecker,
 ) {
@@ -18,7 +16,8 @@ constructor(
         flow {
             emit(
                 repository.getPrices(
-                    date.takeIf { it.isNotEmpty() } ?: dateChecker.getDefaultDate()
+                    date.takeIf { it.isNotEmpty() } ?: dateChecker
+                        .getDefaultDate()
                         .toParsedDate(),
                 ),
             )

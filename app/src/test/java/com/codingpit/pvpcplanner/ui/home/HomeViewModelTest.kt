@@ -59,7 +59,7 @@ class HomeViewModelTest {
 
     private fun createViewModel(
         prices: Result<List<PVPCModel>> = Result.success(emptyList()),
-        currentHour: Int = 10
+        currentHour: Int = 10,
     ): HomeViewModel {
         val testDate = LocalDate.of(2023, 10, 15)
         val testSettings = Settings(DarkMode.SYSTEM, TimeFormat.TWENTY_FOUR_HOURS)
@@ -75,170 +75,173 @@ class HomeViewModelTest {
         every { mockErrorHandler.handleError(any(), any()) } answers {
             val throwable = firstArg<Throwable>()
             com.codingpit.pvpcplanner.domain.error.ErrorResult.UnknownError(
-                throwable.message ?: "Unknown error"
+                throwable.message ?: "Unknown error",
             )
         }
 
-        val useCaseProvider = HomeUseCaseProvider(
-            getPrices = mockGetPrices,
-            getDefaultDate = mockGetDefaultDate,
-            isValidDate = mockIsValidDate,
-            getLocalHour = mockGetLocalHour,
-            getLocalDate = mockGetLocalDate,
-            getSettings = mockGetSettings
-        )
+        val useCaseProvider =
+            HomeUseCaseProvider(
+                getPrices = mockGetPrices,
+                getDefaultDate = mockGetDefaultDate,
+                isValidDate = mockIsValidDate,
+                getLocalHour = mockGetLocalHour,
+                getLocalDate = mockGetLocalDate,
+                getSettings = mockGetSettings,
+            )
 
-        viewModel = HomeViewModel(
-            useCaseProvider = useCaseProvider,
-            errorHandler = mockErrorHandler,
-            coroutineDispatcher = testDispatcher
-        )
+        viewModel =
+            HomeViewModel(
+                useCaseProvider = useCaseProvider,
+                errorHandler = mockErrorHandler,
+                coroutineDispatcher = testDispatcher,
+            )
         return viewModel
     }
 
     @Test
-    fun `state emits Success when prices are retrieved successfully`() = runTest {
-        // Arrange
-        val prices = listOf(
-            PVPCModel("2023-10-15", 10, 11, 0.15, 0.18),
-            PVPCModel("2023-10-15", 11, 12, 0.12, 0.16)
-        )
-        val viewModel = createViewModel(Result.success(prices), 10)
+    fun `state emits Success when prices are retrieved successfully`() =
+        runTest {
+            // Arrange
+            val prices =
+                listOf(
+                    PVPCModel("2023-10-15", 10, 11, 0.15, 0.18),
+                    PVPCModel("2023-10-15", 11, 12, 0.12, 0.16),
+                )
+            val viewModel = createViewModel(Result.success(prices), 10)
 
-        // Act & Assert
-        viewModel.state.test {
-            // Unconfined dispatcher might have already emitted Loading and Success
-            // StateFlow replay=1 gives the latest value.
-            val state = awaitItem()
-            if (state is HomeState.Loading) {
-                val success = awaitItem()
-                assertTrue(success is HomeState.Success)
-                val successState = success as HomeState.Success
-                assertEquals(prices, successState.pvpcEntries)
-                assertEquals(0.15, successState.currentPrice, 0.001)
-                assertEquals(10, successState.currentHour)
-            } else {
+            // Act & Assert
+            viewModel.state.test {
+                // Unconfined dispatcher might have already emitted Loading and Success
+                // StateFlow replay=1 gives the latest value.
+                val state = awaitItem()
+                val successState = if (state is HomeState.Loading) awaitItem() else state
+
+                assertTrue(successState is HomeState.Success)
+                val success = successState as HomeState.Success
+                assertEquals(prices, success.pvpcEntries)
+                assertEquals(0.15, success.currentPrice, 0.001)
+                assertEquals(10, success.currentHour)
+            }
+        }
+
+    @Test
+    fun `state emits Error when prices retrieval fails`() =
+        runTest {
+            // Arrange
+            val errorMessage = "Network error"
+            val exception = RuntimeException(errorMessage)
+            val viewModel = createViewModel(Result.failure(exception))
+
+            // Act & Assert
+            viewModel.state.test {
+                val state = awaitItem()
+                val errorState = if (state is HomeState.Loading) awaitItem() else state
+
+                assertTrue(errorState is HomeState.Error)
+                assertEquals(errorMessage, (errorState as HomeState.Error).error)
+            }
+        }
+
+    @Test
+    fun `state emits Error when getOrThrow fails due to missing data`() =
+        runTest {
+            // Arrange
+            val prices = emptyList<PVPCModel>()
+            val viewModel = createViewModel(Result.success(prices))
+
+            // Act & Assert
+            viewModel.state.test {
+                val state = awaitItem()
+                val errorState = if (state is HomeState.Loading) awaitItem() else state
+
+                assertTrue(errorState is HomeState.Error)
+                assertTrue((errorState as HomeState.Error).error.isNotEmpty())
+            }
+        }
+
+    @Test
+    fun `state emits Error when current hour price is not found`() =
+        runTest {
+            // Arrange
+            val prices =
+                listOf(
+                    PVPCModel("2023-10-15", 8, 9, 0.15, 0.18),
+                    PVPCModel("2023-10-15", 9, 10, 0.12, 0.16),
+                )
+            val viewModel = createViewModel(Result.success(prices), 11) // Hour not in prices list
+
+            // Act & Assert
+            viewModel.state.test {
+                val state = awaitItem()
+                val errorState = if (state is HomeState.Loading) awaitItem() else state
+
+                assertTrue(errorState is HomeState.Error)
+            }
+        }
+
+    @Test
+    fun `onPreviousClicked decrements selected date by one day`() =
+        runTest {
+            // Arrange
+            val prices = listOf(PVPCModel("2023-10-14", 10, 11, 0.15, 0.18))
+            val viewModel = createViewModel(Result.success(prices))
+
+            // Mock the prices for the new date
+            coEvery { mockGetPrices("2023-10-14") } returns Result.success(prices)
+
+            // Act & Assert
+            viewModel.state.test {
+                // Initial state (likely Success or Loading then Success)
+                var state = awaitItem()
+                if (state is HomeState.Loading) {
+                    state = awaitItem()
+                }
+                assertTrue(state is HomeState.Success) // Ensure we started at success
+
+                // Act
+                viewModel.onPreviousClicked()
+
+                // Should emit Loading then Success or just Success depending on speed/dispatcher
+                state = awaitItem()
+                if (state is HomeState.Loading) {
+                    state = awaitItem()
+                }
+
                 assertTrue(state is HomeState.Success)
-                val successState = state as HomeState.Success
-                assertEquals(prices, successState.pvpcEntries)
-                assertEquals(0.15, successState.currentPrice, 0.001)
-                assertEquals(10, successState.currentHour)
+                assertEquals("2023-10-14", (state as HomeState.Success).selectedDate)
             }
         }
-    }
 
     @Test
-    fun `state emits Error when prices retrieval fails`() = runTest {
-        // Arrange
-        val errorMessage = "Network error"
-        val exception = RuntimeException(errorMessage)
-        val viewModel = createViewModel(Result.failure(exception))
+    fun `onNextClicked increments selected date by one day`() =
+        runTest {
+            // Arrange
+            val prices = listOf(PVPCModel("2023-10-16", 10, 11, 0.15, 0.18))
+            val viewModel = createViewModel(Result.success(prices))
 
-        // Act & Assert
-        viewModel.state.test {
-            val state = awaitItem()
-            val errorState = if (state is HomeState.Loading) awaitItem() else state
+            // Mock the prices for the new date
+            coEvery { mockGetPrices("2023-10-16") } returns Result.success(prices)
 
-            assertTrue(errorState is HomeState.Error)
-            assertEquals(errorMessage, (errorState as HomeState.Error).error)
-        }
-    }
+            // Act & Assert
+            viewModel.state.test {
+                // Initial state
+                var state = awaitItem()
+                if (state is HomeState.Loading) {
+                    state = awaitItem()
+                }
+                assertTrue(state is HomeState.Success)
 
-    @Test
-    fun `state emits Error when getOrThrow fails due to missing data`() = runTest {
-        // Arrange
-        val prices = emptyList<PVPCModel>()
-        val viewModel = createViewModel(Result.success(prices))
+                // Act
+                viewModel.onNextClicked()
 
-        // Act & Assert
-        viewModel.state.test {
-            val state = awaitItem()
-            val errorState = if (state is HomeState.Loading) awaitItem() else state
-
-            assertTrue(errorState is HomeState.Error)
-            assertTrue((errorState as HomeState.Error).error.isNotEmpty())
-        }
-    }
-
-    @Test
-    fun `state emits Error when current hour price is not found`() = runTest {
-        // Arrange
-        val prices = listOf(
-            PVPCModel("2023-10-15", 8, 9, 0.15, 0.18),
-            PVPCModel("2023-10-15", 9, 10, 0.12, 0.16)
-        )
-        val viewModel = createViewModel(Result.success(prices), 11) // Hour not in prices list
-
-        // Act & Assert
-        viewModel.state.test {
-            val state = awaitItem()
-            val errorState = if (state is HomeState.Loading) awaitItem() else state
-
-            assertTrue(errorState is HomeState.Error)
-        }
-    }
-
-    @Test
-    fun `onPreviousClicked decrements selected date by one day`() = runTest {
-        // Arrange
-        val prices = listOf(PVPCModel("2023-10-14", 10, 11, 0.15, 0.18))
-        val viewModel = createViewModel(Result.success(prices))
-
-        // Mock the prices for the new date
-        coEvery { mockGetPrices("2023-10-14") } returns Result.success(prices)
-
-        // Act & Assert
-        viewModel.state.test {
-            // Initial state (likely Success or Loading then Success)
-            var state = awaitItem()
-            if (state is HomeState.Loading) {
+                // New state
                 state = awaitItem()
+                if (state is HomeState.Loading) {
+                    state = awaitItem()
+                }
+
+                assertTrue(state is HomeState.Success)
+                assertEquals("2023-10-16", (state as HomeState.Success).selectedDate)
             }
-            assertTrue(state is HomeState.Success) // Ensure we started at success
-
-            // Act
-            viewModel.onPreviousClicked()
-
-            // Should emit Loading then Success or just Success depending on speed/dispatcher
-            state = awaitItem()
-            if (state is HomeState.Loading) {
-                state = awaitItem()
-            }
-
-            assertTrue(state is HomeState.Success)
-            assertEquals("2023-10-14", (state as HomeState.Success).selectedDate)
         }
-    }
-
-    @Test
-    fun `onNextClicked increments selected date by one day`() = runTest {
-        // Arrange
-        val prices = listOf(PVPCModel("2023-10-16", 10, 11, 0.15, 0.18))
-        val viewModel = createViewModel(Result.success(prices))
-
-        // Mock the prices for the new date
-        coEvery { mockGetPrices("2023-10-16") } returns Result.success(prices)
-
-        // Act & Assert
-        viewModel.state.test {
-            // Initial state
-            var state = awaitItem()
-            if (state is HomeState.Loading) {
-                state = awaitItem()
-            }
-            assertTrue(state is HomeState.Success)
-
-            // Act
-            viewModel.onNextClicked()
-
-            // New state
-            state = awaitItem()
-            if (state is HomeState.Loading) {
-                state = awaitItem()
-            }
-
-            assertTrue(state is HomeState.Success)
-            assertEquals("2023-10-16", (state as HomeState.Success).selectedDate)
-        }
-    }
 }

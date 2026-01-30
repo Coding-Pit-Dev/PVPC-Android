@@ -9,7 +9,6 @@ import java.time.ZoneId
  * Handles all date-related operations consistently across the application.
  */
 object DateFormatter {
-
     /**
      * Default date format pattern used throughout the application.
      * Format: YYYY-MM-DD (ISO 8601 standard)
@@ -32,9 +31,7 @@ object DateFormatter {
      * @param date The LocalDate to format
      * @return Formatted date string in YYYY-MM-DD format
      */
-    fun formatDate(date: LocalDate): String {
-        return DEFAULT_DATE_FORMAT.format(date.year, date.monthValue, date.dayOfMonth)
-    }
+    fun formatDate(date: LocalDate): String = DEFAULT_DATE_FORMAT.format(date.year, date.monthValue, date.dayOfMonth)
 
     /**
      * Formats a LocalDate using year, month, and day components.
@@ -44,36 +41,32 @@ object DateFormatter {
      * @param day The day of month
      * @return Formatted date string in YYYY-MM-DD format
      */
-    fun formatDate(year: Int, month: Int, day: Int): String {
-        return DEFAULT_DATE_FORMAT.format(year, month, day)
-    }
+    fun formatDate(
+        year: Int,
+        month: Int,
+        day: Int,
+    ): String = DEFAULT_DATE_FORMAT.format(year, month, day)
 
     /**
      * Gets the current date in the application's time zone.
      *
      * @return Current LocalDate in Spain time zone
      */
-    fun getCurrentDate(): LocalDate {
-        return LocalDate.now(ZoneId.of(DEFAULT_TIME_ZONE))
-    }
+    fun getCurrentDate(): LocalDate = LocalDate.now(ZoneId.of(DEFAULT_TIME_ZONE))
 
     /**
      * Gets the current date and time in the application's time zone.
      *
      * @return Current LocalDateTime in Spain time zone
      */
-    fun getCurrentDateTime(): LocalDateTime {
-        return LocalDateTime.now(ZoneId.of(DEFAULT_TIME_ZONE))
-    }
+    fun getCurrentDateTime(): LocalDateTime = LocalDateTime.now(ZoneId.of(DEFAULT_TIME_ZONE))
 
     /**
      * Gets the current hour in the application's time zone.
      *
      * @return Current hour (0-23) in Spain time zone
      */
-    fun getCurrentHour(): Int {
-        return getCurrentDateTime().hour
-    }
+    fun getCurrentHour(): Int = getCurrentDateTime().hour
 
     /**
      * Checks if two dates represent the same day.
@@ -82,11 +75,13 @@ object DateFormatter {
      * @param date2 Second date to compare
      * @return true if both dates are on the same day
      */
-    fun isSameDay(date1: LocalDate, date2: LocalDate): Boolean {
-        return date1.dayOfMonth == date2.dayOfMonth &&
-                date1.monthValue == date2.monthValue &&
-                date1.year == date2.year
-    }
+    fun isSameDay(
+        date1: LocalDate,
+        date2: LocalDate,
+    ): Boolean =
+        date1.dayOfMonth == date2.dayOfMonth &&
+            date1.monthValue == date2.monthValue &&
+            date1.year == date2.year
 
     /**
      * Determines the default date for price queries based on current time.

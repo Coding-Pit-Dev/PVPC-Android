@@ -6,18 +6,14 @@ import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibility
 
 class MarkerVisibilityListener(
     private val responseData: List<PVPCModel>,
-    private val onMarkerChanged: (Int, Double) -> Unit
+    private val onMarkerChanged: (Int, Double) -> Unit,
 ) : CartesianMarkerVisibilityListener {
     override fun onShown(
         marker: CartesianMarker,
         targets: List<CartesianMarker.Target>,
     ) {
         super.onShown(marker, targets)
-        val target = targets.first()
-        onMarkerChanged(
-            target.x.toInt(),
-            responseData.first { it.startHour == target.x.toInt() }.pcb,
-        )
+        handleMarkerChange(targets)
     }
 
     override fun onUpdated(
@@ -25,10 +21,12 @@ class MarkerVisibilityListener(
         targets: List<CartesianMarker.Target>,
     ) {
         super.onUpdated(marker, targets)
-        val target = targets.first()
-        onMarkerChanged(
-            target.x.toInt(),
-            responseData.first { it.startHour == target.x.toInt() }.pcb,
-        )
+        handleMarkerChange(targets)
+    }
+
+    private fun handleMarkerChange(targets: List<CartesianMarker.Target>) {
+        val target = targets.firstOrNull() ?: return
+        val price = responseData.firstOrNull { it.startHour == target.x.toInt() }?.pcb ?: return
+        onMarkerChanged(target.x.toInt(), price)
     }
 }

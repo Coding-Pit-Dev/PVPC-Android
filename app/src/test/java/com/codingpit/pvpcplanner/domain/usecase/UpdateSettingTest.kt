@@ -12,7 +12,6 @@ import org.junit.Before
 import org.junit.Test
 
 class UpdateSettingTest {
-
     private val mockRepository = mockk<SettingsRepository>()
     private lateinit var useCase: UpdateSetting
 
@@ -22,135 +21,144 @@ class UpdateSettingTest {
     }
 
     @Test
-    fun `invoke updates dark mode to LIGHT`() = runTest {
-        // Arrange
-        val darkMode = DarkMode.LIGHT
-        coEvery { mockRepository.updateDarkMode(darkMode) } returns Unit
+    fun `invoke updates dark mode to LIGHT`() =
+        runTest {
+            // Arrange
+            val darkMode = DarkMode.LIGHT
+            coEvery { mockRepository.updateDarkMode(darkMode) } returns Unit
 
-        // Act
-        useCase(darkMode)
-
-        // Assert
-        coVerify { mockRepository.updateDarkMode(darkMode) }
-    }
-
-    @Test
-    fun `invoke updates dark mode to DARK`() = runTest {
-        // Arrange
-        val darkMode = DarkMode.DARK
-        coEvery { mockRepository.updateDarkMode(darkMode) } returns Unit
-
-        // Act
-        useCase(darkMode)
-
-        // Assert
-        coVerify { mockRepository.updateDarkMode(darkMode) }
-    }
-
-    @Test
-    fun `invoke updates dark mode to SYSTEM`() = runTest {
-        // Arrange
-        val darkMode = DarkMode.SYSTEM
-        coEvery { mockRepository.updateDarkMode(darkMode) } returns Unit
-
-        // Act
-        useCase(darkMode)
-
-        // Assert
-        coVerify { mockRepository.updateDarkMode(darkMode) }
-    }
-
-    @Test
-    fun `invoke updates time format to TWELVE_HOURS`() = runTest {
-        // Arrange
-        val timeFormat = TimeFormat.TWELVE_HOURS
-        coEvery { mockRepository.updateTimeFormat(timeFormat) } returns Unit
-
-        // Act
-        useCase(timeFormat)
-
-        // Assert
-        coVerify { mockRepository.updateTimeFormat(timeFormat) }
-    }
-
-    @Test
-    fun `invoke updates time format to TWENTY_FOUR_HOURS`() = runTest {
-        // Arrange
-        val timeFormat = TimeFormat.TWENTY_FOUR_HOURS
-        coEvery { mockRepository.updateTimeFormat(timeFormat) } returns Unit
-
-        // Act
-        useCase(timeFormat)
-
-        // Assert
-        coVerify { mockRepository.updateTimeFormat(timeFormat) }
-    }
-
-    @Test
-    fun `invoke propagates dark mode update exception`() = runTest {
-        // Arrange
-        val darkMode = DarkMode.DARK
-        val exception = RuntimeException("Failed to update dark mode setting")
-        coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
-
-        // Act & Assert
-        try {
+            // Act
             useCase(darkMode)
-            assert(false) { "Expected exception to be thrown" }
-        } catch (e: RuntimeException) {
-            assertEquals(exception, e)
+
+            // Assert
             coVerify { mockRepository.updateDarkMode(darkMode) }
         }
-    }
 
     @Test
-    fun `invoke propagates time format update exception`() = runTest {
-        // Arrange
-        val timeFormat = TimeFormat.TWENTY_FOUR_HOURS
-        val exception = RuntimeException("Failed to update time format setting")
-        coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
+    fun `invoke updates dark mode to DARK`() =
+        runTest {
+            // Arrange
+            val darkMode = DarkMode.DARK
+            coEvery { mockRepository.updateDarkMode(darkMode) } returns Unit
 
-        // Act & Assert
-        try {
-            useCase(timeFormat)
-            assert(false) { "Expected exception to be thrown" }
-        } catch (e: RuntimeException) {
-            assertEquals(exception, e)
-            coVerify { mockRepository.updateTimeFormat(timeFormat) }
-        }
-    }
-
-    @Test
-    fun `invoke handles database constraint exceptions for dark mode`() = runTest {
-        // Arrange
-        val darkMode = DarkMode.LIGHT
-        val exception = RuntimeException("Database constraint violation")
-        coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
-
-        // Act & Assert
-        try {
+            // Act
             useCase(darkMode)
-            assert(false) { "Expected exception to be thrown" }
-        } catch (e: RuntimeException) {
-            assertEquals(exception, e)
+
+            // Assert
             coVerify { mockRepository.updateDarkMode(darkMode) }
         }
-    }
 
     @Test
-    fun `invoke handles database constraint exceptions for time format`() = runTest {
-        // Arrange
-        val timeFormat = TimeFormat.TWELVE_HOURS
-        val exception = RuntimeException("Database constraint violation")
-        coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
+    fun `invoke updates dark mode to SYSTEM`() =
+        runTest {
+            // Arrange
+            val darkMode = DarkMode.SYSTEM
+            coEvery { mockRepository.updateDarkMode(darkMode) } returns Unit
 
-        // Act & Assert
-        try {
+            // Act
+            useCase(darkMode)
+
+            // Assert
+            coVerify { mockRepository.updateDarkMode(darkMode) }
+        }
+
+    @Test
+    fun `invoke updates time format to TWELVE_HOURS`() =
+        runTest {
+            // Arrange
+            val timeFormat = TimeFormat.TWELVE_HOURS
+            coEvery { mockRepository.updateTimeFormat(timeFormat) } returns Unit
+
+            // Act
             useCase(timeFormat)
-            assert(false) { "Expected exception to be thrown" }
-        } catch (e: RuntimeException) {
-            assertEquals(exception, e)
+
+            // Assert
             coVerify { mockRepository.updateTimeFormat(timeFormat) }
         }
-    }
+
+    @Test
+    fun `invoke updates time format to TWENTY_FOUR_HOURS`() =
+        runTest {
+            // Arrange
+            val timeFormat = TimeFormat.TWENTY_FOUR_HOURS
+            coEvery { mockRepository.updateTimeFormat(timeFormat) } returns Unit
+
+            // Act
+            useCase(timeFormat)
+
+            // Assert
+            coVerify { mockRepository.updateTimeFormat(timeFormat) }
+        }
+
+    @Test
+    fun `invoke propagates dark mode update exception`() =
+        runTest {
+            // Arrange
+            val darkMode = DarkMode.DARK
+            val exception = RuntimeException("Failed to update dark mode setting")
+            coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
+
+            // Act & Assert
+            try {
+                useCase(darkMode)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
+            }
+            coVerify { mockRepository.updateDarkMode(darkMode) }
+        }
+
+    @Test
+    fun `invoke propagates time format update exception`() =
+        runTest {
+            // Arrange
+            val timeFormat = TimeFormat.TWENTY_FOUR_HOURS
+            val exception = RuntimeException("Failed to update time format setting")
+            coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
+
+            // Act & Assert
+            try {
+                useCase(timeFormat)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
+            }
+            coVerify { mockRepository.updateTimeFormat(timeFormat) }
+        }
+
+    @Test
+    fun `invoke handles database constraint exceptions for dark mode`() =
+        runTest {
+            // Arrange
+            val darkMode = DarkMode.LIGHT
+            val exception = RuntimeException("Database constraint violation")
+            coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
+
+            // Act & Assert
+            try {
+                useCase(darkMode)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
+            }
+            coVerify { mockRepository.updateDarkMode(darkMode) }
+        }
+
+    @Test
+    fun `invoke handles database constraint exceptions for time format`() =
+        runTest {
+            // Arrange
+            val timeFormat = TimeFormat.TWELVE_HOURS
+            val exception = RuntimeException("Database constraint violation")
+            coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
+
+            // Act & Assert
+            try {
+                useCase(timeFormat)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
+            }
+            coVerify { mockRepository.updateTimeFormat(timeFormat) }
+        }
 }
