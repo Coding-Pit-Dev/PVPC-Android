@@ -78,7 +78,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
 
@@ -115,7 +115,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
             viewModel.updateSetting(render, option)
@@ -140,7 +140,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
             viewModel.updateSetting(render, option)
@@ -165,7 +165,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
             viewModel.updateSetting(render, option)
@@ -190,7 +190,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
             viewModel.updateSetting(render, option)
@@ -215,7 +215,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
             viewModel.updateSetting(render, option)
@@ -235,7 +235,7 @@ class SettingsViewModelTest {
                 SettingsViewModel(
                     getSettings = mockGetSettings,
                     errorHandler = mockErrorHandler,
-                    updateSetting = mockUpdateSetting,
+                    updateSettingUseCase = mockUpdateSetting,
                     coroutineDispatcher = testDispatcher,
                 )
 

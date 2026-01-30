@@ -156,7 +156,7 @@ class SettingsIntegrationTest {
                 awaitComplete()
             }
 
-            verify { mockSettingsStore.settings }
+            verify { val _ = mockSettingsStore.settings }
         }
 
     @Test

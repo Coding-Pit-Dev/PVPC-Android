@@ -4,6 +4,7 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("plugin.serialization") version "2.3.0"
     alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
     alias(libs.plugins.ksp)

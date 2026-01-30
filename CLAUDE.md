@@ -178,6 +178,7 @@ class MyViewModelTest {
 ```
 
 ## Kotlin Guidelines
+- Avoid Unused return value warning setting val _ =
 
 ### Error Handling
 

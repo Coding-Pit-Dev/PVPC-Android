@@ -84,7 +84,6 @@ fun DevicesScreen(
             is DevicesState.Success ->
                 DevicesScreen_Success(
                     state = state,
-                    addDevice = { name, hours, icon -> viewModel.addDevice(name, hours, icon) },
                     onSwiped = { viewModel.removeDevice(it.device) },
                     onDeviceClick = onDeviceClick,
                     onSearchQueryChanged = viewModel::updateSearchQuery,
@@ -97,7 +96,6 @@ fun DevicesScreen(
 @Composable
 private fun DevicesScreen_Success(
     state: DevicesState.Success,
-    addDevice: (String, Int, String) -> Unit,
     onSwiped: (DeviceRender) -> Unit,
     onDeviceClick: (Device) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
@@ -375,11 +373,7 @@ private fun DeviceItem(
             val direction = dismissState.dismissDirection
 
             val color by animateColorAsState(
-                when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.Settled -> Color.Red
-                    SwipeToDismissBoxValue.EndToStart -> Color.Red
-                    SwipeToDismissBoxValue.StartToEnd -> Color.Red
-                },
+                Color.Red,
             )
             val alignment =
                 when (direction) {
@@ -387,12 +381,7 @@ private fun DeviceItem(
                     SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
                     SwipeToDismissBoxValue.Settled -> Alignment.Center
                 }
-            val icon =
-                when (direction) {
-                    SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
-                    SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Delete
-                    SwipeToDismissBoxValue.Settled -> Icons.Default.Delete
-                }
+            val icon = Icons.Default.Delete
             val scale by animateFloatAsState(
                 if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
             )
@@ -415,7 +404,6 @@ private fun DeviceItem(
         },
     ) {
         Card(
-            modifier = modifier,
             shape = RoundedCornerShape(16.dp),
             onClick = onClick,
         ) {
@@ -508,7 +496,7 @@ private fun DeviceItem(
                                 tint = MaterialTheme.colorScheme.tertiary,
                             )
                             Text(
-                                text = "${render.device.watts}W",
+                                text = "${render.device.watts}${stringResource(R.string.unit_watt)}",
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,

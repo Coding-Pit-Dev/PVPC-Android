@@ -87,7 +87,9 @@ class PVPCDatabaseMigrationTest {
         assertTrue(notesColumnIndex != -1)
         assertTrue(cursor.isNull(notesColumnIndex))
         cursor.close()
-    }    @Test
+    }
+
+    @Test
     @Throws(IOException::class)
     fun migrateAll() {
         helper.createDatabase(testDb, 1).apply {
@@ -104,9 +106,15 @@ class PVPCDatabaseMigrationTest {
         // Validate final schema has all columns
         val cursor = db.query("SELECT * FROM devices WHERE name = 'Washer'")
         assertTrue(cursor.moveToFirst())
-        assertEquals(0, cursor.getInt(cursor.getColumnIndex("watts")))
-        assertEquals("appliances", cursor.getString(cursor.getColumnIndex("category")))
-        assertTrue(cursor.isNull(cursor.getColumnIndex("notes")))
+        val wattsIndex = cursor.getColumnIndex("watts")
+        val categoryIndex = cursor.getColumnIndex("category")
+        val notesIndex = cursor.getColumnIndex("notes")
+        assertTrue("watts column should exist", wattsIndex != -1)
+        assertTrue("category column should exist", categoryIndex != -1)
+        assertTrue("notes column should exist", notesIndex != -1)
+        assertEquals(0, cursor.getInt(wattsIndex))
+        assertEquals("appliances", cursor.getString(categoryIndex))
+        assertTrue(cursor.isNull(notesIndex))
         cursor.close()
     }
 }

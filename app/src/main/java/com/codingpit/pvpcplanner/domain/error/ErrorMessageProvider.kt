@@ -19,7 +19,7 @@ interface ErrorMessageProvider {
     /**
      * Gets a user-friendly error message for data-related errors.
      */
-    fun getDataErrorMessage(context: String? = null): String
+    fun getDataErrorMessage(errorData: String? = null): String
 
     /**
      * Gets a user-friendly error message for validation errors.
@@ -63,8 +63,8 @@ class DefaultErrorMessageProvider
                 else -> context.getString(R.string.error_network_generic)
             }
 
-            override fun getDataErrorMessage(errorContext: String?): String =
-                when (errorContext) {
+            override fun getDataErrorMessage(errorData: String?): String =
+                when (errorData) {
                     "price_data" -> context.getString(R.string.error_data_price)
                     "device_data" -> context.getString(R.string.error_data_device)
                     "current_hour" -> context.getString(R.string.error_data_current_hour)

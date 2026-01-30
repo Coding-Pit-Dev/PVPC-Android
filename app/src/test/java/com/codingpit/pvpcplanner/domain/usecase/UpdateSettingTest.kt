@@ -99,10 +99,12 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
 
             // Act & Assert
-            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
-                kotlinx.coroutines.test.runTest { useCase(darkMode) }
+            try {
+                useCase(darkMode)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
             }
-            assertEquals(exception, thrown)
             coVerify { mockRepository.updateDarkMode(darkMode) }
         }
 
@@ -115,10 +117,12 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
 
             // Act & Assert
-            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
-                kotlinx.coroutines.test.runTest { useCase(timeFormat) }
+            try {
+                useCase(timeFormat)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
             }
-            assertEquals(exception, thrown)
             coVerify { mockRepository.updateTimeFormat(timeFormat) }
         }
 
@@ -131,10 +135,12 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
 
             // Act & Assert
-            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
-                kotlinx.coroutines.test.runTest { useCase(darkMode) }
+            try {
+                useCase(darkMode)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
             }
-            assertEquals(exception, thrown)
             coVerify { mockRepository.updateDarkMode(darkMode) }
         }
 
@@ -147,10 +153,12 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
 
             // Act & Assert
-            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
-                kotlinx.coroutines.test.runTest { useCase(timeFormat) }
+            try {
+                useCase(timeFormat)
+                org.junit.Assert.fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals(exception, e)
             }
-            assertEquals(exception, thrown)
             coVerify { mockRepository.updateTimeFormat(timeFormat) }
         }
 }

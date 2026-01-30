@@ -25,7 +25,7 @@ class SettingsViewModel
     constructor(
         getSettings: GetSettings,
         errorHandler: ErrorHandler,
-        private val updateSetting: UpdateSetting,
+        private val updateSettingUseCase: UpdateSetting,
         private val coroutineDispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         val state =
@@ -43,7 +43,7 @@ class SettingsViewModel
             viewModelScope.launch(coroutineDispatcher) {
                 when (render.setting) {
                     is SettingValue.DarkMode -> {
-                        updateSetting(
+                        updateSettingUseCase(
                             when (option.labelRes) {
                                 R.string.option_light -> DarkMode.LIGHT
                                 R.string.option_dark -> DarkMode.DARK
@@ -53,7 +53,7 @@ class SettingsViewModel
                     }
 
                     is SettingValue.TimeFormat -> {
-                        updateSetting(
+                        updateSettingUseCase(
                             when (option.labelRes) {
                                 R.string.option_24h -> TimeFormat.TWENTY_FOUR_HOURS
                                 else -> TimeFormat.TWELVE_HOURS

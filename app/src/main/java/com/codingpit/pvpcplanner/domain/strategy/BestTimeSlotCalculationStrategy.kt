@@ -17,6 +17,7 @@ class BestTimeSlotCalculationStrategy
 
             // If we don't have enough price data for the full duration, return the full available range
             // Also validate that we have enough consecutive slots
+            // Assumption: prices are sorted by startHour.
             if (prices.size < device.hours) {
                 return TimeSlot(prices.first().startHour, prices.last().endHour)
             }

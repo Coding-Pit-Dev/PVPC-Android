@@ -90,6 +90,7 @@
     <string name="always_on_description">Device is always on like fridge 24h</string>
     <string name="consumption_watts">Power (W)</string>
     <string name="unit_watts">W</string>
+    <string name="unit_watt">W</string>
     <string name="program_duration">Program duration</string>
     <string name="category_label">Category</string>
     <string name="category_appliances">Appliances</string>
