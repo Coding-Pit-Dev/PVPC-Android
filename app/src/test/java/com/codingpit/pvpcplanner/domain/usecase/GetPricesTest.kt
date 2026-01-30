@@ -109,7 +109,7 @@ class GetPricesTest {
             // Act & Assert
             try {
                 useCase(date)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.getPrices(date) }

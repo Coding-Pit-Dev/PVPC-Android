@@ -12,10 +12,6 @@ class CalculateTotalConsumption
     @Inject
     constructor() {
         operator fun invoke(devices: List<DeviceConsumptionInput>): ConsumptionSummary {
-            if (devices.isEmpty()) {
-                return ConsumptionSummary(0.0, 0.0)
-            }
-
             // Calculate total kWh: sum of (watts * hours / 1000) for each device
             val totalKWh =
                 devices.sumOf { device ->

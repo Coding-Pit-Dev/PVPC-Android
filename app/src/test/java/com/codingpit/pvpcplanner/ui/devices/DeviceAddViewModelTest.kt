@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.UpdateDevice
-import com.codingpit.pvpcplanner.utils.DeviceCategory
+import com.codingpit.pvpcplanner.utils.CategoryUiModel
 import com.codingpit.pvpcplanner.utils.DeviceIcon
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -41,7 +41,7 @@ class DeviceAddViewModelTest {
     fun `saveDevice rounds watts correctly`() =
         runTest {
             val icons = listOf(DeviceIcon("icon1", Icons.Default.Add, 0))
-            val categories = listOf(DeviceCategory("cat1", 0))
+            val categories = listOf(CategoryUiModel("cat1", 0))
             viewModel.initialize(icons, categories)
 
             viewModel.onDeviceNameChanged("Test Device")
@@ -64,7 +64,7 @@ class DeviceAddViewModelTest {
     fun `saveDevice persists notes`() =
         runTest {
             val icons = listOf(DeviceIcon("icon1", Icons.Default.Add, 0))
-            val categories = listOf(DeviceCategory("cat1", 0))
+            val categories = listOf(CategoryUiModel("cat1", 0))
             viewModel.initialize(icons, categories)
 
             viewModel.onDeviceNameChanged("Test Device")
@@ -88,7 +88,7 @@ class DeviceAddViewModelTest {
     fun `alwaysOn clears hours error`() =
         runTest {
             val icons = listOf(DeviceIcon("icon1", Icons.Default.Add, 0))
-            val categories = listOf(DeviceCategory("cat1", 0))
+            val categories = listOf(CategoryUiModel("cat1", 0))
             viewModel.initialize(icons, categories)
 
             // Set invalid hours

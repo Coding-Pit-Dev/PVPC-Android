@@ -3,9 +3,10 @@ package com.codingpit.pvpcplanner.ui.devices
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingpit.pvpcplanner.domain.models.Device
+import com.codingpit.pvpcplanner.domain.models.DeviceCategory
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.UpdateDevice
-import com.codingpit.pvpcplanner.utils.DeviceCategory
+import com.codingpit.pvpcplanner.utils.CategoryUiModel
 import com.codingpit.pvpcplanner.utils.DeviceIcon
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,7 +32,7 @@ class DeviceAddViewModel
 
         fun initialize(
             availableIcons: List<DeviceIcon>,
-            availableCategories: List<DeviceCategory>,
+            availableCategories: List<CategoryUiModel>,
         ) {
             _state.value =
                 DeviceAddState.Success(
@@ -46,7 +47,7 @@ class DeviceAddViewModel
         fun initializeForEdit(
             device: Device,
             availableIcons: List<DeviceIcon>,
-            availableCategories: List<DeviceCategory>,
+            availableCategories: List<CategoryUiModel>,
         ) {
             val selectedIcon = availableIcons.find { it.id == device.icon }
             val selectedCategory = availableCategories.find { it.id == device.category }
@@ -119,7 +120,7 @@ class DeviceAddViewModel
             updateSuccessState { copy(showIconPicker = false) }
         }
 
-        fun onCategorySelected(category: DeviceCategory) {
+        fun onCategorySelected(category: CategoryUiModel) {
             updateSuccessState {
                 copy(
                     selectedCategory = category,
@@ -155,7 +156,7 @@ class DeviceAddViewModel
                             hours = hours,
                             icon = currentState.selectedIcon?.id ?: "",
                             watts = watts,
-                            category = currentState.selectedCategory?.id ?: "appliances",
+                            category = currentState.selectedCategory?.id ?: DeviceCategory.APPLIANCES,
                             notes = currentState.notes,
                         )
 

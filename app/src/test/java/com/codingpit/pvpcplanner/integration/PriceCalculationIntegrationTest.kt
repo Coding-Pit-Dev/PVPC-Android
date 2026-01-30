@@ -162,10 +162,8 @@ class PriceCalculationIntegrationTest {
 
             // Assert
             assertTrue(priceResult.isSuccess)
-            // The strategy implementation determines how this edge case is handled
-            // This test verifies it doesn't crash
-            assertTrue(bestTimeSlot.startHour >= 0)
-            assertTrue(bestTimeSlot.endHour >= bestTimeSlot.startHour)
+            // When device duration exceeds available hours, strategy should return the full available range
+            assertEquals(TimeSlot(0, 2), bestTimeSlot)
         }
 
     @Test

@@ -91,7 +91,7 @@ Hilt modules in `di/`:
 - `RepositoryModule` - Repository implementations
 - `NetworkModule` - Retrofit, OkHttp, Moshi
 - `LocalModule` - Room database, DataStore
-- `CorotineModule` - CoroutineDispatchers (IO, Main, Default)
+- `CoroutineModule` - CoroutineDispatchers (IO, Main, Default)
 - `ErrorModule` - ErrorHandler and error-related dependencies
 - `ValidationModule` - Validators (e.g., DateValidator)
 - `StrategyModule` - Calculation strategies
@@ -178,7 +178,26 @@ class MyViewModelTest {
 ```
 
 ## Kotlin Guidelines
-- Use runCatching instead of default try/catch
+
+### Error Handling
+
+- Use `runCatching` instead of try/catch for functional-style error handling:
+
+```kotlin
+// Preferred
+val result = runCatching { riskyOperation() }
+    .getOrElse { defaultValue }
+
+// Instead of
+try {
+    riskyOperation()
+} catch (e: Exception) {
+    defaultValue
+}
+```
+
+- Use `runCatching` when you need to chain operations or convert to Result type.
+- Use traditional try/catch when you need specific exception handling or side effects.
 
 ## Jetpack Compose Guidelines
 

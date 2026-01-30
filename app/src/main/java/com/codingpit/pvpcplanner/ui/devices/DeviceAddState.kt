@@ -3,7 +3,7 @@ package com.codingpit.pvpcplanner.ui.devices
 import com.codingpit.pvpcplanner.domain.error.ErrorResult
 import com.codingpit.pvpcplanner.domain.error.ErrorState
 import com.codingpit.pvpcplanner.domain.error.HasErrorState
-import com.codingpit.pvpcplanner.utils.DeviceCategory
+import com.codingpit.pvpcplanner.utils.CategoryUiModel
 import com.codingpit.pvpcplanner.utils.DeviceIcon
 
 sealed class DeviceAddState {
@@ -19,8 +19,8 @@ sealed class DeviceAddState {
         val notes: String = "",
         val selectedIcon: DeviceIcon? = null,
         val availableIcons: List<DeviceIcon> = emptyList(),
-        val selectedCategory: DeviceCategory? = null,
-        val availableCategories: List<DeviceCategory> = emptyList(),
+        val selectedCategory: CategoryUiModel? = null,
+        val availableCategories: List<CategoryUiModel> = emptyList(),
         val showIconPicker: Boolean = false,
         val showCategoryPicker: Boolean = false,
         val isSaving: Boolean = false,

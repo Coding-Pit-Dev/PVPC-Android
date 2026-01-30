@@ -123,7 +123,7 @@ class DeviceIntegrationTest {
             // Act & Assert
             try {
                 addDeviceUseCase(invalidDevice)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: IllegalArgumentException) {
                 assertEquals(exception, e)
                 coVerify { mockLocalDataSource.saveDevice(invalidDevice) }
@@ -141,7 +141,7 @@ class DeviceIntegrationTest {
             // Act & Assert
             try {
                 updateDeviceUseCase(nonExistentDevice)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockLocalDataSource.updateDevice(nonExistentDevice) }
@@ -159,7 +159,7 @@ class DeviceIntegrationTest {
             // Act & Assert
             try {
                 deleteDeviceUseCase(referencedDevice)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockLocalDataSource.deleteDevice(referencedDevice) }
@@ -212,7 +212,7 @@ class DeviceIntegrationTest {
             // Act - Attempt to add duplicate ID device
             try {
                 addDeviceUseCase(duplicateIdDevice)
-                assert(false) { "Expected constraint exception" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(constraintException, e)
                 coVerify { mockLocalDataSource.saveDevice(duplicateIdDevice) }

@@ -96,7 +96,7 @@ class DeviceRepositoryImplTest {
             // Act & Assert
             try {
                 repository.addDevice(device)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockLocalDataSource.saveDevice(device) }
@@ -114,7 +114,7 @@ class DeviceRepositoryImplTest {
             // Act & Assert
             try {
                 repository.deleteDevice(device)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockLocalDataSource.deleteDevice(device) }
@@ -132,7 +132,7 @@ class DeviceRepositoryImplTest {
             // Act & Assert
             try {
                 repository.updateDevice(device)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockLocalDataSource.updateDevice(device) }

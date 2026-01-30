@@ -37,6 +37,7 @@
     <string name="error_validation_date">Date invalide.</string>
     <string name="error_validation_device_name">Nom d\'appareil invalide.</string>
     <string name="error_validation_device_hours">Les heures doivent être &gt; 0.</string>
+    <string name="error_validation_device_hours_max">Les heures ne peuvent pas être supérieures à 24.</string>
     <string name="error_validation_price">Prix invalide.</string>
     <string name="error_validation_generic">Saisie invalide.</string>
     <string name="error_generic">Erreur inattendue. Veuillez réessayer.</string>
@@ -68,20 +69,26 @@
     <string name="device_iron">Fer à repasser</string>
     <string name="device_laundry">Lave-linge</string>
     <string name="search_device_placeholder">Rechercher un appareil…</string>
+    <string name="no_devices_found">Aucun appareil trouvé correspondant à votre recherche</string>
     <string name="consumption_summary">Résumé de la consommation</string>
     <string name="consumed">Consommé</string>
     <string name="estimated_cost">Coût estimé</string>
     <string name="appliances_section">Appareils électroménagers</string>
-    <string name="device_count">%d appareils</string>
+    <plurals name="device_count">
+        <item quantity="one">%d appareil</item>
+        <item quantity="other">%d appareils</item>
+    </plurals>
     <string name="best_time_slot">Meilleur moment : %1$d:00 - %2$d:00</string>
     <string name="add_device_title">Ajouter un appareil</string>
+    <string name="edit_device_title">Modifier l\'appareil</string>
     <string name="action_back">Retour</string>
     <string name="change_icon">Changer d\'icône</string>
     <string name="device_name_label">Nom de l\'appareil</string>
     <string name="device_name_placeholder">Ex: Lave-linge Samsung</string>
     <string name="always_on">Toujours allumé</string>
     <string name="always_on_description">L\'appareil fonctionne 24h/24 comme un frigo</string>
-    <string name="consumption_watts">Consommation (watts/heure)</string>
+    <string name="consumption_watts">Puissance (W)</string>
+    <string name="unit_watts">W</string>
     <string name="program_duration">Durée du programme</string>
     <string name="category_label">Catégorie</string>
     <string name="category_appliances">Électroménager</string>
@@ -96,7 +103,9 @@
     <string name="notes_label">Notes supplémentaires (facultatif)</string>
     <string name="notes_placeholder">Ex: Programme éco, toujours la nuit…</string>
     <string name="save_device">Enregistrer l\'appareil</string>
+    <string name="update_device">Mettre à jour l\'appareil</string>
     <string name="action_cancel">Annuler</string>
     <string name="select_icon">Sélectionner une icône</string>
+    <string name="select_category">Choisir une catégorie</string>
     <string name="action_close">Fermer</string>
 </resources>

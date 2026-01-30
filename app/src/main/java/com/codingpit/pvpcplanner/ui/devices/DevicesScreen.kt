@@ -39,11 +39,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -81,9 +83,6 @@ fun DevicesScreen(
                 DevicesScreen_Success(
                     state = state,
                     addDevice = { name, hours, icon -> viewModel.addDevice(name, hours, icon) },
-                    hideAddDeviceModal = {
-                        // viewModel.hideAddDeviceModal()
-                    },
                     onSwiped = { viewModel.removeDevice(it.device) },
                     onDeviceClick = onDeviceClick,
                     onSearchQueryChanged = viewModel::updateSearchQuery,
@@ -97,12 +96,11 @@ fun DevicesScreen(
 private fun DevicesScreen_Success(
     state: DevicesState.Success,
     addDevice: (String, Int, String) -> Unit,
-    hideAddDeviceModal: () -> Unit,
     onSwiped: (DeviceRender) -> Unit,
     onDeviceClick: (Device) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
 ) {
-    val calculateTotalConsumption = CalculateTotalConsumption()
+    val calculateTotalConsumption = remember { CalculateTotalConsumption() }
     val summary =
         calculateTotalConsumption(
             state.devicesSlot.map {
@@ -344,7 +342,7 @@ private fun SectionHeader(
             fontSize = 18.sp,
         )
         Text(
-            text = stringResource(R.string.device_count, deviceCount),
+            text = pluralStringResource(R.plurals.device_count, deviceCount, deviceCount),
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -443,9 +441,12 @@ private fun DeviceItem(
                         )
                     } ?: run {
                         Text(
-                            render.device.name
-                                .first()
-                                .uppercase(),
+                            text =
+                                render.device.name
+                                    .firstOrNull()
+                                    ?.uppercaseChar()
+                                    ?.toString()
+                                    ?: "?",
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -516,13 +517,13 @@ private fun DeviceItem(
                                 text = "€",
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 12.sp,
-                                color = Color(0xFF4CAF50),
+                                color = MaterialTheme.colorScheme.tertiary,
                             )
                             Text(
                                 text = "~€%.2f".format(render.cost),
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 12.sp,
-                                color = Color(0xFF4CAF50),
+                                color = MaterialTheme.colorScheme.tertiary,
                             )
                         }
                     }

@@ -74,7 +74,10 @@
     <string name="consumed">Consumed</string>
     <string name="estimated_cost">Estimated cost</string>
     <string name="appliances_section">Appliances</string>
-    <string name="device_count">%d devices</string>
+    <plurals name="device_count">
+        <item quantity="one">%d device</item>
+        <item quantity="other">%d devices</item>
+    </plurals>
     <string name="best_time_slot">Best time: %1$d:00 - %2$d:00</string>
     <string name="add_device_title">Add Device</string>
     <string name="edit_device_title">Edit Device</string>
@@ -84,7 +87,8 @@
     <string name="device_name_placeholder">E.g. Samsung Washing Machine</string>
     <string name="always_on">Always on</string>
     <string name="always_on_description">Device is always on like fridge 24h</string>
-    <string name="consumption_watts">Consumption (watts/hour)</string>
+    <string name="consumption_watts">Power (W)</string>
+    <string name="unit_watts">W</string>
     <string name="program_duration">Program duration</string>
     <string name="category_label">Category</string>
     <string name="category_appliances">Appliances</string>

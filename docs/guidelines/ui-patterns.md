@@ -64,9 +64,11 @@ Use for consumption, prices, or any measurement that requires decimal precision:
 OutlinedTextField(
     value = watts,
     onValueChange = { newValue ->
+        // Normalize comma to dot for validation and parsing
+        val normalized = newValue.replace(',', '.')
         // Only allow valid decimal numbers
-        if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
-            onWattsChange(newValue)
+        if (newValue.isEmpty() || normalized.matches(Regex("^\\d*\\.?\\d*$"))) {
+            onWattsChange(normalized)
         }
     },
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -106,7 +108,8 @@ OutlinedTextField(
 **Guideline:** Use clear, descriptive units that indicate rate when applicable.
 
 **Examples:**
-- Power consumption: `W/h` (Watts per hour) instead of just `W`
+- Power (instantaneous): `W`
+- Energy (consumption over time): `Wh` or `kWh`
 - Duration: `hours` or localized equivalent
 - Speed: `km/h`, `m/s`, etc.
 
@@ -114,7 +117,7 @@ OutlinedTextField(
 OutlinedTextField(
     value = watts,
     onValueChange = onWattsChange,
-    suffix = { Text("W/h") }, // Clear rate indication
+    suffix = { Text("W") }, // Clear power indication
 )
 ```
 

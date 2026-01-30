@@ -114,20 +114,13 @@ class HomeViewModelTest {
                 // Unconfined dispatcher might have already emitted Loading and Success
                 // StateFlow replay=1 gives the latest value.
                 val state = awaitItem()
-                if (state is HomeState.Loading) {
-                    val success = awaitItem()
-                    assertTrue(success is HomeState.Success)
-                    val successState = success as HomeState.Success
-                    assertEquals(prices, successState.pvpcEntries)
-                    assertEquals(0.15, successState.currentPrice, 0.001)
-                    assertEquals(10, successState.currentHour)
-                } else {
-                    assertTrue(state is HomeState.Success)
-                    val successState = state as HomeState.Success
-                    assertEquals(prices, successState.pvpcEntries)
-                    assertEquals(0.15, successState.currentPrice, 0.001)
-                    assertEquals(10, successState.currentHour)
-                }
+                val successState = if (state is HomeState.Loading) awaitItem() else state
+
+                assertTrue(successState is HomeState.Success)
+                val success = successState as HomeState.Success
+                assertEquals(prices, success.pvpcEntries)
+                assertEquals(0.15, success.currentPrice, 0.001)
+                assertEquals(10, success.currentHour)
             }
         }
 

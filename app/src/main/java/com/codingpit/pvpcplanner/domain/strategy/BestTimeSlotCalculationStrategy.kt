@@ -14,9 +14,12 @@ class BestTimeSlotCalculationStrategy
         ): TimeSlot {
             require(prices.isNotEmpty()) { "Prices list cannot be empty" }
             require(device.hours > 0) { "Device hours must be positive" }
-            require(prices.size >= device.hours) {
-                "Not enough price data (${prices.size}) for device requiring ${device.hours} hours"
+
+            // If we don't have enough price data for the full duration, return the full available range
+            if (prices.size < device.hours) {
+                return TimeSlot(prices.first().startHour, prices.last().endHour)
             }
+
             var bestSlot = prices.first().startHour
             var bestPrice = Double.MAX_VALUE
 

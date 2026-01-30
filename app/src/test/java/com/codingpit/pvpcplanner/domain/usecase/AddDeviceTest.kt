@@ -64,7 +64,7 @@ class AddDeviceTest {
             // Act & Assert
             try {
                 useCase(device)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: IllegalArgumentException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.addDevice(device) }
@@ -82,7 +82,7 @@ class AddDeviceTest {
             // Act & Assert
             try {
                 useCase(device)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.addDevice(device) }

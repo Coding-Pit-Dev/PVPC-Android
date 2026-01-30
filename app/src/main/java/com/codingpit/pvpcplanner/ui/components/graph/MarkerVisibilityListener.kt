@@ -13,10 +13,11 @@ class MarkerVisibilityListener(
         targets: List<CartesianMarker.Target>,
     ) {
         super.onShown(marker, targets)
-        val target = targets.first()
+        val target = targets.firstOrNull() ?: return
+        val price = responseData.firstOrNull { it.startHour == target.x.toInt() }?.pcb ?: return
         onMarkerChanged(
             target.x.toInt(),
-            responseData.first { it.startHour == target.x.toInt() }.pcb,
+            price,
         )
     }
 
@@ -25,10 +26,11 @@ class MarkerVisibilityListener(
         targets: List<CartesianMarker.Target>,
     ) {
         super.onUpdated(marker, targets)
-        val target = targets.first()
+        val target = targets.firstOrNull() ?: return
+        val price = responseData.firstOrNull { it.startHour == target.x.toInt() }?.pcb ?: return
         onMarkerChanged(
             target.x.toInt(),
-            responseData.first { it.startHour == target.x.toInt() }.pcb,
+            price,
         )
     }
 }

@@ -50,9 +50,9 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.Device
-import com.codingpit.pvpcplanner.utils.DeviceCategory
+import com.codingpit.pvpcplanner.utils.CategoryUiModel
+import com.codingpit.pvpcplanner.utils.DEVICE_CATEGORIES
 import com.codingpit.pvpcplanner.utils.DeviceIcon
-import com.codingpit.pvpcplanner.utils.getDeviceCategories
 import com.codingpit.pvpcplanner.utils.getDeviceIcons
 
 @Composable
@@ -63,7 +63,7 @@ fun DeviceAddScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val icons = getDeviceIcons()
-    val categories = getDeviceCategories()
+    val categories = DEVICE_CATEGORIES
 
     LaunchedEffect(device) {
         if (device != null) {
@@ -125,7 +125,7 @@ private fun DeviceAddScreen_Success(
     onAlwaysOnChanged: (Boolean) -> Unit,
     onNotesChanged: (String) -> Unit,
     onIconSelected: (DeviceIcon) -> Unit,
-    onCategorySelected: (DeviceCategory) -> Unit,
+    onCategorySelected: (CategoryUiModel) -> Unit,
     onShowIconPicker: () -> Unit,
     onHideIconPicker: () -> Unit,
     onShowCategoryPicker: () -> Unit,
@@ -376,15 +376,17 @@ private fun ConsumptionRow(
             OutlinedTextField(
                 value = watts,
                 onValueChange = { newValue ->
-                    if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
-                        onWattsChange(newValue)
+                    // Normalize comma to dot for validation and parsing
+                    val normalized = newValue.replace(',', '.')
+                    if (newValue.isEmpty() || normalized.matches(Regex("^\\d*\\.?\\d*$"))) {
+                        onWattsChange(normalized)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("500") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 shape = RoundedCornerShape(12.dp),
-                suffix = { Text("W/h") },
+                suffix = { Text(stringResource(R.string.unit_watts)) },
             )
         }
 
@@ -436,7 +438,7 @@ private fun ConsumptionRow(
 
 @Composable
 private fun CategoryField(
-    selectedCategory: DeviceCategory,
+    selectedCategory: CategoryUiModel,
     onShowCategoryPicker: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -503,7 +505,7 @@ private fun NotesField(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .size(height = 80.dp, width = 0.dp),
+                    .height(80.dp),
             placeholder = { Text(stringResource(R.string.notes_placeholder)) },
             shape = RoundedCornerShape(12.dp),
             maxLines = 4,
@@ -692,9 +694,9 @@ private fun IconPickerItem(
 
 @Composable
 private fun CategoryPickerModal(
-    categories: List<DeviceCategory>,
-    selectedCategory: DeviceCategory,
-    onCategorySelected: (DeviceCategory) -> Unit,
+    categories: List<CategoryUiModel>,
+    selectedCategory: CategoryUiModel,
+    onCategorySelected: (CategoryUiModel) -> Unit,
     onDismiss: () -> Unit,
 ) {
     Dialog(
@@ -756,7 +758,7 @@ private fun CategoryPickerModal(
 
 @Composable
 private fun CategoryPickerItem(
-    category: DeviceCategory,
+    category: CategoryUiModel,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

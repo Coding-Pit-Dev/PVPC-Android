@@ -101,7 +101,7 @@ class UpdateSettingTest {
             // Act & Assert
             try {
                 useCase(darkMode)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.updateDarkMode(darkMode) }
@@ -119,7 +119,7 @@ class UpdateSettingTest {
             // Act & Assert
             try {
                 useCase(timeFormat)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.updateTimeFormat(timeFormat) }
@@ -137,7 +137,7 @@ class UpdateSettingTest {
             // Act & Assert
             try {
                 useCase(darkMode)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.updateDarkMode(darkMode) }
@@ -155,7 +155,7 @@ class UpdateSettingTest {
             // Act & Assert
             try {
                 useCase(timeFormat)
-                assert(false) { "Expected exception to be thrown" }
+                org.junit.Assert.fail("Expected exception to be thrown")
             } catch (e: RuntimeException) {
                 assertEquals(exception, e)
                 coVerify { mockRepository.updateTimeFormat(timeFormat) }

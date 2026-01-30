@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.codingpit.pvpcplanner.R
+import com.codingpit.pvpcplanner.domain.models.DeviceCategory
 
 object Constants {
     const val HOME_SCREEN = "Prices"
@@ -92,20 +93,20 @@ fun getDeviceIcons(): List<DeviceIcon> =
 @Composable
 fun getIcons(): Map<String, ImageVector> = getDeviceIcons().associate { it.id to it.icon }
 
-data class DeviceCategory(
+data class CategoryUiModel(
     val id: String,
     val labelRes: Int,
 )
 
-fun getDeviceCategories(): List<DeviceCategory> =
+val DEVICE_CATEGORIES =
     listOf(
-        DeviceCategory("appliances", R.string.category_appliances),
-        DeviceCategory("lighting", R.string.category_lighting),
-        DeviceCategory("hvac", R.string.category_hvac),
-        DeviceCategory("kitchen", R.string.category_kitchen),
-        DeviceCategory("laundry", R.string.category_laundry),
-        DeviceCategory("entertainment", R.string.category_entertainment),
-        DeviceCategory("computing", R.string.category_computing),
-        DeviceCategory("mobility", R.string.category_mobility),
-        DeviceCategory("other", R.string.category_other),
+        CategoryUiModel(DeviceCategory.APPLIANCES, R.string.category_appliances),
+        CategoryUiModel(DeviceCategory.LIGHTING, R.string.category_lighting),
+        CategoryUiModel(DeviceCategory.HVAC, R.string.category_hvac),
+        CategoryUiModel(DeviceCategory.KITCHEN, R.string.category_kitchen),
+        CategoryUiModel(DeviceCategory.LAUNDRY, R.string.category_laundry),
+        CategoryUiModel(DeviceCategory.ENTERTAINMENT, R.string.category_entertainment),
+        CategoryUiModel(DeviceCategory.COMPUTING, R.string.category_computing),
+        CategoryUiModel(DeviceCategory.MOBILITY, R.string.category_mobility),
+        CategoryUiModel(DeviceCategory.OTHER, R.string.category_other),
     )
