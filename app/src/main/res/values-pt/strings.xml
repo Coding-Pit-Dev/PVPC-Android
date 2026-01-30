@@ -81,7 +81,7 @@
     <string name="best_time_slot">Melhor horário: %1$d:00 - %2$d:00</string>
     <string name="add_device_title">Adicionar dispositivo</string>
     <string name="edit_device_title">Editar dispositivo</string>
-    <string name="action_back">Volver</string>
+    <string name="action_back">Voltar</string>
     <string name="change_icon">Alterar ícone</string>
     <string name="device_name_label">Nome do dispositivo</string>
     <string name="device_name_placeholder">Ex: Máquina de lavar Samsung</string>

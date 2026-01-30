@@ -37,7 +37,7 @@ Detekt configuration is at `app/config/detekt/config.yml`.
 
 The app follows **Clean Architecture** with clear separation of concerns:
 
-```
+```text
 ui/          → Jetpack Compose UI + ViewModels
 domain/      → Use cases, models, strategies, error handling
 data/        → Repositories, data sources (Room, Retrofit, DataStore)
@@ -46,22 +46,22 @@ di/          → Hilt dependency injection modules
 
 ### Key Architectural Patterns
 
-**1. Domain Layer is Central**
+#### 1. Domain Layer is Central
 - All business logic lives in `domain/usecase/` as single-responsibility use cases
 - Use cases are injected into ViewModels via constructor injection
 - Domain models (`Device`, `PVPCModel`, `Settings`, `TimeSlot`) are pure Kotlin data classes
 
-**2. Repository Pattern**
+#### 2. Repository Pattern
 - Interfaces in `data/` (e.g., `DeviceRepository`, `PriceRepository`, `SettingsRepository`)
 - Implementations in `data/` (e.g., `DeviceRepositoryImpl`)
 - Repositories coordinate between local (Room, DataStore) and remote (Retrofit) data sources
 
-**3. Strategy Pattern for Calculations**
+#### 3. Strategy Pattern for Calculations
 - `domain/strategy/BestTimeSlotCalculationStrategy` - Calculates optimal time slots for devices
 - `domain/strategy/PriceCalculationStrategy` - Handles price computations
 - Strategies are injected via Hilt in `di/StrategyModule.kt`
 
-**4. Error Handling System**
+#### 4. Error Handling System
 - `domain/error/ErrorHandler` - Centralizes error processing
 - `ErrorResult` sealed class with typed errors: `NetworkError`, `DataError`, `ValidationError`, `UnknownError`
 - `handleErrors()` extension function for Flow to convert exceptions to error states
@@ -120,7 +120,7 @@ All ViewModels use `@HiltViewModel` annotation.
 ### Test Structure
 
 Tests are organized by layer:
-```
+```text
 test/java/com/codingpit/pvpcplanner/
   ├── domain/        # Use case, strategy, error handling tests
   ├── data/          # Repository, mapper tests
@@ -196,8 +196,8 @@ try {
 }
 ```
 
-- Use `runCatching` when you need to chain operations or convert to Result type.
-- Use traditional try/catch when you need specific exception handling or side effects.
+- Prefer `runCatching` when chaining operations or converting to Result type.
+- Traditional try/catch is better suited for specific exception handling or side effects.
 
 ## Jetpack Compose Guidelines
 

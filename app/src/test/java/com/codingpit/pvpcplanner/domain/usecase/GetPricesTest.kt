@@ -107,12 +107,10 @@ class GetPricesTest {
             coEvery { mockRepository.getPrices(date) } throws exception
 
             // Act & Assert
-            try {
-                useCase(date)
-                org.junit.Assert.fail("Expected exception to be thrown")
-            } catch (e: RuntimeException) {
-                assertEquals(exception, e)
-                coVerify { mockRepository.getPrices(date) }
+            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
+                kotlinx.coroutines.test.runTest { useCase(date) }
             }
+            assertEquals(exception, thrown)
+            coVerify { mockRepository.getPrices(date) }
         }
 }

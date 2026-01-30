@@ -13,12 +13,7 @@ class MarkerVisibilityListener(
         targets: List<CartesianMarker.Target>,
     ) {
         super.onShown(marker, targets)
-        val target = targets.firstOrNull() ?: return
-        val price = responseData.firstOrNull { it.startHour == target.x.toInt() }?.pcb ?: return
-        onMarkerChanged(
-            target.x.toInt(),
-            price,
-        )
+        handleMarkerChange(targets)
     }
 
     override fun onUpdated(
@@ -26,11 +21,12 @@ class MarkerVisibilityListener(
         targets: List<CartesianMarker.Target>,
     ) {
         super.onUpdated(marker, targets)
+        handleMarkerChange(targets)
+    }
+
+    private fun handleMarkerChange(targets: List<CartesianMarker.Target>) {
         val target = targets.firstOrNull() ?: return
         val price = responseData.firstOrNull { it.startHour == target.x.toInt() }?.pcb ?: return
-        onMarkerChanged(
-            target.x.toInt(),
-            price,
-        )
+        onMarkerChanged(target.x.toInt(), price)
     }
 }

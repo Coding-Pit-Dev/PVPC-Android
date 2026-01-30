@@ -59,7 +59,7 @@ class DefaultErrorHandler
         }
 
         private fun handleDataException(
-            exception: NoSuchElementException,
+            _exception: NoSuchElementException,
             context: String?,
         ): ErrorResult {
             val message = errorMessageProvider.getDataErrorMessage(context)
@@ -67,7 +67,7 @@ class DefaultErrorHandler
         }
 
         private fun handleValidationException(
-            exception: IllegalArgumentException,
+            _exception: IllegalArgumentException,
             context: String?,
         ): ErrorResult =
             ErrorResult.ValidationError(

@@ -41,6 +41,11 @@ fun PriceChart(
     val calendar = remember { Calendar.getInstance() }
     val yAxisStep = rememberYAxis(responseData.map { it.pcb.toFloat() })
 
+    val markerVisibilityListener =
+        remember(responseData, onMarkerChanged) {
+            MarkerVisibilityListener(responseData, onMarkerChanged)
+        }
+
     LaunchedEffect(responseData) {
         modelProducer.runTransaction {
             lineSeries {
@@ -62,7 +67,7 @@ fun PriceChart(
                         label = TextComponent(),
                         labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
                     ),
-                markerVisibilityListener = MarkerVisibilityListener(responseData, onMarkerChanged),
+                markerVisibilityListener = markerVisibilityListener,
                 startAxis =
                     VerticalAxis.rememberStart(
                         label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
@@ -100,9 +105,7 @@ private fun rememberYAxis(values: List<Float>) =
                 val calculatedStep = range / (desiredLabelCount - 1)
                 // Optional: Round to a nicer number, e.g., nearest 0.01 or 0.05
                 // This is a simple example; you might want more sophisticated rounding
-                (calculatedStep * 100).roundToInt() /
-                    100f // Round to 2 decimal places
-                        .coerceAtLeast(0.01f) // Ensure step is not too small
+                ((calculatedStep * 100).roundToInt() / 100f).coerceAtLeast(0.01f) // Ensure step is not too small
             }
         }
     }

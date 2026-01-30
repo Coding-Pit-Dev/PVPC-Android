@@ -31,7 +31,7 @@ class SettingsViewModel
         val state =
             getSettings()
                 .map {
-                    SettingsState.Success(it.toRender(it))
+                    SettingsState.Success(it.toRender())
                 }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
                 .flowOn(coroutineDispatcher)
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
@@ -90,36 +90,36 @@ data class SettingOption(
     val selected: Boolean = false,
 )
 
-private fun Settings.toRender(settings: Settings): List<SettingRender> =
+private fun Settings.toRender(): List<SettingRender> =
     listOf(
         SettingRender(
             setting =
                 SettingValue.DarkMode(
                     R.string.setting_dark_mode,
-                    getSelectedOption(settings.darkMode).labelRes,
+                    getSelectedOption(darkMode).labelRes,
                 ),
             options =
                 listOf(
-                    SettingOption(R.string.option_system, settings.darkMode == DarkMode.SYSTEM),
-                    SettingOption(R.string.option_light, settings.darkMode == DarkMode.LIGHT),
-                    SettingOption(R.string.option_dark, settings.darkMode == DarkMode.DARK),
+                    SettingOption(R.string.option_system, darkMode == DarkMode.SYSTEM),
+                    SettingOption(R.string.option_light, darkMode == DarkMode.LIGHT),
+                    SettingOption(R.string.option_dark, darkMode == DarkMode.DARK),
                 ),
         ),
         SettingRender(
             setting =
                 SettingValue.TimeFormat(
                     R.string.setting_time_format,
-                    getSelectedOption(settings.timeFormat).labelRes,
+                    getSelectedOption(timeFormat).labelRes,
                 ),
             options =
                 listOf(
                     SettingOption(
                         R.string.option_24h,
-                        settings.timeFormat == TimeFormat.TWENTY_FOUR_HOURS,
+                        timeFormat == TimeFormat.TWENTY_FOUR_HOURS,
                     ),
                     SettingOption(
                         R.string.option_ampm,
-                        settings.timeFormat == TimeFormat.TWELVE_HOURS,
+                        timeFormat == TimeFormat.TWELVE_HOURS,
                     ),
                 ),
         ),

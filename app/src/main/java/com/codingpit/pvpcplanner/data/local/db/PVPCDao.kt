@@ -15,7 +15,7 @@ interface PVPCDao {
     @Query("SELECT * FROM pvpc_entries")
     fun getAll(): List<PVPCEntity>
 
-    @Query("SELECT * FROM pvpc_entries WHERE day LIKE :date")
+    @Query("SELECT * FROM pvpc_entries WHERE day LIKE :date ORDER BY startHour")
     fun getPrices(date: String): List<PVPCEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

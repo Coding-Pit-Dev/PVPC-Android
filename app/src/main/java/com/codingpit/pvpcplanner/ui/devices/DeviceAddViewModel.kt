@@ -25,7 +25,7 @@ class DeviceAddViewModel
     constructor(
         private val addDevice: AddDevice,
         private val updateDevice: UpdateDevice,
-        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        private val dispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         private val _state = MutableStateFlow<DeviceAddState>(DeviceAddState.Loading)
         val state: StateFlow<DeviceAddState> = _state.asStateFlow()
@@ -173,6 +173,7 @@ class DeviceAddViewModel
                     _state.value =
                         DeviceAddState.Error(
                             error = e.message ?: "Error saving device",
+                            isSaving = false,
                         )
                 }
             }

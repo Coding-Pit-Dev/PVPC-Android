@@ -28,7 +28,7 @@ protobuf = "0.9.6"
 datastore = "1.2.0"
 protobufJavalite = "4.33.4"
 turbine = "1.2.1"
-kotlinxSerializationJson = "1.6.3"
+kotlinxSerializationJson = "1.8.1"
 
 
 [libraries]

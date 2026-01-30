@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.codingpit.pvpcplanner.data.local.db.MIGRATION_1_2
 import com.codingpit.pvpcplanner.data.local.db.MIGRATION_2_3
+import com.codingpit.pvpcplanner.data.local.db.MIGRATION_3_4
 import com.codingpit.pvpcplanner.data.local.db.PVPCDao
 import com.codingpit.pvpcplanner.data.local.db.PVPCDatabase
 import com.codingpit.pvpcplanner.data.local.sources.DefaultDeviceLocalDataSource
@@ -30,7 +31,7 @@ object LocalModule {
                 applicationContext,
                 PVPCDatabase::class.java,
                 "pvpc-database",
-            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
 
     @Provides

@@ -30,6 +30,7 @@ sealed class DeviceAddState {
 
     data class Error(
         override val error: String,
+        val isSaving: Boolean = false,
     ) : DeviceAddState(),
         ErrorState
 

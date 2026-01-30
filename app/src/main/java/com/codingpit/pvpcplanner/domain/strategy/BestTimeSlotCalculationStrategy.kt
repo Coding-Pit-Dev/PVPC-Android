@@ -16,6 +16,7 @@ class BestTimeSlotCalculationStrategy
             require(device.hours > 0) { "Device hours must be positive" }
 
             // If we don't have enough price data for the full duration, return the full available range
+            // Also validate that we have enough consecutive slots
             if (prices.size < device.hours) {
                 return TimeSlot(prices.first().startHour, prices.last().endHour)
             }
@@ -23,14 +24,21 @@ class BestTimeSlotCalculationStrategy
             var bestSlot = prices.first().startHour
             var bestPrice = Double.MAX_VALUE
 
-            for (index in 0..prices.size - device.hours) {
-                val slotPrice = prices.subList(index, index + device.hours).sumOf { it.pcb }
+            // Ensure we don't go out of bounds and have enough data points
+            val searchLimit = prices.size - device.hours
+            
+            for (index in 0..searchLimit) {
+                val subList = prices.subList(index, index + device.hours)
+                val slotPrice = subList.sumOf { it.pcb }
                 if (slotPrice < bestPrice) {
                     bestPrice = slotPrice
                     bestSlot = prices[index].startHour
                 }
             }
+            
+            // Ensure end hour doesn't exceed 24 (or the end of the day)
+            val endHour = (bestSlot + device.hours).coerceAtMost(24)
 
-            return TimeSlot(bestSlot, bestSlot + device.hours)
+            return TimeSlot(bestSlot, endHour)
         }
     }

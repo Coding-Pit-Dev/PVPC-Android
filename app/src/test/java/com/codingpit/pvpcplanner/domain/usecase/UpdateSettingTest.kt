@@ -99,13 +99,11 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
 
             // Act & Assert
-            try {
-                useCase(darkMode)
-                org.junit.Assert.fail("Expected exception to be thrown")
-            } catch (e: RuntimeException) {
-                assertEquals(exception, e)
-                coVerify { mockRepository.updateDarkMode(darkMode) }
+            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
+                kotlinx.coroutines.test.runTest { useCase(darkMode) }
             }
+            assertEquals(exception, thrown)
+            coVerify { mockRepository.updateDarkMode(darkMode) }
         }
 
     @Test
@@ -117,13 +115,11 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
 
             // Act & Assert
-            try {
-                useCase(timeFormat)
-                org.junit.Assert.fail("Expected exception to be thrown")
-            } catch (e: RuntimeException) {
-                assertEquals(exception, e)
-                coVerify { mockRepository.updateTimeFormat(timeFormat) }
+            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
+                kotlinx.coroutines.test.runTest { useCase(timeFormat) }
             }
+            assertEquals(exception, thrown)
+            coVerify { mockRepository.updateTimeFormat(timeFormat) }
         }
 
     @Test
@@ -135,13 +131,11 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateDarkMode(darkMode) } throws exception
 
             // Act & Assert
-            try {
-                useCase(darkMode)
-                org.junit.Assert.fail("Expected exception to be thrown")
-            } catch (e: RuntimeException) {
-                assertEquals(exception, e)
-                coVerify { mockRepository.updateDarkMode(darkMode) }
+            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
+                kotlinx.coroutines.test.runTest { useCase(darkMode) }
             }
+            assertEquals(exception, thrown)
+            coVerify { mockRepository.updateDarkMode(darkMode) }
         }
 
     @Test
@@ -153,12 +147,10 @@ class UpdateSettingTest {
             coEvery { mockRepository.updateTimeFormat(timeFormat) } throws exception
 
             // Act & Assert
-            try {
-                useCase(timeFormat)
-                org.junit.Assert.fail("Expected exception to be thrown")
-            } catch (e: RuntimeException) {
-                assertEquals(exception, e)
-                coVerify { mockRepository.updateTimeFormat(timeFormat) }
+            val thrown = org.junit.Assert.assertThrows(RuntimeException::class.java) {
+                kotlinx.coroutines.test.runTest { useCase(timeFormat) }
             }
+            assertEquals(exception, thrown)
+            coVerify { mockRepository.updateTimeFormat(timeFormat) }
         }
 }

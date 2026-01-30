@@ -57,6 +57,8 @@ import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.DeviceConsumptionInput
 import com.codingpit.pvpcplanner.domain.usecase.CalculateTotalConsumption
 import com.codingpit.pvpcplanner.utils.getIcons
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun DevicesScreen(
@@ -255,6 +257,9 @@ private fun SummarySection(
     totalCost: Double,
     modifier: Modifier = Modifier,
 ) {
+    val currencyFormatter = remember { NumberFormat.getCurrencyInstance() }
+    val numberFormatter = remember { NumberFormat.getNumberInstance() }
+
     Column(
         modifier =
             modifier
@@ -283,7 +288,7 @@ private fun SummarySection(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "%.2f kWh".format(totalKWh),
+                        text = "${numberFormatter.format(totalKWh)} ${stringResource(R.string.unit_kwh)}",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                     )
@@ -306,7 +311,7 @@ private fun SummarySection(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "€%.2f".format(totalCost),
+                        text = currencyFormatter.format(totalCost),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.primary,
@@ -358,6 +363,7 @@ private fun DeviceItem(
     onClick: () -> Unit,
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
+    val currencyFormatter = remember { NumberFormat.getCurrencyInstance() }
 
     SwipeToDismissBox(
         state = dismissState,
@@ -514,13 +520,7 @@ private fun DeviceItem(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             Text(
-                                text = "€",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.tertiary,
-                            )
-                            Text(
-                                text = "~€%.2f".format(render.cost),
+                                text = "~${currencyFormatter.format(render.cost)}",
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.tertiary,
