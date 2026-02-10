@@ -26,7 +26,7 @@ junitJupiter = "6.0.2"
 ksp = "2.3.5"
 protobuf = "0.9.6"
 datastore = "1.2.0"
-protobufJavalite = "4.33.4"
+protobufJavalite = "4.33.5"
 turbine = "1.2.1"
 kotlinxSerializationJson = "1.8.1"
 
