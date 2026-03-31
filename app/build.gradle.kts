@@ -163,6 +163,7 @@ dependencies {
 
     // Other  Test
     testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 }
 
 java {
