@@ -41,7 +41,7 @@ class SettingsViewModel
             option: SettingOption,
         ) {
             viewModelScope.launch(coroutineDispatcher) {
-                try {
+                runCatching {
                     when (render.setting) {
                         is SettingValue.DarkMode -> {
                             updateSettingUseCase(
@@ -62,7 +62,7 @@ class SettingsViewModel
                             )
                         }
                     }
-                } catch (e: Exception) {
+                }.onFailure { e ->
                     errorHandler.handleError(e, "update_setting")
                 }
             }

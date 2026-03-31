@@ -13,7 +13,6 @@ import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,7 +34,7 @@ class DevicesViewModel
         private val calculateBestTimeSlot: CalculateBestTimeSlot,
         private val calculateDeviceCost: CalculateDeviceCost,
         private val errorHandler: ErrorHandler,
-        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        private val dispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         private val searchQuery = MutableStateFlow("")
 

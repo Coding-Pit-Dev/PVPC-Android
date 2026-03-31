@@ -39,8 +39,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -66,7 +66,7 @@ android {
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xreturn-value-checker=full")
-        jvmTarget = JvmTarget.JVM_1_8
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
@@ -130,7 +130,6 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.material.icons.extended.android)
-    implementation(libs.material3)
 
     // Hilt and Dagger
     implementation(libs.hilt.android)
