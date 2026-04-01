@@ -5,6 +5,7 @@ import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy
@@ -61,11 +62,11 @@ class PriceCalculationIntegrationTest {
 
             // Act
             val priceResult = getPricesUseCase(date)
-            val bestTimeSlot = calculateBestTimeSlotUseCase(washingMachine, priceResult.getOrThrow())
+            val bestTimeSlot = calculateBestTimeSlotUseCase(washingMachine, priceResult.getOrThrow().prices)
 
             // Assert
             assertTrue(priceResult.isSuccess)
-            assertEquals(5, priceResult.getOrNull()?.size)
+            assertEquals(5, priceResult.getOrNull()?.prices?.size)
 
             // Best slot for 2-hour device should be hours 1-3 (0.10 + 0.08 = 0.18 total)
             assertEquals(TimeSlot(1, 3), bestTimeSlot)
@@ -89,7 +90,7 @@ class PriceCalculationIntegrationTest {
             getPricesFlowUseCase().test {
                 val item = awaitItem()
                 assertTrue(item.isSuccess)
-                assertEquals(2, item.getOrNull()?.size)
+                assertEquals(2, item.getOrNull()?.prices?.size)
                 awaitComplete()
             }
         }
@@ -128,7 +129,7 @@ class PriceCalculationIntegrationTest {
             val priceResult = getPricesUseCase(date)
             assertTrue(priceResult.isSuccess)
 
-            val quickWashSlot = calculateBestTimeSlotUseCase(devices[0], prices)
+            val quickWashSlot = calculateBestTimeSlotUseCase(devices[0], priceResult.getOrThrow().prices)
             val dishwasherSlot = calculateBestTimeSlotUseCase(devices[1], prices)
             val dryerSlot = calculateBestTimeSlotUseCase(devices[2], prices)
 
@@ -186,11 +187,11 @@ class PriceCalculationIntegrationTest {
 
             // Act
             val priceResult = getPricesUseCase(date)
-            val bestSlot = calculateBestTimeSlotUseCase(device, priceResult.getOrThrow())
+            val bestSlot = calculateBestTimeSlotUseCase(device, priceResult.getOrThrow().prices)
 
             // Assert
             assertTrue(priceResult.isSuccess)
-            assertEquals(remotePrices, priceResult.getOrNull())
+            assertEquals(remotePrices, priceResult.getOrNull()?.prices)
             assertEquals(TimeSlot(1, 3), bestSlot) // Hours 1-2 are cheapest (0.12 + 0.10 = 0.22)
         }
 

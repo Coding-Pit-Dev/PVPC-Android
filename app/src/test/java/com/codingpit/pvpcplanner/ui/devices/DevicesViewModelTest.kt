@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.ui.devices
 
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.Device
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy
@@ -47,7 +48,7 @@ class DevicesViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { mockGetDevices() } returns flowOf(emptyList())
-        every { mockGetPricesFlow() } returns flowOf(Result.success(emptyList()))
+        every { mockGetPricesFlow() } returns flowOf(Result.success(PriceFetchResult(emptyList(), isFromCache = false)))
 
         // Mock the use case to call the real strategy for testing
         every { mockCalculateBestTimeSlot(any(), any()) } answers {

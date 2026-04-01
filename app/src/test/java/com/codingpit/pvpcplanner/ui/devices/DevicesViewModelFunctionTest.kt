@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.ui.devices
 
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.Device
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
@@ -49,7 +50,7 @@ class DevicesViewModelFunctionTest {
 
         // Set up basic mocks to prevent flow exceptions
         every { mockGetDevices() } returns flowOf(emptyList())
-        every { mockGetPricesFlow() } returns flowOf(Result.success(emptyList()))
+        every { mockGetPricesFlow() } returns flowOf(Result.success(PriceFetchResult(emptyList(), isFromCache = false)))
         every { mockCalculateBestTimeSlot(any(), any()) } returns TimeSlot(0, 1)
         every { mockCalculateDeviceCost(any(), any(), any()) } returns 0.15
     }

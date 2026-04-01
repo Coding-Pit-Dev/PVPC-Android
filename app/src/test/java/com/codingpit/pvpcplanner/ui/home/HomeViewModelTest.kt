@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import app.cash.turbine.test
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.DarkMode
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
@@ -58,7 +59,7 @@ class HomeViewModelTest {
     private val mockErrorHandler = mockk<ErrorHandler>()
 
     private fun createViewModel(
-        prices: Result<List<PVPCModel>> = Result.success(emptyList()),
+        prices: Result<PriceFetchResult> = Result.success(PriceFetchResult(emptyList(), isFromCache = false)),
         currentHour: Int = 10,
     ): HomeViewModel {
         val testDate = LocalDate.of(2023, 10, 15)
@@ -107,7 +108,7 @@ class HomeViewModelTest {
                     PVPCModel("2023-10-15", 10, 11, 0.15, 0.18),
                     PVPCModel("2023-10-15", 11, 12, 0.12, 0.16),
                 )
-            val viewModel = createViewModel(Result.success(prices), 10)
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)), 10)
 
             // Act & Assert
             viewModel.state.test {
@@ -147,7 +148,7 @@ class HomeViewModelTest {
         runTest {
             // Arrange
             val prices = emptyList<PVPCModel>()
-            val viewModel = createViewModel(Result.success(prices))
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Act & Assert
             viewModel.state.test {
@@ -168,7 +169,7 @@ class HomeViewModelTest {
                     PVPCModel("2023-10-15", 8, 9, 0.15, 0.18),
                     PVPCModel("2023-10-15", 9, 10, 0.12, 0.16),
                 )
-            val viewModel = createViewModel(Result.success(prices), 11) // Hour not in prices list
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)), 11) // Hour not in prices list
 
             // Act & Assert
             viewModel.state.test {
@@ -184,10 +185,10 @@ class HomeViewModelTest {
         runTest {
             // Arrange
             val prices = listOf(PVPCModel("2023-10-14", 10, 11, 0.15, 0.18))
-            val viewModel = createViewModel(Result.success(prices))
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Mock the prices for the new date
-            coEvery { mockGetPrices("2023-10-14") } returns Result.success(prices)
+            coEvery { mockGetPrices("2023-10-14") } returns Result.success(PriceFetchResult(prices, isFromCache = false))
 
             // Act & Assert
             viewModel.state.test {
@@ -217,10 +218,10 @@ class HomeViewModelTest {
         runTest {
             // Arrange
             val prices = listOf(PVPCModel("2023-10-16", 10, 11, 0.15, 0.18))
-            val viewModel = createViewModel(Result.success(prices))
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Mock the prices for the new date
-            coEvery { mockGetPrices("2023-10-16") } returns Result.success(prices)
+            coEvery { mockGetPrices("2023-10-16") } returns Result.success(PriceFetchResult(prices, isFromCache = false))
 
             // Act & Assert
             viewModel.state.test {

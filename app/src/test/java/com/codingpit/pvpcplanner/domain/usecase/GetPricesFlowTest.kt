@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.domain.usecase
 
 import app.cash.turbine.test
 import com.codingpit.pvpcplanner.data.PriceRepository
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.utils.DateChecker
 import io.mockk.coEvery
@@ -36,7 +37,8 @@ class GetPricesFlowTest {
                     PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
                     PVPCModel("2023-10-15", 1, 2, 0.14, 0.17),
                 )
-            coEvery { mockRepository.getPrices(date) } returns Result.success(expectedPrices)
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
+            coEvery { mockRepository.getPrices(date) } returns Result.success(expectedResult)
 
             // Act
             val result = useCase(date)
@@ -45,7 +47,7 @@ class GetPricesFlowTest {
             result.test {
                 val item = awaitItem()
                 assertTrue(item.isSuccess)
-                assertEquals(expectedPrices, item.getOrNull())
+                assertEquals(expectedResult, item.getOrNull())
                 awaitComplete()
             }
             coVerify { mockRepository.getPrices(date) }
@@ -62,10 +64,11 @@ class GetPricesFlowTest {
                 listOf(
                     PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
                 )
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
             every { mockDateChecker.getDefaultDate() } returns defaultDate
             coEvery { mockRepository.getPrices(expectedDateString) } returns
                 Result.success(
-                    expectedPrices,
+                    expectedResult,
                 )
 
             // Act
@@ -75,7 +78,7 @@ class GetPricesFlowTest {
             result.test {
                 val item = awaitItem()
                 assertTrue(item.isSuccess)
-                assertEquals(expectedPrices, item.getOrNull())
+                assertEquals(expectedResult, item.getOrNull())
                 awaitComplete()
             }
             verify { mockDateChecker.getDefaultDate() }
@@ -92,10 +95,11 @@ class GetPricesFlowTest {
                 listOf(
                     PVPCModel("2023-10-16", 0, 1, 0.16, 0.19),
                 )
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
             every { mockDateChecker.getDefaultDate() } returns defaultDate
             coEvery { mockRepository.getPrices(expectedDateString) } returns
                 Result.success(
-                    expectedPrices,
+                    expectedResult,
                 )
 
             // Act
@@ -105,7 +109,7 @@ class GetPricesFlowTest {
             result.test {
                 val item = awaitItem()
                 assertTrue(item.isSuccess)
-                assertEquals(expectedPrices, item.getOrNull())
+                assertEquals(expectedResult, item.getOrNull())
                 awaitComplete()
             }
             verify { mockDateChecker.getDefaultDate() }
@@ -166,7 +170,8 @@ class GetPricesFlowTest {
                 listOf(
                     PVPCModel("2023-12-25", 0, 1, 0.12, 0.15),
                 )
-            coEvery { mockRepository.getPrices(futureDate) } returns Result.success(expectedPrices)
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
+            coEvery { mockRepository.getPrices(futureDate) } returns Result.success(expectedResult)
 
             // Act
             val result = useCase(futureDate)
@@ -175,7 +180,7 @@ class GetPricesFlowTest {
             result.test {
                 val item = awaitItem()
                 assertTrue(item.isSuccess)
-                assertEquals(expectedPrices, item.getOrNull())
+                assertEquals(expectedResult, item.getOrNull())
                 awaitComplete()
             }
             coVerify { mockRepository.getPrices(futureDate) }
@@ -187,7 +192,8 @@ class GetPricesFlowTest {
             // Arrange
             val date = "2023-10-15"
             val emptyPrices = emptyList<PVPCModel>()
-            coEvery { mockRepository.getPrices(date) } returns Result.success(emptyPrices)
+            val expectedResult = PriceFetchResult(emptyPrices, isFromCache = false)
+            coEvery { mockRepository.getPrices(date) } returns Result.success(expectedResult)
 
             // Act
             val result = useCase(date)
@@ -196,7 +202,7 @@ class GetPricesFlowTest {
             result.test {
                 val item = awaitItem()
                 assertTrue(item.isSuccess)
-                assertEquals(emptyPrices, item.getOrNull())
+                assertEquals(expectedResult, item.getOrNull())
                 awaitComplete()
             }
             coVerify { mockRepository.getPrices(date) }
