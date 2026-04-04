@@ -29,6 +29,7 @@ datastore = "1.2.0"
 protobufJavalite = "4.34.0"
 turbine = "1.2.1"
 kotlinxSerializationJson = "1.10.0"
+workmanager = "2.10.0"
 
 
 [libraries]
@@ -72,6 +73,7 @@ junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ver
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
 
 
 

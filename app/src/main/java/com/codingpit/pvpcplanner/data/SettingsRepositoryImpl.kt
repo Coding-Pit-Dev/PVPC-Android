@@ -21,4 +21,8 @@ class SettingsRepositoryImpl
         override suspend fun updateTimeFormat(timeFormat: TimeFormat) {
             settingsStore.updateTimeFormat(timeFormat)
         }
+
+        override suspend fun updatePriceThreshold(threshold: Float) {
+            settingsStore.updatePriceThreshold(threshold)
+        }
     }

@@ -9,6 +9,7 @@ import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
+import com.codingpit.pvpcplanner.domain.usecase.SchedulePriceAlerts
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,12 +27,13 @@ class SettingsViewModel
         getSettings: GetSettings,
         private val errorHandler: ErrorHandler,
         private val updateSettingUseCase: UpdateSetting,
+        private val schedulePriceAlerts: SchedulePriceAlerts,
         private val coroutineDispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         val state =
             getSettings()
                 .map {
-                    SettingsState.Success(it.toRender())
+                    SettingsState.Success(it.toRender(), it.priceThreshold)
                 }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
                 .flowOn(coroutineDispatcher)
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
@@ -64,6 +66,21 @@ class SettingsViewModel
                     }
                 } catch (e: Exception) {
                     errorHandler.handleError(e, "update_setting")
+                }
+            }
+        }
+
+        fun updatePriceThreshold(threshold: Float) {
+            viewModelScope.launch(coroutineDispatcher) {
+                runCatching {
+                    updateSettingUseCase(threshold)
+                    if (threshold > 0f) {
+                        schedulePriceAlerts(threshold)
+                    } else {
+                        schedulePriceAlerts.cancel()
+                    }
+                }.onFailure { e ->
+                    errorHandler.handleError(e, "update_price_threshold")
                 }
             }
         }

@@ -147,6 +147,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.work.runtime)
 
     // Tests
     testImplementation(libs.junit)
