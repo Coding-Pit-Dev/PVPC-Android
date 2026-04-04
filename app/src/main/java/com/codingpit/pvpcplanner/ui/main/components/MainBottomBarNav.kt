@@ -32,6 +32,7 @@ fun MainBottomBarNav(
                 when (screen.key) {
                     Constants.HOME_SCREEN -> stringResource(R.string.nav_prices)
                     Constants.DEVICES_SCREEN -> stringResource(R.string.nav_devices)
+                    Constants.STATS_SCREEN -> stringResource(R.string.nav_stats)
                     Constants.SETTINGS_SCREEN -> stringResource(R.string.nav_settings)
                     else -> screen.key
                 }

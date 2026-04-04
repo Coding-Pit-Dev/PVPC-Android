@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Battery5Bar
 import androidx.compose.material.icons.filled.Blender
 import androidx.compose.material.icons.filled.Camera
@@ -37,11 +38,13 @@ object Constants {
     const val DEVICES_SCREEN = "Devices"
     const val DEVICE_ADD_SCREEN = "DeviceAdd"
     const val SETTINGS_SCREEN = "Settings"
+    const val STATS_SCREEN = "Stats"
 
     val ROUTES_NAVIGATION_BOTTOM_BAR =
         mapOf(
             HOME_SCREEN to Icons.Default.Paid,
             DEVICES_SCREEN to Icons.Default.PowerSettingsNew,
+            STATS_SCREEN to Icons.Default.BarChart,
             SETTINGS_SCREEN to Icons.Default.Settings,
         )
 }

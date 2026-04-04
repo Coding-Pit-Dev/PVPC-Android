@@ -19,6 +19,7 @@ import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.main.components.MainBottomBarNav
 import com.codingpit.pvpcplanner.ui.main.components.MainContent
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
+import com.codingpit.pvpcplanner.ui.stats.StatsViewModel
 import com.codingpit.pvpcplanner.utils.Constants
 
 @Composable
@@ -27,6 +28,7 @@ fun MainScreen(
     devicesViewModel: DevicesViewModel,
     deviceAddViewModel: DeviceAddViewModel,
     settingsViewModel: SettingsViewModel,
+    statsViewModel: StatsViewModel,
 ) {
     var selectedScreen by remember { mutableStateOf(Constants.HOME_SCREEN) }
     var deviceToEdit by remember { mutableStateOf<Device?>(null) }
@@ -36,6 +38,7 @@ fun MainScreen(
             Constants.HOME_SCREEN -> stringResource(R.string.nav_prices)
             Constants.DEVICES_SCREEN -> stringResource(R.string.nav_devices)
             Constants.DEVICE_ADD_SCREEN -> null
+            Constants.STATS_SCREEN -> stringResource(R.string.nav_stats)
             Constants.SETTINGS_SCREEN -> stringResource(R.string.nav_settings)
             else -> selectedScreen
         }
@@ -73,6 +76,7 @@ fun MainScreen(
             devicesViewModel = devicesViewModel,
             deviceAddViewModel = deviceAddViewModel,
             settingsViewModel = settingsViewModel,
+            statsViewModel = statsViewModel,
             selectedScreen = selectedScreen,
             deviceToEdit = deviceToEdit,
             onNavigateToDeviceAdd = {
