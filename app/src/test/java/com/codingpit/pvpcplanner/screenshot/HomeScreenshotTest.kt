@@ -69,15 +69,15 @@ class HomeScreenshotTest {
     }
 
     @Test
-    fun homeScreen_nextDayEnabled_lightTheme() {
+    fun homeScreen_emptyPrices_lightTheme() {
         composeTestRule.setContent {
             PVPCPlannerTheme(darkTheme = false, dynamicColor = false) {
                 HomeComponents(
-                    pvpcEntries = testPrices,
-                    selectedDate = "2024-01-14",
+                    pvpcEntries = emptyList(),
+                    selectedDate = "2024-01-15",
                     currentDate = "2024-01-15",
-                    currentPrice = 0.07,
-                    currentHour = 8,
+                    currentPrice = 0.0,
+                    currentHour = 0,
                     nextDayEnabled = true,
                     timeFormat = TimeFormat.TWENTY_FOUR_HOURS,
                 )
