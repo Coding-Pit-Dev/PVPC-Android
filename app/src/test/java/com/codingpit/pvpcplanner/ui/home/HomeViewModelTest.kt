@@ -126,6 +126,26 @@ class HomeViewModelTest {
         }
 
     @Test
+    fun `state emits Success with isFromCache true when data is from cache`() =
+        runTest {
+            // Arrange
+            val prices =
+                listOf(
+                    PVPCModel("2023-10-15", 10, 11, 0.15, 0.18),
+                )
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = true)), 10)
+
+            // Act & Assert
+            viewModel.state.test {
+                val state = awaitItem()
+                val successState = if (state is HomeState.Loading) awaitItem() else state
+
+                assertTrue(successState is HomeState.Success)
+                assertTrue((successState as HomeState.Success).isFromCache)
+            }
+        }
+
+    @Test
     fun `state emits Error when prices retrieval fails`() =
         runTest {
             // Arrange
@@ -147,8 +167,7 @@ class HomeViewModelTest {
     fun `state emits Error when getOrThrow fails due to missing data`() =
         runTest {
             // Arrange
-            val prices = emptyList<PVPCModel>()
-            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
+            val viewModel = createViewModel(Result.success(PriceFetchResult(emptyList(), isFromCache = false)))
 
             // Act & Assert
             viewModel.state.test {
@@ -169,7 +188,7 @@ class HomeViewModelTest {
                     PVPCModel("2023-10-15", 8, 9, 0.15, 0.18),
                     PVPCModel("2023-10-15", 9, 10, 0.12, 0.16),
                 )
-            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)), 11) // Hour not in prices list
+            val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)), 11)
 
             // Act & Assert
             viewModel.state.test {
@@ -197,7 +216,7 @@ class HomeViewModelTest {
                 if (state is HomeState.Loading) {
                     state = awaitItem()
                 }
-                assertTrue(state is HomeState.Success) // Ensure we started at success
+                assertTrue(state is HomeState.Success)
 
                 // Act
                 viewModel.onPreviousClicked()
