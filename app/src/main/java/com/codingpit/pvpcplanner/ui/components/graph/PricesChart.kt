@@ -5,25 +5,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.component.TextComponent
+import com.patrykandpatrick.vico.compose.cartesian.Zoom
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.compose.common.component.TextComponent
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -70,13 +69,13 @@ fun PriceChart(
                 markerVisibilityListener = markerVisibilityListener,
                 startAxis =
                     VerticalAxis.rememberStart(
-                        label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
+                        label = rememberAxisLabelComponent(axisLabelTextStyle()),
                         guideline = null,
                         itemPlacer = VerticalAxis.ItemPlacer.step(step = { yAxisStep.toDouble() }),
                     ),
                 bottomAxis =
                     HorizontalAxis.rememberBottom(
-                        label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
+                        label = rememberAxisLabelComponent(axisLabelTextStyle()),
                         guideline = null,
                         valueFormatter = getValueFormatter(calendar, timeFormat, simpleDateFormat),
                         itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 }),
@@ -108,14 +107,18 @@ private fun rememberYAxis(values: List<Float>) =
                 ((calculatedStep * 100).roundToInt() / 100f).coerceAtLeast(0.01f) // Ensure step is not too small
             }
         }
-    }
+}
+
+@Composable
+private fun axisLabelTextStyle(): TextStyle =
+    MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.primary)
 
 private fun getValueFormatter(
     calendar: Calendar,
     timeFormat: TimeFormat,
     simpleDateFormat: SimpleDateFormat,
 ) = if (timeFormat == TimeFormat.TWENTY_FOUR_HOURS) {
-    CartesianValueFormatter.Default
+    CartesianValueFormatter { _, value, _ -> value.toInt().toString() }
 } else {
     CartesianValueFormatter { _, value, _ ->
         calendar.set(Calendar.HOUR_OF_DAY, value.toInt())
