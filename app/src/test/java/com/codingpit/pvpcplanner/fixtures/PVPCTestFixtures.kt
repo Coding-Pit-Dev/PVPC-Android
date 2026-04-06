@@ -56,6 +56,25 @@ object PVPCTestFixtures {
                 PVPCModel("2023-10-17", 3, 4, 0.04040, 0.04878),
                 // ... truncated for brevity
             )
+
+        val HISTORY_DAYS_UNSORTED = listOf("31/01/2026", "01/02/2026", "15/12/2025")
+
+        val HISTORY_PRICES_2026_01_31 =
+            listOf(
+                PVPCModel("31/01/2026", 0, 1, 0.30, 0.30),
+                PVPCModel("31/01/2026", 1, 2, 0.20, 0.20),
+            )
+
+        val HISTORY_PRICES_2026_02_01 =
+            listOf(
+                PVPCModel("01/02/2026", 0, 1, 0.10, 0.10),
+                PVPCModel("01/02/2026", 1, 2, 0.15, 0.15),
+            )
+
+        val HISTORY_PRICES_2025_12_15 =
+            listOf(
+                PVPCModel("15/12/2025", 0, 1, 0.40, 0.40),
+            )
     }
 
     /**

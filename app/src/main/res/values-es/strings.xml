@@ -14,7 +14,14 @@
     <string name="unit_hours">horas</string>
     <string name="nav_prices">Precios</string>
     <string name="nav_devices">Dispositivos</string>
+    <string name="nav_stats">Estadísticas</string>
     <string name="nav_settings">Ajustes</string>
+    <string name="stats_title">Historial de precios</string>
+    <string name="stats_no_data">No hay datos históricos disponibles aún.\nNavega por los precios de diferentes días para construir historial.</string>
+    <string name="stats_error_generic">Ha ocurrido un error al cargar las estadísticas. Inténtalo de nuevo.</string>
+    <string name="stats_avg">Media</string>
+    <string name="stats_min">Mín</string>
+    <string name="stats_max">Máx</string>
     <string name="setting_dark_mode">Modo oscuro</string>
     <string name="setting_time_format">Formato de hora</string>
     <string name="option_light">Claro</string>

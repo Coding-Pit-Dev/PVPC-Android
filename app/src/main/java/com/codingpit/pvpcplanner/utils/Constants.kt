@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Battery5Bar
 import androidx.compose.material.icons.filled.Blender
 import androidx.compose.material.icons.filled.Camera
@@ -38,6 +39,7 @@ object Constants {
         mapOf(
             Screen.Home to Icons.Default.Paid,
             Screen.Devices to Icons.Default.PowerSettingsNew,
+            Screen.Stats to Icons.Default.BarChart,
             Screen.Settings to Icons.Default.Settings,
         )
 }

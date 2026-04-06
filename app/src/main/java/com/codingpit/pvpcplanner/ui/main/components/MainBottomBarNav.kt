@@ -33,6 +33,7 @@ fun MainBottomBarNav(
                     is Screen.Home -> stringResource(R.string.nav_prices)
                     is Screen.Devices -> stringResource(R.string.nav_devices)
                     is Screen.DeviceAdd -> stringResource(R.string.nav_devices)
+                    is Screen.Stats -> stringResource(R.string.nav_stats)
                     is Screen.Settings -> stringResource(R.string.nav_settings)
                 }
 

@@ -11,6 +11,8 @@ import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.main.Screen
 import com.codingpit.pvpcplanner.ui.settings.SettingsScreen
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
+import com.codingpit.pvpcplanner.ui.stats.StatsScreen
+import com.codingpit.pvpcplanner.ui.stats.StatsViewModel
 
 @Composable
 fun MainContent(
@@ -18,6 +20,7 @@ fun MainContent(
     devicesViewModel: DevicesViewModel,
     deviceAddViewModel: DeviceAddViewModel,
     settingsViewModel: SettingsViewModel,
+    statsViewModel: StatsViewModel,
     selectedScreen: Screen,
     deviceToEdit: Device? = null,
     onNavigateToDeviceAdd: () -> Unit = {},
@@ -45,5 +48,8 @@ fun MainContent(
 
         is Screen.Settings ->
             SettingsScreen(viewModel = settingsViewModel)
+
+        is Screen.Stats ->
+            StatsScreen(viewModel = statsViewModel)
     }
 }
