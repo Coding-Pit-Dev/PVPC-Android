@@ -23,6 +23,7 @@ class SettingsRepositoryImpl
         }
 
         override suspend fun updatePriceThreshold(threshold: Float) {
+            require(threshold >= 0f) { "priceThreshold must be >= 0" }
             settingsStore.updatePriceThreshold(threshold)
         }
     }

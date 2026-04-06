@@ -1,28 +1,50 @@
 package com.codingpit.pvpcplanner.worker
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.codingpit.pvpcplanner.R
+import com.codingpit.pvpcplanner.data.PriceRepository
+import com.codingpit.pvpcplanner.data.local.store.toMilliEurosPerKwh
+import com.codingpit.pvpcplanner.data.local.store.toPriceThresholdEurosPerKwh
+import com.codingpit.pvpcplanner.utils.DateFormatter
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class PriceCheckWorker(
-    context: Context,
-    params: WorkerParameters,
+@HiltWorker
+class PriceCheckWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters,
+    private val priceRepository: PriceRepository,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val threshold = inputData.getFloat(KEY_THRESHOLD, 0f)
-        if (threshold <= 0f) return Result.success()
+        val thresholdMilliEurosPerKwh = inputData.getInt(KEY_THRESHOLD_MILLI_EUROS_PER_KWH, 0)
+        if (thresholdMilliEurosPerKwh <= 0) return Result.success()
 
-        sendNotification(threshold)
+        val currentDate = DateFormatter.formatDate(DateFormatter.getCurrentDate())
+        val currentHour = DateFormatter.getCurrentHour()
+        val prices = priceRepository.getPrices(currentDate).getOrElse { return Result.retry() }
+        val currentHourPrice = prices.firstOrNull { it.startHour == currentHour }?.pcb ?: return Result.success()
+        val currentHourPriceMilliEurosPerKwh = currentHourPrice.toFloat().toMilliEurosPerKwh()
+
+        if (currentHourPriceMilliEurosPerKwh > thresholdMilliEurosPerKwh) {
+            return Result.success()
+        }
+
+        sendNotification(thresholdMilliEurosPerKwh)
         return Result.success()
     }
 
-    private fun sendNotification(threshold: Float) {
+    private fun sendNotification(thresholdMilliEurosPerKwh: Int) {
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -39,11 +61,24 @@ class PriceCheckWorker(
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(applicationContext.getString(R.string.notification_cheap_price_title))
             .setContentText(
-                applicationContext.getString(R.string.notification_cheap_price_body, threshold),
+                applicationContext.getString(
+                    R.string.notification_cheap_price_body,
+                    thresholdMilliEurosPerKwh.toPriceThresholdEurosPerKwh(),
+                ),
             )
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
+
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
 
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
@@ -51,6 +86,6 @@ class PriceCheckWorker(
     companion object {
         const val CHANNEL_ID = "pvpc_price_alerts"
         const val NOTIFICATION_ID = 1001
-        const val KEY_THRESHOLD = "threshold"
+        const val KEY_THRESHOLD_MILLI_EUROS_PER_KWH = "threshold_milli_eur_per_kwh"
     }
 }

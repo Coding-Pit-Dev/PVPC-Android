@@ -25,7 +25,7 @@ class DefaultSettingsStore
                         darkMode = darkMode.toDomain(),
                         timeFormat = timeFormat.toDomain(),
                         yAxisSlots = yAxisSlots,
-                        priceThreshold = priceThreshold,
+                        priceThreshold = priceThresholdMilliEurPerKwh.toPriceThresholdEurosPerKwh(),
                     )
                 }
             }
@@ -44,7 +44,9 @@ class DefaultSettingsStore
 
         override suspend fun updatePriceThreshold(threshold: Float) {
             context.settingsDataStore.updateData { data ->
-                data.toBuilder().setPriceThreshold(threshold).build()
+                data.toBuilder()
+                    .setPriceThresholdMilliEurPerKwh(threshold.toMilliEurosPerKwh())
+                    .build()
             }
         }
     }

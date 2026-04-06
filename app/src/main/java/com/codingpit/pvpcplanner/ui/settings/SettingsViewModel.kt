@@ -13,7 +13,12 @@ import com.codingpit.pvpcplanner.domain.usecase.SchedulePriceAlerts
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +35,8 @@ class SettingsViewModel
         private val schedulePriceAlerts: SchedulePriceAlerts,
         private val coroutineDispatcher: CoroutineDispatcher,
     ) : ViewModel() {
+        private val thresholdInput = MutableStateFlow<Float?>(null)
+
         val state =
             getSettings()
                 .map {
@@ -37,6 +44,35 @@ class SettingsViewModel
                 }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
                 .flowOn(coroutineDispatcher)
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
+
+        init {
+            observeThresholdUpdates()
+        }
+
+        private fun observeThresholdUpdates() {
+            viewModelScope.launch(coroutineDispatcher) {
+                thresholdInput
+                    .filterNotNull()
+                    .debounce(500)
+                    .distinctUntilChanged()
+                    .collect { threshold ->
+                        persistPriceThreshold(threshold)
+                    }
+            }
+        }
+
+        private suspend fun persistPriceThreshold(threshold: Float) {
+            runCatching {
+                updateSettingUseCase(threshold)
+                if (threshold > 0f) {
+                    schedulePriceAlerts(threshold)
+                } else {
+                    schedulePriceAlerts.cancel()
+                }
+            }.onFailure { e ->
+                errorHandler.handleError(e, "update_price_threshold")
+            }
+        }
 
         fun updateSetting(
             render: SettingRender,
@@ -71,18 +107,7 @@ class SettingsViewModel
         }
 
         fun updatePriceThreshold(threshold: Float) {
-            viewModelScope.launch(coroutineDispatcher) {
-                runCatching {
-                    updateSettingUseCase(threshold)
-                    if (threshold > 0f) {
-                        schedulePriceAlerts(threshold)
-                    } else {
-                        schedulePriceAlerts.cancel()
-                    }
-                }.onFailure { e ->
-                    errorHandler.handleError(e, "update_price_threshold")
-                }
-            }
+            thresholdInput.value = threshold
         }
     }
 

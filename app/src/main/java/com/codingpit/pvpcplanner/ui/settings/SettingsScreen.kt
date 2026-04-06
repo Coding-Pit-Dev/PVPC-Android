@@ -167,7 +167,7 @@ private fun PriceThresholdItem(
     onThresholdUpdate: (Float) -> Unit,
 ) {
     val initialValue = if (currentThreshold > 0f) currentThreshold.toString() else ""
-    var textValue by rememberSaveable { mutableStateOf(initialValue) }
+    var textValue by rememberSaveable(currentThreshold) { mutableStateOf(initialValue) }
     val thresholdRegex = remember { Regex("^\\d*\\.?\\d*$") }
 
     Column(

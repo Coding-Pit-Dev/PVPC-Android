@@ -5,6 +5,7 @@ import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.codingpit.pvpcplanner.data.local.store.toMilliEurosPerKwh
 import com.codingpit.pvpcplanner.worker.PriceCheckWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
@@ -19,8 +20,12 @@ class SchedulePriceAlerts
         @ApplicationContext private val context: Context,
     ) {
         operator fun invoke(thresholdPrice: Float) {
+            val thresholdMilliEurosPerKwh = thresholdPrice.toMilliEurosPerKwh()
             val data = Data.Builder()
-                .putFloat(PriceCheckWorker.KEY_THRESHOLD, thresholdPrice)
+                .putInt(
+                    PriceCheckWorker.KEY_THRESHOLD_MILLI_EUROS_PER_KWH,
+                    thresholdMilliEurosPerKwh,
+                )
                 .build()
 
             val workRequest = PeriodicWorkRequestBuilder<PriceCheckWorker>(
