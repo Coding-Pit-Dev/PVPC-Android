@@ -18,6 +18,7 @@
     <string name="nav_settings">Ajustes</string>
     <string name="stats_title">Historial de precios</string>
     <string name="stats_no_data">No hay datos históricos disponibles aún.\nNavega por los precios de diferentes días para construir historial.</string>
+    <string name="stats_error_generic">Ha ocurrido un error al cargar las estadísticas. Inténtalo de nuevo.</string>
     <string name="stats_avg">Media</string>
     <string name="stats_min">Mín</string>
     <string name="stats_max">Máx</string>

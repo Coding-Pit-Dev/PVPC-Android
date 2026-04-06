@@ -2,9 +2,11 @@ package com.codingpit.pvpcplanner.data
 
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
+import com.codingpit.pvpcplanner.domain.models.DailyPriceSummary
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -105,5 +107,49 @@ class PriceRepositoryImplTest {
             assertEquals(exception, result.exceptionOrNull())
             coVerify { mockLocalDataSource.getPrices(date) }
             coVerify(exactly = 0) { mockRemoteDataSource.getPrices(any()) }
+        }
+
+    @Test
+    fun `getPriceHistory returns days in chronological descending order`() =
+        runTest {
+            // Arrange
+            val unsortedDays = listOf("31/01/2026", "01/02/2026", "15/12/2025")
+            every { mockLocalDataSource.getAvailableDays() } returns unsortedDays
+            every { mockLocalDataSource.getPricesByStoredDay("31/01/2026") } returns listOf(
+                PVPCModel("31/01/2026", 0, 1, 0.30, 0.30),
+                PVPCModel("31/01/2026", 1, 2, 0.20, 0.20),
+            )
+            every { mockLocalDataSource.getPricesByStoredDay("01/02/2026") } returns listOf(
+                PVPCModel("01/02/2026", 0, 1, 0.10, 0.10),
+                PVPCModel("01/02/2026", 1, 2, 0.15, 0.15),
+            )
+            every { mockLocalDataSource.getPricesByStoredDay("15/12/2025") } returns listOf(
+                PVPCModel("15/12/2025", 0, 1, 0.40, 0.40),
+            )
+
+            // Act
+            val result = repository.getPriceHistory()
+
+            // Assert
+            assertTrue(result.isSuccess)
+            assertEquals(
+                listOf("01/02/2026", "31/01/2026", "15/12/2025"),
+                result.getOrThrow().map(DailyPriceSummary::day),
+            )
+        }
+
+    @Test
+    fun `getPriceHistory returns failure when local history lookup fails`() =
+        runTest {
+            // Arrange
+            val exception = RuntimeException("Database error")
+            every { mockLocalDataSource.getAvailableDays() } throws exception
+
+            // Act
+            val result = repository.getPriceHistory()
+
+            // Assert
+            assertTrue(result.isFailure)
+            assertEquals("Database error", result.exceptionOrNull()?.message)
         }
 }

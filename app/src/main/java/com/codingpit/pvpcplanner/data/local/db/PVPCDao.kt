@@ -21,7 +21,14 @@ interface PVPCDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(pvpcEntities: List<PVPCEntity>)
 
-    @Query("SELECT DISTINCT day FROM pvpc_entries ORDER BY day DESC LIMIT 30")
+    @Query(
+        """
+        SELECT day
+        FROM (SELECT DISTINCT day FROM pvpc_entries)
+        ORDER BY substr(day, 7, 4) || '-' || substr(day, 4, 2) || '-' || substr(day, 1, 2) DESC
+        LIMIT 30
+        """,
+    )
     fun getAvailableDays(): List<String>
 
     @Delete

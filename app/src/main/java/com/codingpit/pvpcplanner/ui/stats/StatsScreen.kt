@@ -43,7 +43,7 @@ fun StatsScreen(viewModel: StatsViewModel) {
 
             is StatsState.Error ->
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(s.error)
+                    Text(stringResource(R.string.stats_error_generic))
                 }
         }
     }
