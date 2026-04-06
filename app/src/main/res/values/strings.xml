@@ -93,6 +93,7 @@
     <string name="unit_watt">W</string>
     <string name="program_duration">Program duration</string>
     <string name="category_label">Category</string>
+    <string name="category_all">All</string>
     <string name="category_appliances">Appliances</string>
     <string name="category_lighting">Lighting</string>
     <string name="category_hvac">HVAC</string>

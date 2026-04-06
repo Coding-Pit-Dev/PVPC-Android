@@ -37,13 +37,15 @@ class DevicesViewModel
         private val dispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         private val searchQuery = MutableStateFlow("")
+        private val selectedCategory = MutableStateFlow<DeviceCategoryFilter?>(null)
 
         val state =
             combine(
                 getDevices(),
                 getPricesFlow(),
                 searchQuery,
-            ) { devices, prices, query ->
+                selectedCategory,
+            ) { devices, prices, query, category ->
                 prices.map { fetchResult ->
                     val devicesSlot =
                         devices.map { device ->
@@ -51,7 +53,7 @@ class DevicesViewModel
                             val cost = calculateDeviceCost(device, bestSlot, fetchResult.prices)
                             DeviceRender(device, bestSlot, cost)
                         }
-                    DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query)
+                    DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query, selectedCategory = category)
                 }
             }.map { it.getOrThrow() }
                 .handleErrors(errorHandler, "device_data", DevicesState.Factory)
@@ -60,6 +62,10 @@ class DevicesViewModel
 
         fun updateSearchQuery(query: String) {
             searchQuery.value = query
+        }
+
+        fun selectCategory(category: DeviceCategoryFilter?) {
+            selectedCategory.value = category
         }
 
         fun addDevice(
