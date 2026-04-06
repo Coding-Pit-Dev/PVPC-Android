@@ -119,6 +119,7 @@
     <string name="notification_channel_name">Alertas de precio</string>
     <string name="notification_cheap_price_title">¡Hora de electricidad barata!</string>
     <string name="notification_cheap_price_body">Los precios están por debajo de %.2f €/kWh ahora</string>
+    <string name="unit_euro_per_kwh">€/kWh</string>
     <string name="setting_price_threshold">Umbral de alerta de precio</string>
     <string name="setting_price_threshold_description">Recibe notificaciones cuando los precios bajen de este valor (0 = desactivado)</string>
     <string name="cached_data_banner">Mostrando datos en caché. Conecta para actualizar los precios.</string>

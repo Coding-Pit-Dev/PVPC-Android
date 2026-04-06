@@ -71,6 +71,7 @@ class SettingsViewModel
                     schedulePriceAlerts.cancel()
                 }
             }.onFailure { e ->
+                if (e is CancellationException) throw e
                 errorHandler.handleError(e, "update_price_threshold")
             }
         }

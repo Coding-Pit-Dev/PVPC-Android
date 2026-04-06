@@ -170,7 +170,7 @@ private fun PriceThresholdItem(
 ) {
     val initialValue = if (currentThreshold > 0f) currentThreshold.toString() else ""
     var textValue by rememberSaveable(currentThreshold) { mutableStateOf(initialValue) }
-    val thresholdRegex = remember { Regex("^\\d*\\.?\\d*$") }
+    val thresholdRegex = remember { Regex("^\\d*[.,]?\\d*$") }
 
     Column(
         modifier = modifier
@@ -185,14 +185,14 @@ private fun PriceThresholdItem(
             onValueChange = { newValue ->
                 if (newValue.isEmpty() || newValue.matches(thresholdRegex)) {
                     textValue = newValue
-                    val parsed = newValue.toFloatOrNull() ?: 0f
+                    val parsed = newValue.replace(',', '.').toFloatOrNull() ?: 0f
                     onThresholdUpdate(parsed)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            suffix = { Text("€/kWh") },
+            suffix = { Text(stringResource(R.string.unit_euro_per_kwh)) },
         )
     }
 }
