@@ -66,8 +66,10 @@ Check the latest release tag for the current month:
 
 ```bash
 git fetch --tags
-git tag -l "$(date +%Y.%m).*" | sort -V | tail -1
+git tag -l "v$(date +%Y.%m).*" | sort -V | tail -1 | sed 's/^v//'
 ```
+
+> **Note:** Tags are created with a `v` prefix (e.g. `v2026.04.1`) by the `deploy_github` Fastlane lane. The command above strips the prefix so the output matches the CalVer format used in branch names.
 
 - If the output is `2026.04.2`, the next patch is `3` → create `release/2026.04.3`
 - If no tags exist for this month, start at `1` → create `release/2026.04.1`

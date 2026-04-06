@@ -329,7 +329,7 @@ The release pipeline is automated via Fastlane and GitHub Actions. Releases use 
 ```bash
 # Check last tag for this month to determine next patch number
 git fetch --tags
-git tag -l "$(date +%Y.%m).*" | sort -V | tail -1
+git tag -l "v$(date +%Y.%m).*" | sort -V | tail -1 | sed 's/^v//'
 
 # Create release branch (replace X with next patch number)
 git checkout develop && git pull
@@ -337,7 +337,9 @@ git checkout -b release/$(date +%Y.%m).X
 git push -u origin release/$(date +%Y.%m).X
 ```
 
-GitHub Actions auto-bumps the version, then open a PR from `release/...` → `main`. Merging triggers the full deploy pipeline.
+GitHub Actions auto-bumps the version, then opens a PR from `release/...` → `main`. Merging triggers the full deploy pipeline.
+
+> **Branch targets:** Feature and regular work should target `develop` (e.g. `feature/*` PRs → `develop`). Release branches target `main` (e.g. `release/*` PRs → `main`) to trigger the deploy pipeline.
 
 ### Fastlane Lanes
 

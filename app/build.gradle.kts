@@ -40,8 +40,19 @@ android {
             val storePass = System.getenv("STORE_PASSWORD")
             val keyAl = System.getenv("KEY_ALIAS")
             val keyPass = System.getenv("KEY_PASSWORD")
-            if (keystorePath != null && storePass != null && keyAl != null && keyPass != null) {
-                storeFile = file(keystorePath)
+            val signingValues = listOf(keystorePath, storePass, keyAl, keyPass)
+            val hasAny = signingValues.any { !it.isNullOrBlank() }
+            val hasAll = signingValues.all { !it.isNullOrBlank() }
+
+            if (hasAny && !hasAll) {
+                throw GradleException(
+                    "Partial signing configuration detected. " +
+                        "Set KEYSTORE_PATH, STORE_PASSWORD, KEY_ALIAS, and KEY_PASSWORD.",
+                )
+            }
+
+            if (hasAll) {
+                storeFile = file(keystorePath!!)
                 storePassword = storePass
                 keyAlias = keyAl
                 keyPassword = keyPass

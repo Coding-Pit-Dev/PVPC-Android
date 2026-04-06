@@ -17,7 +17,8 @@ jobs:
   deploy:
     if: |
       github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.head.ref, 'release/')
+      startsWith(github.event.pull_request.head.ref, 'release/') &&
+      github.event.pull_request.head.repo.full_name == github.repository
 
     runs-on: ubuntu-latest
     permissions:
@@ -29,7 +30,7 @@ jobs:
         with:
           # Full history needed for git operations inside Fastlane lanes.
           fetch-depth: 0
-          ref: main
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
 
       - name: Configure git bot identity
         run: |
@@ -50,10 +51,14 @@ jobs:
           bundler-cache: true
 
       - name: Decode release keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > /tmp/release.keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > /tmp/release.keystore
+          chmod 600 /tmp/release.keystore
 
       - name: Decode Play Store JSON key
-        run: echo "${{ secrets.PLAY_STORE_JSON_KEY_BASE64 }}" | base64 --decode > /tmp/play-store-key.json
+        run: |
+          echo "${{ secrets.PLAY_STORE_JSON_KEY_BASE64 }}" | base64 --decode > /tmp/play-store-key.json
+          chmod 600 /tmp/play-store-key.json
 
       - name: Run deploy lane
         env:

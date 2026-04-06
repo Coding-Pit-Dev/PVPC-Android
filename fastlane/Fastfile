@@ -41,8 +41,8 @@ def parse_calver_from_branch
   branch = ENV["GITHUB_REF_NAME"].to_s.strip  if branch.empty?
   branch = `git rev-parse --abbrev-ref HEAD`.strip if branch.empty?
 
-  match = branch.match(%r{release/(\d{4})\.(\d{2})\.(\d+)})
-  raise "Branch '#{branch}' does not match release/YYYY.MM.PATCH format" unless match
+  match = branch.match(%r{\Arelease/(\d{4})\.(0[1-9]|1[0-2])\.([1-9]\d?)\z})
+  raise "Branch '#{branch}' does not match release/YYYY.MM.PATCH format (month 01-12, patch 1-99)" unless match
 
   { year: match[1].to_i, month: match[2].to_i, patch: match[3].to_i }
 end
@@ -52,6 +52,9 @@ end
 # Example: 2026, 4, 1  →  20260401
 # Max (2099, 12, 99)   →  20991299  ─ well within Android's 2.1B limit.
 def compute_version_code(year, month, patch)
+  raise "Month must be 1–12, got #{month}" unless (1..12).cover?(month)
+  raise "Patch must be 1–99, got #{patch}" unless (1..99).cover?(patch)
+
   year * 10_000 + month * 100 + patch
 end
 
@@ -166,6 +169,8 @@ platform :android do
   lane :deploy_github do
     version_name = read_gradle_value(/versionName\s*=\s*"([^"]+)"/)
     tag          = "v#{version_name}"
+    target_sha   = ENV["GITHUB_SHA"].to_s.strip
+    target_sha   = `git rev-parse HEAD`.strip if target_sha.empty?
 
     apk_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
     UI.user_error!("APK not found. Run build_release before deploy_github.") unless apk_path && File.exist?(apk_path.to_s)
@@ -176,7 +181,7 @@ platform :android do
       name:            "Release #{version_name}",
       tag_name:        tag,
       description:     changelog_for_version(version_name),
-      commitish:       "main",
+      commitish:       target_sha,
       upload_assets:   [apk_path]
     )
 
@@ -266,8 +271,5 @@ platform :android do
   # Returns a basic release description. Extend this to read from a CHANGELOG.
   def changelog_for_version(version_name)
     "## Release #{version_name}\n\nSee commit history for changes in this release."
-  end
-  private_lane :changelog_for_version do |options|
-    "## Release #{options[:version_name]}\n\nSee commit history for changes in this release."
   end
 end
