@@ -53,7 +53,7 @@ class FixtureUsageExampleTest {
 
             // Assert - Verify realistic price structure
             assertTrue(priceResult.isSuccess)
-            val prices = priceResult.getOrNull()!!.prices
+            val prices = priceResult.getOrThrow().prices
 
             assertEquals(24, prices.size) // Full day coverage
             assertTrue(
@@ -83,7 +83,8 @@ class FixtureUsageExampleTest {
 
             // Act - Calculate optimal time slots
             val priceResult = getPricesUseCase(TestDates.TYPICAL_DATE)
-            val prices = priceResult.getOrNull()!!.prices
+            assertTrue(priceResult.isSuccess)
+            val prices = priceResult.getOrThrow().prices
 
             val washingSlot = calculateBestTimeSlotUseCase(washingMachine, prices)
             val carChargingSlot = calculateBestTimeSlotUseCase(electricCar, prices)
@@ -171,7 +172,8 @@ class FixtureUsageExampleTest {
 
             // Act
             val priceResult = getPricesUseCase(TestDates.TYPICAL_DATE)
-            val prices = priceResult.getOrNull()!!.prices
+            assertTrue(priceResult.isSuccess)
+            val prices = priceResult.getOrThrow().prices
             val timeSlot = calculateBestTimeSlotUseCase(longDevice, prices)
 
             // Assert - Verify graceful handling of edge case
