@@ -28,8 +28,9 @@ class GetLocalDateTest {
         // Act
         val result = getLocalDate()
 
-        // Assert: year should be at least 2024 (test written in 2026)
-        assertTrue("Expected year >= 2024 but was ${result.year}", result.year >= 2024)
+        // Assert: year should be at least the current year
+        val currentYear = LocalDate.now().year
+        assertTrue("Expected year >= $currentYear but was ${result.year}", result.year >= currentYear)
     }
 
     @Test
