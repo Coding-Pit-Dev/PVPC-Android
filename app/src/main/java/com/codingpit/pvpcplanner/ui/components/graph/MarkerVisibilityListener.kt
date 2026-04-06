@@ -1,8 +1,8 @@
 package com.codingpit.pvpcplanner.ui.components.graph
 
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
+import com.patrykandpatrick.vico.compose.cartesian.marker.CartesianMarker
+import com.patrykandpatrick.vico.compose.cartesian.marker.CartesianMarkerVisibilityListener
 
 class MarkerVisibilityListener(
     private val responseData: List<PVPCModel>,
