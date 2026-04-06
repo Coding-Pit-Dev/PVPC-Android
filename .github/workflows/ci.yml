@@ -3,6 +3,9 @@ name: Android CI
 on:
   push:
   pull_request:
+    types:
+      - opened
+      - reopened
 
 jobs:
   build:
@@ -18,19 +21,13 @@ jobs:
           cache: gradle
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
-      - name: Check code style
-        run: ./gradlew ktlintCheck
-      - name: Run static analysis
-        run: ./gradlew detekt
-      - name: Run lint
-        run: ./gradlew lintDebug
-      - name: Build with Gradle
-        run: ./gradlew assemble
-      - name: Run Tests with Gradle
-        run: ./gradlew test
+      - name: Verify and build with Gradle
+        run: ./gradlew --continue ktlintCheck detekt lintDebug assemble test
       - name: Upload lint results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lint-results
-          path: app/build/reports/lint-results-debug.html
+          path: app/build/reports/lint*
+          if-no-files-found: ignore
+          retention-days: 7
