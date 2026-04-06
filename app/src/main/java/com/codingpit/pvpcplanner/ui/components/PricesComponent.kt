@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +27,6 @@ import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.ui.components.graph.PriceChart
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 @Composable
 fun PricesComponent(
@@ -142,7 +142,7 @@ private fun formatHour(
 ): String {
     val formattedHour =
         if (timeFormat == TimeFormat.TWELVE_HOURS) {
-            val sdf = SimpleDateFormat("h a", Locale.getDefault())
+            val sdf = SimpleDateFormat("h a", LocalConfiguration.current.locales[0])
             sdf.format(
                 Calendar
                     .getInstance()
