@@ -13,7 +13,6 @@ import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,10 +34,10 @@ class DevicesViewModel
         private val calculateBestTimeSlot: CalculateBestTimeSlot,
         private val calculateDeviceCost: CalculateDeviceCost,
         private val errorHandler: ErrorHandler,
-        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        private val dispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         private val searchQuery = MutableStateFlow("")
-        private val selectedCategory = MutableStateFlow<String?>(null)
+        private val selectedCategory = MutableStateFlow<DeviceCategoryFilter?>(null)
 
         val state =
             combine(
@@ -47,11 +46,11 @@ class DevicesViewModel
                 searchQuery,
                 selectedCategory,
             ) { devices, prices, query, category ->
-                prices.map { prices ->
+                prices.map { fetchResult ->
                     val devicesSlot =
                         devices.map { device ->
-                            val bestSlot = calculateBestTimeSlot(device, prices)
-                            val cost = calculateDeviceCost(device, bestSlot, prices)
+                            val bestSlot = calculateBestTimeSlot(device, fetchResult.prices)
+                            val cost = calculateDeviceCost(device, bestSlot, fetchResult.prices)
                             DeviceRender(device, bestSlot, cost)
                         }
                     DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query, selectedCategory = category)
@@ -65,7 +64,7 @@ class DevicesViewModel
             searchQuery.value = query
         }
 
-        fun selectCategory(category: String?) {
+        fun selectCategory(category: DeviceCategoryFilter?) {
             selectedCategory.value = category
         }
 

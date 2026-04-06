@@ -103,7 +103,7 @@ private fun DevicesScreen_Success(
     onSwiped: (DeviceRender) -> Unit,
     onDeviceClick: (Device) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
-    onCategorySelected: (String?) -> Unit,
+    onCategorySelected: (DeviceCategoryFilter?) -> Unit,
 ) {
     val calculateTotalConsumption = remember { CalculateTotalConsumption() }
     val summary = remember(state.devicesSlot) {
@@ -172,8 +172,8 @@ private fun DevicesScreen_Success(
 
 @Composable
 private fun CategoryFilterRow(
-    selectedCategory: String?,
-    onCategorySelected: (String?) -> Unit,
+    selectedCategory: DeviceCategoryFilter?,
+    onCategorySelected: (DeviceCategoryFilter?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val categories = DEVICE_CATEGORIES
@@ -192,11 +192,17 @@ private fun CategoryFilterRow(
                 label = { Text(stringResource(R.string.category_all)) },
             )
         }
-        items(categories) { category ->
+        items(categories, key = { it.id }) { category ->
             FilterChip(
-                selected = selectedCategory == category.id,
+                selected = selectedCategory?.id == category.id,
                 onClick = {
-                    onCategorySelected(if (selectedCategory == category.id) null else category.id)
+                    onCategorySelected(
+                        if (selectedCategory?.id == category.id) {
+                            null
+                        } else {
+                            DeviceCategoryFilter(category.id)
+                        },
+                    )
                 },
                 label = { Text(stringResource(category.labelRes)) },
             )

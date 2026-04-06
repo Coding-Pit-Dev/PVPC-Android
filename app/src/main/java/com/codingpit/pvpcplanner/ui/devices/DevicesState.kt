@@ -10,7 +10,7 @@ sealed class DevicesState {
     data class Success(
         val devicesSlot: List<DeviceRender> = emptyList(),
         val searchQuery: String = "",
-        val selectedCategory: String? = null,
+        val selectedCategory: DeviceCategoryFilter? = null,
     ) : DevicesState() {
         val filteredDevices: List<DeviceRender>
             get() {
@@ -19,7 +19,7 @@ sealed class DevicesState {
                     result = result.filter { it.device.name.contains(searchQuery, ignoreCase = true) }
                 }
                 if (selectedCategory != null) {
-                    result = result.filter { it.device.category == selectedCategory }
+                    result = result.filter { it.device.category == selectedCategory.id }
                 }
                 return result
             }
