@@ -17,6 +17,7 @@ sealed class HomeState {
         val currentPrice: Double = 0.0,
         val currentHour: Int = 0,
         val timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS,
+        val isFromCache: Boolean = false,
     ) : HomeState()
 
     data class Error(

@@ -44,11 +44,11 @@ class DevicesViewModel
                 getPricesFlow(),
                 searchQuery,
             ) { devices, prices, query ->
-                prices.map { prices ->
+                prices.map { fetchResult ->
                     val devicesSlot =
                         devices.map { device ->
-                            val bestSlot = calculateBestTimeSlot(device, prices)
-                            val cost = calculateDeviceCost(device, bestSlot, prices)
+                            val bestSlot = calculateBestTimeSlot(device, fetchResult.prices)
+                            val cost = calculateDeviceCost(device, bestSlot, fetchResult.prices)
                             DeviceRender(device, bestSlot, cost)
                         }
                     DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query)

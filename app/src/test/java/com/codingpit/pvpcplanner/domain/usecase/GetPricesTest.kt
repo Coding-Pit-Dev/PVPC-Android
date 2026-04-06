@@ -1,6 +1,7 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
 import com.codingpit.pvpcplanner.data.PriceRepository
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,14 +31,15 @@ class GetPricesTest {
                     PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
                     PVPCModel("2023-10-15", 1, 2, 0.14, 0.17),
                 )
-            coEvery { mockRepository.getPrices(date) } returns Result.success(expectedPrices)
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
+            coEvery { mockRepository.getPrices(date) } returns Result.success(expectedResult)
 
             // Act
             val result = useCase(date)
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(expectedPrices, result.getOrNull())
+            assertEquals(expectedResult, result.getOrNull())
             coVerify { mockRepository.getPrices(date) }
         }
 
@@ -49,15 +51,16 @@ class GetPricesTest {
                 listOf(
                     PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
                 )
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
             // The use case will generate today's date when empty string is passed
-            coEvery { mockRepository.getPrices(any()) } returns Result.success(expectedPrices)
+            coEvery { mockRepository.getPrices(any()) } returns Result.success(expectedResult)
 
             // Act
             val result = useCase("")
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(expectedPrices, result.getOrNull())
+            assertEquals(expectedResult, result.getOrNull())
             coVerify { mockRepository.getPrices(any()) }
         }
 
@@ -69,15 +72,16 @@ class GetPricesTest {
                 listOf(
                     PVPCModel("2023-10-15", 0, 1, 0.15, 0.18),
                 )
+            val expectedResult = PriceFetchResult(expectedPrices, isFromCache = false)
             // The use case will generate today's date when no parameter is passed
-            coEvery { mockRepository.getPrices(any()) } returns Result.success(expectedPrices)
+            coEvery { mockRepository.getPrices(any()) } returns Result.success(expectedResult)
 
             // Act
             val result = useCase()
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(expectedPrices, result.getOrNull())
+            assertEquals(expectedResult, result.getOrNull())
             coVerify { mockRepository.getPrices(any()) }
         }
 

@@ -3,6 +3,7 @@ package com.codingpit.pvpcplanner.fixtures
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy
 import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
@@ -52,7 +53,7 @@ class FixtureUsageExampleTest {
 
             // Assert - Verify realistic price structure
             assertTrue(priceResult.isSuccess)
-            val prices = priceResult.getOrNull()!!
+            val prices = priceResult.getOrThrow().prices
 
             assertEquals(24, prices.size) // Full day coverage
             assertTrue(
@@ -82,7 +83,8 @@ class FixtureUsageExampleTest {
 
             // Act - Calculate optimal time slots
             val priceResult = getPricesUseCase(TestDates.TYPICAL_DATE)
-            val prices = priceResult.getOrNull()!!
+            assertTrue(priceResult.isSuccess)
+            val prices = priceResult.getOrThrow().prices
 
             val washingSlot = calculateBestTimeSlotUseCase(washingMachine, prices)
             val carChargingSlot = calculateBestTimeSlotUseCase(electricCar, prices)
@@ -170,7 +172,8 @@ class FixtureUsageExampleTest {
 
             // Act
             val priceResult = getPricesUseCase(TestDates.TYPICAL_DATE)
-            val prices = priceResult.getOrNull()!!
+            assertTrue(priceResult.isSuccess)
+            val prices = priceResult.getOrThrow().prices
             val timeSlot = calculateBestTimeSlotUseCase(longDevice, prices)
 
             // Assert - Verify graceful handling of edge case

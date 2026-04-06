@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.data
 
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -39,7 +40,9 @@ class PriceRepositoryImplTest {
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(localPrices, result.getOrNull())
+            val fetchResult = result.getOrNull()
+            assertEquals(localPrices, fetchResult?.prices)
+            assertEquals(true, fetchResult?.isFromCache)
             coVerify { mockLocalDataSource.getPrices(date) }
             coVerify(exactly = 0) { mockRemoteDataSource.getPrices(any()) }
         }
@@ -63,7 +66,9 @@ class PriceRepositoryImplTest {
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(remotePrices, result.getOrNull())
+            val fetchResult = result.getOrNull()
+            assertEquals(remotePrices, fetchResult?.prices)
+            assertEquals(false, fetchResult?.isFromCache)
             coVerify { mockLocalDataSource.getPrices(date) }
             coVerify { mockRemoteDataSource.getPrices(date) }
             coVerify { mockLocalDataSource.savePrices(remotePrices) }
