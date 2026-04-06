@@ -3,6 +3,7 @@ package com.codingpit.pvpcplanner.ui.devices
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Power
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
