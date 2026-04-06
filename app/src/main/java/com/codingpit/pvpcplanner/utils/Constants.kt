@@ -31,18 +31,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.DeviceCategory
+import com.codingpit.pvpcplanner.ui.main.Screen
 
 object Constants {
-    const val HOME_SCREEN = "Prices"
-    const val DEVICES_SCREEN = "Devices"
-    const val DEVICE_ADD_SCREEN = "DeviceAdd"
-    const val SETTINGS_SCREEN = "Settings"
-
     val ROUTES_NAVIGATION_BOTTOM_BAR =
         mapOf(
-            HOME_SCREEN to Icons.Default.Paid,
-            DEVICES_SCREEN to Icons.Default.PowerSettingsNew,
-            SETTINGS_SCREEN to Icons.Default.Settings,
+            Screen.Home to Icons.Default.Paid,
+            Screen.Devices to Icons.Default.PowerSettingsNew,
+            Screen.Settings to Icons.Default.Settings,
         )
 }
 
