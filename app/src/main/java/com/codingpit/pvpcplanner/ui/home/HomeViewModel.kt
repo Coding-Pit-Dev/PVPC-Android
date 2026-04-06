@@ -48,7 +48,7 @@ class HomeViewModel
                     )
                 }.handleErrors(errorHandler, "home_data", HomeState.Factory)
                 .flowOn(coroutineDispatcher)
-                .stateIn(viewModelScope, SharingStarted.Eagerly, HomeState.Loading)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeState.Loading)
 
         fun onPreviousClicked() {
             viewModelScope.launch {
