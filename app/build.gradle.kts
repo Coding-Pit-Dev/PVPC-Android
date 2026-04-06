@@ -97,6 +97,7 @@ detekt {
     config.setFrom("config/detekt/config.yml")
     buildUponDefaultConfig = true
     basePath = projectDir.absolutePath
+    baseline = file("detekt-baseline.xml")
 }
 
 protobuf {
