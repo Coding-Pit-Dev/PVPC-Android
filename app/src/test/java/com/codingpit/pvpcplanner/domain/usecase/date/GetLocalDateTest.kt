@@ -24,38 +24,21 @@ class GetLocalDateTest {
     }
 
     @Test
-    fun `invoke returns a LocalDate with a plausible year`() {
+    fun `invoke returns a date near current date`() {
+        // Arrange: capture reference before calling to avoid midnight boundary flakiness
+        val referenceDate = LocalDate.now()
+
         // Act
         val result = getLocalDate()
 
-        // Assert: year should be at least the current year
-        val currentYear = LocalDate.now().year
-        assertTrue("Expected year >= $currentYear but was ${result.year}", result.year >= currentYear)
-    }
-
-    @Test
-    fun `invoke returns a date that is not in the far future`() {
-        // Act
-        val result = getLocalDate()
-
-        // Assert: result should not be more than 2 days in the future to guard against oddities
-        val twoDaysFromNow = LocalDate.now().plusDays(2)
+        // Assert: result should be within ±1 day of the reference date
         assertTrue(
-            "Expected date <= $twoDaysFromNow but was $result",
-            !result.isAfter(twoDaysFromNow),
+            "Expected date >= ${referenceDate.minusDays(1)} but was $result",
+            !result.isBefore(referenceDate.minusDays(1)),
         )
-    }
-
-    @Test
-    fun `invoke returns a date that is not in the past`() {
-        // Act
-        val result = getLocalDate()
-
-        // Assert: current date should be today or at most yesterday (accounting for time zones)
-        val yesterday = LocalDate.now().minusDays(1)
         assertTrue(
-            "Expected date >= $yesterday but was $result",
-            !result.isBefore(yesterday),
+            "Expected date <= ${referenceDate.plusDays(2)} but was $result",
+            !result.isAfter(referenceDate.plusDays(2)),
         )
     }
 }
