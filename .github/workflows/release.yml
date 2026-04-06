@@ -1,0 +1,50 @@
+name: Release — Version Bump
+
+# Fires on every push to a release/* branch.
+# Its only job is to bump versionCode and versionName in app/build.gradle.kts
+# to match the CalVer encoded in the branch name (e.g. release/2026.04.1).
+# The lane is idempotent: if the version is already correct it skips the commit.
+
+on:
+  push:
+    branches:
+      - "release/**"
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # Required to push the version bump commit back
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          # Full history so Fastlane can inspect git state if needed.
+          fetch-depth: 0
+          # GITHUB_TOKEN commits do not re-trigger push workflows by GitHub
+          # design, preventing infinite loops. [skip ci] in the commit message
+          # is an additional safeguard.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git bot identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true   # Runs bundle install automatically
+
+      - name: Bump CalVer version
+        # GITHUB_REF_NAME is automatically set to the branch name by Actions
+        run: bundle exec fastlane increment_calver

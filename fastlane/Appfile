@@ -1,0 +1,6 @@
+package_name("com.codingpit.pvpcplanner")
+
+# Path to Google Play JSON key file.
+# In CI this file is decoded from the PLAY_STORE_JSON_KEY_BASE64 secret.
+# For local runs, place the key file at fastlane/play-store-key.json (gitignored).
+json_key_file(ENV["PLAY_STORE_JSON_KEY_PATH"] || "fastlane/play-store-key.json")

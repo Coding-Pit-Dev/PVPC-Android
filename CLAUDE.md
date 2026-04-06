@@ -319,3 +319,39 @@ myFlow
 ```
 
 This automatically converts exceptions to error states using the centralized error system.
+
+## Release Process
+
+The release pipeline is automated via Fastlane and GitHub Actions. Releases use **CalVer** (`YYYY.MM.PATCH`, e.g. `2026.04.1`).
+
+### Quick Reference
+
+```bash
+# Check last tag for this month to determine next patch number
+git fetch --tags
+git tag -l "$(date +%Y.%m).*" | sort -V | tail -1
+
+# Create release branch (replace X with next patch number)
+git checkout develop && git pull
+git checkout -b release/$(date +%Y.%m).X
+git push -u origin release/$(date +%Y.%m).X
+```
+
+GitHub Actions auto-bumps the version, then open a PR from `release/...` → `main`. Merging triggers the full deploy pipeline.
+
+### Fastlane Lanes
+
+```bash
+bundle exec fastlane increment_calver   # bump version from branch name (idempotent)
+bundle exec fastlane build_release      # build signed APK + AAB
+bundle exec fastlane deploy             # full pipeline: tests → build → all channels
+```
+
+### Version Formula
+
+`versionCode = YYYY × 10,000 + MM × 100 + PATCH` (e.g. `2026.04.1` → `20260401`)
+
+### Documentation
+
+- [docs/release/RELEASE_PROCESS.md](docs/release/RELEASE_PROCESS.md) — automated flow, branch naming, developer workflow
+- [docs/release/MANUAL_STEPS.md](docs/release/MANUAL_STEPS.md) — one-time setup: keystore, GitHub Secrets, Firebase, Play Store
