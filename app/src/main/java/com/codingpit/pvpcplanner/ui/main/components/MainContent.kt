@@ -8,15 +8,11 @@ import com.codingpit.pvpcplanner.ui.devices.DevicesScreen
 import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.ui.home.HomeScreen
 import com.codingpit.pvpcplanner.ui.home.HomeViewModel
+import com.codingpit.pvpcplanner.ui.main.Screen
 import com.codingpit.pvpcplanner.ui.settings.SettingsScreen
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
 import com.codingpit.pvpcplanner.ui.stats.StatsScreen
 import com.codingpit.pvpcplanner.ui.stats.StatsViewModel
-import com.codingpit.pvpcplanner.utils.Constants.DEVICES_SCREEN
-import com.codingpit.pvpcplanner.utils.Constants.DEVICE_ADD_SCREEN
-import com.codingpit.pvpcplanner.utils.Constants.HOME_SCREEN
-import com.codingpit.pvpcplanner.utils.Constants.SETTINGS_SCREEN
-import com.codingpit.pvpcplanner.utils.Constants.STATS_SCREEN
 
 @Composable
 fun MainContent(
@@ -25,35 +21,35 @@ fun MainContent(
     deviceAddViewModel: DeviceAddViewModel,
     settingsViewModel: SettingsViewModel,
     statsViewModel: StatsViewModel,
-    selectedScreen: String,
+    selectedScreen: Screen,
     deviceToEdit: Device? = null,
     onNavigateToDeviceAdd: () -> Unit = {},
     onNavigateToDeviceEdit: (Device) -> Unit = {},
     onNavigateBack: () -> Unit = {},
 ) {
     when (selectedScreen) {
-        HOME_SCREEN ->
+        is Screen.Home ->
             HomeScreen(
                 viewModel = homeViewModel,
             )
 
-        DEVICES_SCREEN ->
+        is Screen.Devices ->
             DevicesScreen(
                 viewModel = devicesViewModel,
                 onDeviceClick = onNavigateToDeviceEdit,
             )
 
-        DEVICE_ADD_SCREEN ->
+        is Screen.DeviceAdd ->
             DeviceAddScreen(
                 viewModel = deviceAddViewModel,
                 device = deviceToEdit,
                 onBackClick = onNavigateBack,
             )
 
-        SETTINGS_SCREEN ->
+        is Screen.Settings ->
             SettingsScreen(viewModel = settingsViewModel)
 
-        STATS_SCREEN ->
+        is Screen.Stats ->
             StatsScreen(viewModel = statsViewModel)
     }
 }

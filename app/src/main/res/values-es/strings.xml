@@ -98,6 +98,7 @@
     <string name="unit_watts">W</string>
     <string name="program_duration">Duración del programa</string>
     <string name="category_label">Categoría</string>
+    <string name="category_all">Todas</string>
     <string name="category_appliances">Electrodomésticos</string>
     <string name="category_lighting">Iluminación</string>
     <string name="category_hvac">Climatización</string>
@@ -115,4 +116,5 @@
     <string name="select_icon">Seleccionar icono</string>
     <string name="select_category">Seleccionar categoría</string>
     <string name="action_close">Cerrar</string>
+    <string name="cached_data_banner">Mostrando datos en caché. Conecta para actualizar los precios.</string>
 </resources>
