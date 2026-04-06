@@ -11,6 +11,7 @@ import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
@@ -63,6 +64,7 @@ class SettingsViewModel
                         }
                     }
                 }.onFailure { e ->
+                    if (e is CancellationException) throw e
                     errorHandler.handleError(e, "update_setting")
                 }
             }

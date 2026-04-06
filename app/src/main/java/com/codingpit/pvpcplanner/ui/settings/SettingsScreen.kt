@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.ui.components.AnimatedBottomSheet
 
 @Composable
@@ -43,7 +44,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     viewModel.updateSetting(setting, option)
                 }
 
-            is SettingsState.Error -> SettingsScreen_Error(state.error)
+            is SettingsState.Error -> SettingsScreen_Error()
         }
     }
 }
@@ -145,9 +146,9 @@ private fun SettingsOptionItem(
 }
 
 @Composable
-private fun SettingsScreen_Error(error: String) {
+private fun SettingsScreen_Error() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = error)
+        Text(text = stringResource(R.string.error_generic))
     }
 }
 
