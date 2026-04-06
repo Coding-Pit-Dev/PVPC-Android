@@ -32,8 +32,8 @@ fun MainBottomBarNav(
                 when (screen.key) {
                     is Screen.Home -> stringResource(R.string.nav_prices)
                     is Screen.Devices -> stringResource(R.string.nav_devices)
+                    is Screen.DeviceAdd -> stringResource(R.string.nav_devices)
                     is Screen.Settings -> stringResource(R.string.nav_settings)
-                    else -> ""
                 }
 
             NavigationBarItem(
