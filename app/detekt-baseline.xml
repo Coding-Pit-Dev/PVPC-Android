@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:SettingsScreen.kt${ }</ID>
+    <ID>FunctionParameterNaming:DefaultErrorHandler.kt$DefaultErrorHandler$_exception: IllegalArgumentException</ID>
+    <ID>FunctionParameterNaming:DefaultErrorHandler.kt$DefaultErrorHandler$_exception: NoSuchElementException</ID>
+    <ID>LongMethod:DeviceAddScreen.kt$@Composable private fun ConsumptionRow( watts: String, onWattsChange: (String) -&gt; Unit, hours: String, onHoursChange: (String) -&gt; Unit, alwaysOn: Boolean, hoursError: String? = null, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:DeviceAddScreen.kt$@Composable private fun DeviceAddScreen_Success( state: DeviceAddState.Success, onBackClick: () -&gt; Unit, onDeviceNameChanged: (String) -&gt; Unit, onWattsChanged: (String) -&gt; Unit, onHoursChanged: (String) -&gt; Unit, onAlwaysOnChanged: (Boolean) -&gt; Unit, onNotesChanged: (String) -&gt; Unit, onIconSelected: (DeviceIcon) -&gt; Unit, onCategorySelected: (CategoryUiModel) -&gt; Unit, onShowIconPicker: () -&gt; Unit, onHideIconPicker: () -&gt; Unit, onShowCategoryPicker: () -&gt; Unit, onHideCategoryPicker: () -&gt; Unit, onSaveClick: () -&gt; Unit, )</ID>
+    <ID>LongMethod:DevicesScreen.kt$@Composable private fun DeviceItem( render: DeviceRender, modifier: Modifier = Modifier, onSwiped: (DeviceRender) -&gt; Unit, onClick: () -&gt; Unit, )</ID>
+    <ID>LongMethod:DevicesScreen.kt$@Composable private fun SummarySection( totalKWh: Double, totalCost: Double, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:PricesComponent.kt$@Composable fun PricesComponent( pvpcEntries: List&lt;PVPCModel&gt;, selectedDate: String, currentPrice: Double, currentHour: Int, currentDate: String, nextDayEnabled: Boolean, onPreviousClicked: () -&gt; Unit, onNextClicked: () -&gt; Unit, modifier: Modifier = Modifier, timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS, )</ID>
+    <ID>LongMethod:PvpcDtoMapperTest.kt$PvpcDtoMapperTest$@Test fun `List PVPCDTO toDomain maps all items correctly`()</ID>
+    <ID>LongParameterList:DeviceAddScreen.kt$( state: DeviceAddState.Success, onBackClick: () -&gt; Unit, onDeviceNameChanged: (String) -&gt; Unit, onWattsChanged: (String) -&gt; Unit, onHoursChanged: (String) -&gt; Unit, onAlwaysOnChanged: (Boolean) -&gt; Unit, onNotesChanged: (String) -&gt; Unit, onIconSelected: (DeviceIcon) -&gt; Unit, onCategorySelected: (CategoryUiModel) -&gt; Unit, onShowIconPicker: () -&gt; Unit, onHideIconPicker: () -&gt; Unit, onShowCategoryPicker: () -&gt; Unit, onHideCategoryPicker: () -&gt; Unit, onSaveClick: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:DevicesViewModel.kt$DevicesViewModel$( getDevices: GetDevices, getPricesFlow: GetPricesFlow, private val addDevice: AddDevice, private val deleteDevice: DeleteDevice, private val calculateBestTimeSlot: CalculateBestTimeSlot, private val calculateDeviceCost: CalculateDeviceCost, private val errorHandler: ErrorHandler, private val dispatcher: CoroutineDispatcher = Dispatchers.IO, )</ID>
+    <ID>LongParameterList:HomeScreen.kt$( selectedDate: String, currentDate: String, pvpcEntries: List&lt;PVPCModel&gt;, currentPrice: Double, currentHour: Int, nextDayEnabled: Boolean, modifier: Modifier = Modifier, timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS, onPreviousClicked: () -&gt; Unit = { }, onNextClicked: () -&gt; Unit = { }, )</ID>
+    <ID>LongParameterList:PricesComponent.kt$( pvpcEntries: List&lt;PVPCModel&gt;, selectedDate: String, currentPrice: Double, currentHour: Int, currentDate: String, nextDayEnabled: Boolean, onPreviousClicked: () -&gt; Unit, onNextClicked: () -&gt; Unit, modifier: Modifier = Modifier, timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOURS, )</ID>
+    <ID>MagicNumber:BestTimeSlotCalculationStrategy.kt$BestTimeSlotCalculationStrategy$24</ID>
+    <ID>MagicNumber:CalculateDeviceCost.kt$CalculateDeviceCost$1000.0</ID>
+    <ID>MagicNumber:CalculateTotalConsumption.kt$CalculateTotalConsumption$1000.0</ID>
+    <ID>MagicNumber:DeviceAddScreen.kt$3</ID>
+    <ID>MagicNumber:DeviceAddViewModel.kt$DeviceAddViewModel$24</ID>
+    <ID>MagicNumber:DevicesScreen.kt$0.75f</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$400</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$401</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$403</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$404</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$429</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$500</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$502</ID>
+    <ID>MagicNumber:ErrorMessageProvider.kt$DefaultErrorMessageProvider$503</ID>
+    <ID>MagicNumber:PricesCardComponent.kt$0.10</ID>
+    <ID>MagicNumber:PricesCardComponent.kt$0.15</ID>
+    <ID>MagicNumber:PricesChart.kt$0.01f</ID>
+    <ID>MagicNumber:PricesChart.kt$100</ID>
+    <ID>MagicNumber:PricesChart.kt$100f</ID>
+    <ID>MagicNumber:PricesChart.kt$5</ID>
+    <ID>MagicNumber:PricesComponent.kt$24</ID>
+    <ID>MaxLineLength:DateValidator.kt$DefaultDateValidator$reason = "Price data is not yet available for this date. Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time."</ID>
+    <ID>MaxLineLength:DefaultDeviceLocalDataSource.kt$DefaultDeviceLocalDataSource$override fun getDevices(): Flow&lt;List&lt;Device&gt;&gt;</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_auth) } returns "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión."</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_data_generic) } returns "Los datos solicitados no están disponibles en este momento."</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_data_price) } returns "No hay datos de precios disponibles para la fecha seleccionada."</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_generic) } returns "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo."</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_network_generic) } returns "Error de conexión. Por favor, verifica tu conexión a Internet."</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_network_server) } returns "Error del servidor. Por favor, inténtalo de nuevo más tarde."</ID>
+    <ID>MaxLineLength:DefaultErrorMessageProviderTest.kt$DefaultErrorMessageProviderTest$every { context.getString(R.string.error_validation_device_name) } returns "El nombre del dispositivo no es válido."</ID>
+    <ID>MaxLineLength:DeviceAddScreen.kt$"error_validation_device_hours_max" -&gt; R.string.error_validation_device_hours_max</ID>
+    <ID>MaxLineLength:ErrorStateManagerTest.kt$ErrorStateManagerTest.TestState.Factory$override fun createErrorState(errorResult: ErrorResult): TestState</ID>
+    <ID>MaxLineLength:LocalModule.kt$LocalModule$fun</ID>
+    <ID>MaxLineLength:StrategyModule.kt$StrategyModule$abstract</ID>
+    <ID>MaxLineLength:ValidationModule.kt$ValidationModule$abstract</ID>
+    <ID>ReturnCount:CalculateDeviceCost.kt$CalculateDeviceCost$operator fun invoke( device: Device, timeSlot: TimeSlot, prices: List&lt;PVPCModel&gt;, ): Double</ID>
+    <ID>TooGenericExceptionCaught:DeviceAddViewModel.kt$DeviceAddViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SettingsViewModel.kt$SettingsViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:ErrorStateManagerTest.kt$ErrorStateManagerTest$throw RuntimeException("Test error")</ID>
+    <ID>TooManyFunctions:DeviceAddScreen.kt$com.codingpit.pvpcplanner.ui.devices.DeviceAddScreen.kt</ID>
+    <ID>TooManyFunctions:DeviceAddViewModel.kt$DeviceAddViewModel : ViewModel</ID>
+    <ID>UnusedParameter:DefaultErrorHandler.kt$DefaultErrorHandler$_exception: IllegalArgumentException</ID>
+    <ID>UnusedParameter:DefaultErrorHandler.kt$DefaultErrorHandler$_exception: NoSuchElementException</ID>
+    <ID>UnusedParameter:MainContent.kt$onNavigateToDeviceAdd: () -&gt; Unit = {}</ID>
+  </CurrentIssues>
+</SmellBaseline>
