@@ -319,3 +319,102 @@ myFlow
 ```
 
 This automatically converts exceptions to error states using the centralized error system.
+
+## Error Logging — The Archive
+
+**The Archive** is a shared knowledge base of errors and solutions at [Coding-Pit-Dev/the-archive](https://github.com/Coding-Pit-Dev/the-archive). Whenever a build, test, lint, or runtime failure occurs during a session, you **must** document it there if it is non-trivial (i.e., it required investigation beyond a typo fix).
+
+### When to log
+
+Log to The Archive when:
+- `./gradlew` fails with `BUILD FAILED`
+- Unit tests fail with unexpected errors
+- `detekt` or `ktlintCheck` reports violations that required real investigation
+- A compile error or runtime exception reveals a non-obvious Android / Kotlin behavior
+- Any failure that required more than one attempt to resolve
+
+Do **not** log: trivial typos, missing imports that the IDE auto-fixes, or failures caused by uncommitted local state.
+
+### How to log a failure
+
+After resolving a failure, check if `.claude/archive-pending.json` exists — the hook writes failure details there automatically. Use it as a starting point.
+
+Then follow these steps:
+
+#### 1. Determine the ID
+
+Check `INDEX.md` in the-archive repo to find the next available number:
+```bash
+gh api repos/Coding-Pit-Dev/the-archive/contents/INDEX.md --jq '.content' | base64 -d
+```
+
+Use prefix `AND-` for Android/Kotlin/Compose issues, `AGP-` for Gradle/build issues.
+
+#### 2. Clone the-archive and create a branch
+
+```bash
+gh repo clone Coding-Pit-Dev/the-archive /tmp/the-archive 2>/dev/null || git -C /tmp/the-archive pull
+cd /tmp/the-archive && git checkout -b errors/AND-NNN-short-description
+mkdir -p errors/android/<subcategory>/AND-NNN-short-description
+```
+
+#### 3. Write the error document
+
+Create `errors/android/<subcategory>/AND-NNN-short-description/README.md` with this exact frontmatter:
+
+```yaml
+---
+id: "AND-NNN"
+title: "Short descriptive title"
+technology: ["android", "kotlin"]
+severity: "blocker"                   # blocker | high | medium | low
+status: "solved"                      # solved | partial | unsolved
+tags: ["compose", "tag2"]             # lowercase, max 8
+created: "YYYY-MM-DD"
+last_updated: "YYYY-MM-DD"
+success_count: 0
+contributors:
+  - agent: "claude-sonnet-4-6"
+    pr: ""                            # fill after PR is created
+    date: "YYYY-MM-DD"
+---
+```
+
+Required body sections: `## Error description`, `## When it appears`, `## Root cause`, `## Solution`, `## Verification`, `## Environment`, `## References`.
+
+#### 4. Submit the PR
+
+```bash
+cd /tmp/the-archive
+git add .
+git commit -m "errors: add AND-NNN short description"
+git push origin errors/AND-NNN-short-description
+gh pr create --repo Coding-Pit-Dev/the-archive \
+  --title "errors: AND-NNN short description" \
+  --body "$(cat <<'EOF'
+## Summary
+- New error entry AND-NNN
+- Technology: android/kotlin
+- Status: solved
+
+## PR checklist
+- [ ] Frontmatter is valid and complete
+- [ ] ID is unique (verified against INDEX.md)
+- [ ] No executable code outside scripts/
+- [ ] last_updated is today's date
+EOF
+)"
+```
+
+#### 5. Clean up
+
+```bash
+rm -f .claude/archive-pending.json
+```
+
+### ID reference (as of 2026-04-07)
+
+| Next ID | Technology |
+|---------|-----------|
+| AND-003 | Android general / Kotlin / Compose |
+| AGP-002 | Android Gradle Plugin / build |
