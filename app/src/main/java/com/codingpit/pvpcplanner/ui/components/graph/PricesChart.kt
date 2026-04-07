@@ -47,12 +47,14 @@ fun PriceChart(
         }
 
     LaunchedEffect(responseData) {
-        modelProducer.runTransaction {
-            lineSeries {
-                series(
-                    x = responseData.indices.map { it.toFloat() },
-                    y = responseData.map { it.pcb.toFloat() },
-                )
+        if (responseData.isNotEmpty()) {
+            modelProducer.runTransaction {
+                lineSeries {
+                    series(
+                        x = responseData.indices.map { it.toFloat() },
+                        y = responseData.map { it.pcb.toFloat() },
+                    )
+                }
             }
         }
     }
@@ -115,7 +117,7 @@ private fun getValueFormatter(
     timeFormat: TimeFormat,
     simpleDateFormat: SimpleDateFormat,
 ) = if (timeFormat == TimeFormat.TWENTY_FOUR_HOURS) {
-    CartesianValueFormatter.Default
+    CartesianValueFormatter { _, value, _ -> value.toInt().toString() }
 } else {
     CartesianValueFormatter { _, value, _ ->
         calendar.set(Calendar.HOUR_OF_DAY, value.toInt())
