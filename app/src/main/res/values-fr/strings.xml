@@ -113,10 +113,16 @@
     <string name="select_category">Choisir une catégorie</string>
     <string name="action_close">Fermer</string>
     <string name="stats_title">Historique des prix</string>
-    <string name="stats_no_data">Aucune donnée historique disponible pour le moment.\nParcourez les prix de différents jours pour construire un historique.</string>
-    <string name="stats_error_generic">Une erreur s\'est produite lors du chargement des statistiques. Veuillez réessayer.</string>
+    <string name="stats_no_data">Aucune donnée historique disponible.\nConsultez les prix pour différents jours pour construire l\'historique.</string>
+    <string name="stats_error_generic">Une erreur est survenue lors du chargement des statistiques. Veuillez réessayer.</string>
     <string name="stats_avg">Moyenne</string>
     <string name="stats_min">Min</string>
     <string name="stats_max">Max</string>
+    <string name="notification_channel_name">Alertes de prix</string>
+    <string name="notification_cheap_price_title">Heure d\'électricité bon marché !</string>
+    <string name="notification_cheap_price_body">Les prix sont en dessous de %.2f €/kWh en ce moment</string>
+    <string name="unit_euro_per_kwh">€/kWh</string>
+    <string name="setting_price_threshold">Seuil d\'alerte de prix</string>
+    <string name="setting_price_threshold_description">Recevez des notifications lorsque les prix descendent en dessous de cette valeur (0 = désactivé)</string>
     <string name="cached_data_banner">Affichage des données en cache. Connectez-vous pour mettre à jour les prix.</string>
 </resources>

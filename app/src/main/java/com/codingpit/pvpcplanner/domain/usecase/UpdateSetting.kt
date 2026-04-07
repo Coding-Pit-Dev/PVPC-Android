@@ -17,4 +17,8 @@ class UpdateSetting
         suspend operator fun invoke(timeFormat: TimeFormat) {
             settingsRepository.updateTimeFormat(timeFormat)
         }
+
+        suspend operator fun invoke(priceThreshold: Float) {
+            settingsRepository.updatePriceThreshold(priceThreshold)
+        }
     }

@@ -25,6 +25,7 @@ class DefaultSettingsStore
                         darkMode = darkMode.toDomain(),
                         timeFormat = timeFormat.toDomain(),
                         yAxisSlots = yAxisSlots,
+                        priceThreshold = priceThresholdMilliEurPerKwh.toPriceThresholdEurosPerKwh(),
                     )
                 }
             }
@@ -38,6 +39,15 @@ class DefaultSettingsStore
         override suspend fun updateTimeFormat(timeFormat: TimeFormat) {
             context.settingsDataStore.updateData { data ->
                 data.toBuilder().setTimeFormat(timeFormat.toProto()).build()
+            }
+        }
+
+        override suspend fun updatePriceThreshold(threshold: Float) {
+            context.settingsDataStore.updateData { data ->
+                data
+                    .toBuilder()
+                    .setPriceThresholdMilliEurPerKwh(threshold.toMilliEurosPerKwh())
+                    .build()
             }
         }
     }
