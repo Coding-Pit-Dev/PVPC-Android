@@ -39,4 +39,6 @@ google-services.json
 
 # generated files
 bin/
-gen/
+gen/.claude/worktrees/
+AGENTS.md
+Gemfile.lock
