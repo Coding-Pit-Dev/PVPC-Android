@@ -23,7 +23,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Verify and build with Gradle
-        run: ./gradlew --continue ktlintCheck detekt lintDebug assemble test
+        run: ./gradlew --continue ktlintCheck detekt lintDebug assembleDebug test
       - name: Upload lint results
         if: always()
         uses: actions/upload-artifact@v4
