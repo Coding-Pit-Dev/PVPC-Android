@@ -4,6 +4,7 @@ data class Settings(
     val darkMode: DarkMode = DarkMode.SYSTEM,
     val timeFormat: TimeFormat = TimeFormat.TWELVE_HOURS,
     val yAxisSlots: Int = 5,
+    val priceThreshold: Float = 0f,
 )
 
 enum class DarkMode {

@@ -9,16 +9,24 @@ import com.codingpit.pvpcplanner.domain.models.DarkMode
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
+import com.codingpit.pvpcplanner.domain.usecase.SchedulePriceAlerts
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val ThresholdDebounceMillis = 500L
 
 @HiltViewModel
 class SettingsViewModel
@@ -27,15 +35,48 @@ class SettingsViewModel
         getSettings: GetSettings,
         private val errorHandler: ErrorHandler,
         private val updateSettingUseCase: UpdateSetting,
+        private val schedulePriceAlerts: SchedulePriceAlerts,
         private val coroutineDispatcher: CoroutineDispatcher,
     ) : ViewModel() {
+        private val thresholdInput = MutableStateFlow<Float?>(null)
+
         val state =
             getSettings()
                 .map {
-                    SettingsState.Success(it.toRender())
+                    SettingsState.Success(it.toRender(), it.priceThreshold)
                 }.handleErrors(errorHandler, "settings_data", SettingsState.Factory)
                 .flowOn(coroutineDispatcher)
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsState.Loading)
+
+        init {
+            observeThresholdUpdates()
+        }
+
+        private fun observeThresholdUpdates() {
+            viewModelScope.launch(coroutineDispatcher) {
+                thresholdInput
+                    .filterNotNull()
+                    .debounce(ThresholdDebounceMillis)
+                    .distinctUntilChanged()
+                    .collect { threshold ->
+                        persistPriceThreshold(threshold)
+                    }
+            }
+        }
+
+        private suspend fun persistPriceThreshold(threshold: Float) {
+            runCatching {
+                updateSettingUseCase(threshold)
+                if (threshold > 0f) {
+                    schedulePriceAlerts(threshold)
+                } else {
+                    schedulePriceAlerts.cancel()
+                }
+            }.onFailure { e ->
+                if (e is CancellationException) throw e
+                errorHandler.handleError(e, "update_price_threshold")
+            }
+        }
 
         fun updateSetting(
             render: SettingRender,
@@ -68,6 +109,10 @@ class SettingsViewModel
                     errorHandler.handleError(e, "update_setting")
                 }
             }
+        }
+
+        fun updatePriceThreshold(threshold: Float) {
+            thresholdInput.value = threshold
         }
     }
 

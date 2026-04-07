@@ -11,22 +11,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codingpit.pvpcplanner.R
@@ -40,9 +44,15 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         when (val state = state) {
             is SettingsState.Loading -> SettingsScreen_Loading()
             is SettingsState.Success ->
-                SettingsScreen_Success(state) { setting, option ->
-                    viewModel.updateSetting(setting, option)
-                }
+                SettingsScreen_Success(
+                    state = state,
+                    onSettingUpdate = { setting, option ->
+                        viewModel.updateSetting(setting, option)
+                    },
+                    onThresholdUpdate = { threshold ->
+                        viewModel.updatePriceThreshold(threshold)
+                    },
+                )
 
             is SettingsState.Error -> SettingsScreen_Error()
         }
@@ -53,6 +63,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 private fun SettingsScreen_Success(
     state: SettingsState.Success,
     onSettingUpdate: (SettingRender, SettingOption) -> Unit,
+    onThresholdUpdate: (Float) -> Unit,
 ) {
     var selectedSetting by remember {
         mutableStateOf<SettingRender?>(null)
@@ -65,10 +76,16 @@ private fun SettingsScreen_Success(
         items(state.settings) {
             SettingsItem(
                 title = stringResource(it.setting.titleRes),
-                subTitle = stringResource(it.options.first { it.selected }.labelRes),
+                subTitle = stringResource(it.options.first { option -> option.selected }.labelRes),
                 onClick = {
                     selectedSetting = it
                 },
+            )
+        }
+        item {
+            PriceThresholdItem(
+                currentThreshold = state.priceThreshold,
+                onThresholdUpdate = onThresholdUpdate,
             )
         }
     }
@@ -142,6 +159,42 @@ private fun SettingsOptionItem(
         if (option.selected) {
             Icon(imageVector = Icons.Filled.Check, contentDescription = null)
         }
+    }
+}
+
+@Composable
+private fun PriceThresholdItem(
+    currentThreshold: Float,
+    modifier: Modifier = Modifier,
+    onThresholdUpdate: (Float) -> Unit,
+) {
+    val initialValue = if (currentThreshold > 0f) currentThreshold.toString() else ""
+    var textValue by rememberSaveable(currentThreshold) { mutableStateOf(initialValue) }
+    val thresholdRegex = remember { Regex("^\\d*[.,]?\\d*$") }
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(text = stringResource(R.string.setting_price_threshold))
+        Text(text = stringResource(R.string.setting_price_threshold_description))
+        OutlinedTextField(
+            value = textValue,
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(thresholdRegex)) {
+                    textValue = newValue
+                    val parsed = newValue.replace(',', '.').toFloatOrNull() ?: 0f
+                    onThresholdUpdate(parsed)
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            singleLine = true,
+            suffix = { Text(stringResource(R.string.unit_euro_per_kwh)) },
+        )
     }
 }
 

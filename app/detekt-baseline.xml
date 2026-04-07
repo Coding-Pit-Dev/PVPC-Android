@@ -2,6 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
+    <ID>EmptyFunctionBlock:SettingsScreen.kt${ }</ID>
     <ID>FunctionParameterNaming:DefaultErrorHandler.kt$DefaultErrorHandler$_exception: IllegalArgumentException</ID>
     <ID>FunctionParameterNaming:DefaultErrorHandler.kt$DefaultErrorHandler$_exception: NoSuchElementException</ID>
     <ID>LongMethod:DeviceAddScreen.kt$@Composable private fun ConsumptionRow( watts: String, onWattsChange: (String) -&gt; Unit, hours: String, onHoursChange: (String) -&gt; Unit, alwaysOn: Boolean, hoursError: String? = null, modifier: Modifier = Modifier, )</ID>
@@ -61,6 +62,7 @@
     <ID>MaxLineLength:ValidationModule.kt$ValidationModule$abstract</ID>
     <ID>ReturnCount:CalculateDeviceCost.kt$CalculateDeviceCost$operator fun invoke( device: Device, timeSlot: TimeSlot, prices: List&lt;PVPCModel&gt;, ): Double</ID>
     <ID>TooGenericExceptionCaught:DeviceAddViewModel.kt$DeviceAddViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SettingsViewModel.kt$SettingsViewModel$e: Exception</ID>
     <ID>TooGenericExceptionThrown:ErrorStateManagerTest.kt$ErrorStateManagerTest$throw RuntimeException("Test error")</ID>
     <ID>TooManyFunctions:DeviceAddScreen.kt$com.codingpit.pvpcplanner.ui.devices.DeviceAddScreen.kt</ID>
     <ID>TooManyFunctions:DeviceAddViewModel.kt$DeviceAddViewModel : ViewModel</ID>

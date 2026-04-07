@@ -207,7 +207,8 @@ class HomeViewModelTest {
             val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Mock the prices for the new date
-            coEvery { mockGetPrices("2023-10-14") } returns Result.success(PriceFetchResult(prices, isFromCache = false))
+            coEvery { mockGetPrices("2023-10-14") } returns
+                Result.success(PriceFetchResult(prices, isFromCache = false))
 
             // Act & Assert
             viewModel.state.test {
@@ -240,7 +241,8 @@ class HomeViewModelTest {
             val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Mock the prices for the new date
-            coEvery { mockGetPrices("2023-10-16") } returns Result.success(PriceFetchResult(prices, isFromCache = false))
+            coEvery { mockGetPrices("2023-10-16") } returns
+                Result.success(PriceFetchResult(prices, isFromCache = false))
 
             // Act & Assert
             viewModel.state.test {

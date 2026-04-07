@@ -141,7 +141,9 @@ dependencies {
 
     // Hilt and Dagger
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -154,6 +156,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.work.runtime)
 
     // Tests
     testImplementation(libs.junit)

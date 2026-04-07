@@ -50,7 +50,8 @@ class DevicesViewModelSimpleTest {
     fun `viewModel can be created`() =
         runTest {
             every { mockGetDevices() } returns flowOf(emptyList())
-            every { mockGetPricesFlow() } returns flowOf(Result.success(PriceFetchResult(emptyList(), isFromCache = false)))
+            every { mockGetPricesFlow() } returns
+                flowOf(Result.success(PriceFetchResult(emptyList(), isFromCache = false)))
             every { mockCalculateBestTimeSlot(any(), any()) } returns TimeSlot(0, 1)
             every { mockCalculateDeviceCost(any(), any(), any()) } returns 0.15
 

@@ -21,4 +21,9 @@ class SettingsRepositoryImpl
         override suspend fun updateTimeFormat(timeFormat: TimeFormat) {
             settingsStore.updateTimeFormat(timeFormat)
         }
+
+        override suspend fun updatePriceThreshold(threshold: Float) {
+            require(threshold >= 0f) { "priceThreshold must be >= 0" }
+            settingsStore.updatePriceThreshold(threshold)
+        }
     }

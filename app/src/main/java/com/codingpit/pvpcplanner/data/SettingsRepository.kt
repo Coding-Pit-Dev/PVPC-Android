@@ -11,4 +11,6 @@ interface SettingsRepository {
     suspend fun updateDarkMode(darkMode: DarkMode)
 
     suspend fun updateTimeFormat(timeFormat: TimeFormat)
+
+    suspend fun updatePriceThreshold(threshold: Float)
 }
