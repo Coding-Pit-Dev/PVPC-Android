@@ -100,17 +100,18 @@ private fun DevicesScreen_Success(
     onSearchQueryChanged: (String) -> Unit,
 ) {
     val calculateTotalConsumption = remember { CalculateTotalConsumption() }
-    val summary = remember(state.devicesSlot) {
-        calculateTotalConsumption(
-            state.devicesSlot.map {
-                DeviceConsumptionInput(
-                    watts = it.device.watts,
-                    hours = it.device.hours,
-                    cost = it.cost,
-                )
-            },
-        )
-    }
+    val summary =
+        remember(state.devicesSlot) {
+            calculateTotalConsumption(
+                state.devicesSlot.map {
+                    DeviceConsumptionInput(
+                        watts = it.device.watts,
+                        hours = it.device.hours,
+                        cost = it.cost,
+                    )
+                },
+            )
+        }
     val filteredDevices = state.filteredDevices
 
     Column(Modifier.fillMaxSize()) {
@@ -471,19 +472,29 @@ private fun DeviceItem(
                             tint = MaterialTheme.colorScheme.primary,
                         )
                         val context = androidx.compose.ui.platform.LocalContext.current
-                        val timeFormat = remember { android.text.format.DateFormat.getTimeFormat(context) }
-                        val start = remember(render.bestSlot.startHour) {
-                            java.util.Calendar.getInstance().apply {
-                                set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.startHour)
-                                set(java.util.Calendar.MINUTE, 0)
-                            }.time
-                        }
-                        val end = remember(render.bestSlot.endHour) {
-                            java.util.Calendar.getInstance().apply {
-                                set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.endHour)
-                                set(java.util.Calendar.MINUTE, 0)
-                            }.time
-                        }
+                        val timeFormat =
+                            remember {
+                                android.text.format.DateFormat
+                                    .getTimeFormat(context)
+                            }
+                        val start =
+                            remember(render.bestSlot.startHour) {
+                                java.util.Calendar
+                                    .getInstance()
+                                    .apply {
+                                        set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.startHour)
+                                        set(java.util.Calendar.MINUTE, 0)
+                                    }.time
+                            }
+                        val end =
+                            remember(render.bestSlot.endHour) {
+                                java.util.Calendar
+                                    .getInstance()
+                                    .apply {
+                                        set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.endHour)
+                                        set(java.util.Calendar.MINUTE, 0)
+                                    }.time
+                            }
 
                         Text(
                             text =

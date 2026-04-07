@@ -2,11 +2,11 @@ package com.codingpit.pvpcplanner.screenshot
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
-import com.github.takahirom.roborazzi.captureRoboImage
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.ui.home.HomeComponents
 import com.codingpit.pvpcplanner.ui.theme.PVPCPlannerTheme
+import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,19 +18,19 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(sdk = [33], qualifiers = "w411dp-h891dp-mdpi")
 class HomeScreenshotTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val testPrices = List(24) { i ->
-        PVPCModel(
-            day = "2024-01-15",
-            startHour = i,
-            endHour = i + 1,
-            pcb = 0.05 + i * 0.005,
-            cym = 0.06,
-        )
-    }
+    private val testPrices =
+        List(24) { i ->
+            PVPCModel(
+                day = "2024-01-15",
+                startHour = i,
+                endHour = i + 1,
+                pcb = 0.05 + i * 0.005,
+                cym = 0.06,
+            )
+        }
 
     @Test
     fun homeScreen_success_lightTheme() {

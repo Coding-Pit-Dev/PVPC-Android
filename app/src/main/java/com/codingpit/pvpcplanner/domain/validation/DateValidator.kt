@@ -74,7 +74,9 @@ class DefaultDateValidator
                 ValidationResult.Success
             } else {
                 ValidationResult.Error(
-                    reason = "Price data is not yet available for this date. Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time.",
+                    reason =
+                        "Price data is not yet available for this date. " +
+                            "Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time.",
                     errorCode = "PRICE_DATA_NOT_AVAILABLE",
                 )
             }
