@@ -73,8 +73,11 @@ class DefaultDateValidator
             return if (isValid) {
                 ValidationResult.Success
             } else {
+                val msg =
+                    "Price data is not yet available for this date. " +
+                        "Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time."
                 ValidationResult.Error(
-                    reason = "Price data is not yet available for this date. Data becomes available at ${DateFormatter.DEFAULT_REFRESH_DATA_HOUR}:00 Spanish time.",
+                    reason = msg,
                     errorCode = "PRICE_DATA_NOT_AVAILABLE",
                 )
             }

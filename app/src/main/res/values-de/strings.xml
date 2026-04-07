@@ -12,8 +12,10 @@
     <string name="action_add">Hinzufügen</string>
     <string name="action_delete">Löschen</string>
     <string name="unit_hours">Stunden</string>
+    <string name="unit_kwh">kWh</string>
     <string name="nav_prices">Preise</string>
     <string name="nav_devices">Geräte</string>
+    <string name="nav_stats">Statistiken</string>
     <string name="nav_settings">Einstellungen</string>
     <string name="setting_dark_mode">Dunkelmodus</string>
     <string name="setting_time_format">Zeitformat</string>
@@ -89,8 +91,10 @@
     <string name="always_on_description">Gerät ist immer an, wie z.B. Kühlschrank 24h</string>
     <string name="consumption_watts">Leistung (W)</string>
     <string name="unit_watts">W</string>
+    <string name="unit_watt">W</string>
     <string name="program_duration">Programmdauer</string>
     <string name="category_label">Kategorie</string>
+    <string name="category_all">Alle</string>
     <string name="category_appliances">Haushaltsgeräte</string>
     <string name="category_lighting">Beleuchtung</string>
     <string name="category_hvac">Klimatisierung</string>
@@ -108,4 +112,11 @@
     <string name="select_icon">Icon auswählen</string>
     <string name="select_category">Kategorie auswählen</string>
     <string name="action_close">Schließen</string>
+    <string name="stats_title">Preisverlauf</string>
+    <string name="stats_no_data">Noch keine historischen Daten verfügbar.\nDurchsuchen Sie die Preise für verschiedene Tage, um einen Verlauf aufzubauen.</string>
+    <string name="stats_error_generic">Beim Laden der Statistiken ist ein Fehler aufgetreten. Bitte versuche es erneut.</string>
+    <string name="stats_avg">Durchschnitt</string>
+    <string name="stats_min">Min</string>
+    <string name="stats_max">Max</string>
+    <string name="cached_data_banner">Zwischengespeicherte Daten werden angezeigt. Verbinden Sie sich, um die Preise zu aktualisieren.</string>
 </resources>

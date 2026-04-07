@@ -32,7 +32,8 @@ class PriceRepositoryImpl
             runCatching {
                 withContext(Dispatchers.IO) {
                     val days =
-                        localDataSource.getAvailableDays()
+                        localDataSource
+                            .getAvailableDays()
                             .sortedByDescending { day ->
                                 runCatching { LocalDate.parse(day, dateFormatter) }.getOrElse { LocalDate.MIN }
                             }

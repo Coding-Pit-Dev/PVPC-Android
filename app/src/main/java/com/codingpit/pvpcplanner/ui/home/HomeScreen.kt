@@ -43,9 +43,10 @@ fun HomeScreen(viewModel: HomeViewModel) {
             Column(modifier = Modifier.fillMaxSize()) {
                 if (state.isFromCache) {
                     Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
                         color = MaterialTheme.colorScheme.secondaryContainer,
                         shape = RoundedCornerShape(8.dp),
                     ) {

@@ -12,6 +12,7 @@
     <string name="action_add">Añadir</string>
     <string name="action_delete">Borrar</string>
     <string name="unit_hours">horas</string>
+    <string name="unit_kwh">kWh</string>
     <string name="nav_prices">Precios</string>
     <string name="nav_devices">Dispositivos</string>
     <string name="nav_stats">Estadísticas</string>
@@ -96,6 +97,7 @@
     <string name="always_on_description">Dispositivo como nevera que funciona 24h</string>
     <string name="consumption_watts">Potencia (W)</string>
     <string name="unit_watts">W</string>
+    <string name="unit_watt">W</string>
     <string name="program_duration">Duración del programa</string>
     <string name="category_label">Categoría</string>
     <string name="category_all">Todas</string>

@@ -1,8 +1,8 @@
 package com.codingpit.pvpcplanner.domain.usecase
 
 import com.codingpit.pvpcplanner.data.PriceRepository
-import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

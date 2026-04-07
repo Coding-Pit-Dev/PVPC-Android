@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,8 +27,6 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -106,17 +106,18 @@ private fun DevicesScreen_Success(
     onCategorySelected: (DeviceCategoryFilter?) -> Unit,
 ) {
     val calculateTotalConsumption = remember { CalculateTotalConsumption() }
-    val summary = remember(state.devicesSlot) {
-        calculateTotalConsumption(
-            state.devicesSlot.map {
-                DeviceConsumptionInput(
-                    watts = it.device.watts,
-                    hours = it.device.hours,
-                    cost = it.cost,
-                )
-            },
-        )
-    }
+    val summary =
+        remember(state.devicesSlot) {
+            calculateTotalConsumption(
+                state.devicesSlot.map {
+                    DeviceConsumptionInput(
+                        watts = it.device.watts,
+                        hours = it.device.hours,
+                        cost = it.cost,
+                    )
+                },
+            )
+        }
     val filteredDevices = state.filteredDevices
 
     Column(Modifier.fillMaxSize()) {
@@ -524,19 +525,29 @@ private fun DeviceItem(
                             tint = MaterialTheme.colorScheme.primary,
                         )
                         val context = androidx.compose.ui.platform.LocalContext.current
-                        val timeFormat = remember { android.text.format.DateFormat.getTimeFormat(context) }
-                        val start = remember(render.bestSlot.startHour) {
-                            java.util.Calendar.getInstance().apply {
-                                set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.startHour)
-                                set(java.util.Calendar.MINUTE, 0)
-                            }.time
-                        }
-                        val end = remember(render.bestSlot.endHour) {
-                            java.util.Calendar.getInstance().apply {
-                                set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.endHour)
-                                set(java.util.Calendar.MINUTE, 0)
-                            }.time
-                        }
+                        val timeFormat =
+                            remember {
+                                android.text.format.DateFormat
+                                    .getTimeFormat(context)
+                            }
+                        val start =
+                            remember(render.bestSlot.startHour) {
+                                java.util.Calendar
+                                    .getInstance()
+                                    .apply {
+                                        set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.startHour)
+                                        set(java.util.Calendar.MINUTE, 0)
+                                    }.time
+                            }
+                        val end =
+                            remember(render.bestSlot.endHour) {
+                                java.util.Calendar
+                                    .getInstance()
+                                    .apply {
+                                        set(java.util.Calendar.HOUR_OF_DAY, render.bestSlot.endHour)
+                                        set(java.util.Calendar.MINUTE, 0)
+                                    }.time
+                            }
 
                         Text(
                             text =
