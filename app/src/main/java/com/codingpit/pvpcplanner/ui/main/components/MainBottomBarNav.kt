@@ -14,13 +14,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codingpit.pvpcplanner.R
-import com.codingpit.pvpcplanner.utils.Constants
+import com.codingpit.pvpcplanner.ui.main.Screen
 import com.codingpit.pvpcplanner.utils.Constants.ROUTES_NAVIGATION_BOTTOM_BAR
 
 @Composable
 fun MainBottomBarNav(
-    selectedScreen: String,
-    onScreenSelected: (String) -> Unit,
+    selectedScreen: Screen,
+    onScreenSelected: (Screen) -> Unit,
     iconSize: Int = 22,
     fontSize: Int = 14,
 ) {
@@ -30,10 +30,11 @@ fun MainBottomBarNav(
         ROUTES_NAVIGATION_BOTTOM_BAR.forEach { screen ->
             val label =
                 when (screen.key) {
-                    Constants.HOME_SCREEN -> stringResource(R.string.nav_prices)
-                    Constants.DEVICES_SCREEN -> stringResource(R.string.nav_devices)
-                    Constants.SETTINGS_SCREEN -> stringResource(R.string.nav_settings)
-                    else -> screen.key
+                    is Screen.Home -> stringResource(R.string.nav_prices)
+                    is Screen.Devices -> stringResource(R.string.nav_devices)
+                    is Screen.DeviceAdd -> stringResource(R.string.nav_devices)
+                    is Screen.Stats -> stringResource(R.string.nav_stats)
+                    is Screen.Settings -> stringResource(R.string.nav_settings)
                 }
 
             NavigationBarItem(
@@ -61,7 +62,7 @@ fun MainBottomBarNav(
 @Composable
 private fun BottomBar_Preview() {
     MainBottomBarNav(
-        selectedScreen = "HomeScreen",
+        selectedScreen = Screen.Home,
         onScreenSelected = {},
     )
 }
