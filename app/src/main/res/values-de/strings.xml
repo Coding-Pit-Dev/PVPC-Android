@@ -90,6 +90,7 @@
     <string name="always_on_description">Gerät ist immer an, wie z.B. Kühlschrank 24h</string>
     <string name="consumption_watts">Leistung (W)</string>
     <string name="unit_watts">W</string>
+    <string name="unit_watt">W</string>
     <string name="program_duration">Programmdauer</string>
     <string name="category_label">Kategorie</string>
     <string name="category_appliances">Haushaltsgeräte</string>
