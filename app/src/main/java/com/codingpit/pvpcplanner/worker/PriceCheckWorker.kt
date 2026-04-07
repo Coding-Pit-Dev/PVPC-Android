@@ -34,8 +34,8 @@ class PriceCheckWorker
 
             val currentDate = DateFormatter.formatDate(DateFormatter.getCurrentDate())
             val currentHour = DateFormatter.getCurrentHour()
-            val prices = priceRepository.getPrices(currentDate).getOrElse { return Result.retry() }
-            val currentHourPrice = prices.firstOrNull { it.startHour == currentHour }?.pcb ?: return Result.success()
+            val priceFetchResult = priceRepository.getPrices(currentDate).getOrElse { return Result.retry() }
+            val currentHourPrice = priceFetchResult.prices.firstOrNull { it.startHour == currentHour }?.pcb ?: return Result.success()
             val currentHourPriceMilliEurosPerKwh = currentHourPrice.toFloat().toMilliEurosPerKwh()
 
             if (currentHourPriceMilliEurosPerKwh > thresholdMilliEurosPerKwh) {
