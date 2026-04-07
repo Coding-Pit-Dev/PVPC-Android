@@ -12,6 +12,7 @@
     <string name="action_add">Añadir</string>
     <string name="action_delete">Borrar</string>
     <string name="unit_hours">horas</string>
+    <string name="unit_kwh">kWh</string>
     <string name="nav_prices">Precios</string>
     <string name="nav_devices">Dispositivos</string>
     <string name="nav_settings">Ajustes</string>
