@@ -110,4 +110,19 @@
     <string name="select_icon">Icon auswählen</string>
     <string name="select_category">Kategorie auswählen</string>
     <string name="action_close">Schließen</string>
+    <string name="nav_stats">Statistiken</string>
+    <string name="stats_title">Preisverlauf</string>
+    <string name="stats_no_data">Noch keine historischen Daten verfügbar.\nDurchsuche die Preise für verschiedene Tage, um den Verlauf aufzubauen.</string>
+    <string name="stats_error_generic">Beim Laden der Statistiken ist ein Fehler aufgetreten. Bitte versuche es erneut.</string>
+    <string name="stats_avg">Durchschnitt</string>
+    <string name="stats_min">Min</string>
+    <string name="stats_max">Max</string>
+    <string name="category_all">Alle</string>
+    <string name="notification_channel_name">Preisbenachrichtigungen</string>
+    <string name="notification_cheap_price_title">Günstige Stromstunde!</string>
+    <string name="notification_cheap_price_body">Die Preise liegen gerade unter %.2f €/kWh</string>
+    <string name="unit_euro_per_kwh">€/kWh</string>
+    <string name="setting_price_threshold">Preisalarm-Schwellenwert</string>
+    <string name="setting_price_threshold_description">Benachrichtigung erhalten, wenn die Preise unter diesen Wert fallen (0 = deaktiviert)</string>
+    <string name="cached_data_banner">Zeigt zwischengespeicherte Daten. Verbinden, um Preise zu aktualisieren.</string>
 </resources>
