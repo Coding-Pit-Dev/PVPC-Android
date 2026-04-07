@@ -7,6 +7,11 @@ on:
       - "release/**"
       # main is populated only via merged release PRs, handled by release_deploy.yml
       - "main"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   build:
@@ -22,7 +27,13 @@ jobs:
           cache: gradle
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
-      - name: Run Tests with Gradle
-        run: ./gradlew test
+      - name: Verify and build with Gradle
+        run: ./gradlew --continue ktlintCheck detekt lintDebug assembleDebug test
+      - name: Upload lint results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-results
+          path: app/build/reports/lint*
+          if-no-files-found: ignore
+          retention-days: 7

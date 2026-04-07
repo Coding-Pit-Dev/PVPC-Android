@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import app.cash.turbine.test
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.DarkMode
-import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
@@ -207,7 +207,8 @@ class HomeViewModelTest {
             val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Mock the prices for the new date
-            coEvery { mockGetPrices("2023-10-14") } returns Result.success(PriceFetchResult(prices, isFromCache = false))
+            coEvery { mockGetPrices("2023-10-14") } returns
+                Result.success(PriceFetchResult(prices, isFromCache = false))
 
             // Act & Assert
             viewModel.state.test {
@@ -240,7 +241,8 @@ class HomeViewModelTest {
             val viewModel = createViewModel(Result.success(PriceFetchResult(prices, isFromCache = false)))
 
             // Mock the prices for the new date
-            coEvery { mockGetPrices("2023-10-16") } returns Result.success(PriceFetchResult(prices, isFromCache = false))
+            coEvery { mockGetPrices("2023-10-16") } returns
+                Result.success(PriceFetchResult(prices, isFromCache = false))
 
             // Act & Assert
             viewModel.state.test {

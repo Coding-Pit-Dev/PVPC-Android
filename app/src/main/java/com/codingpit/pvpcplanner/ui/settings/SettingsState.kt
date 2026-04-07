@@ -9,6 +9,7 @@ sealed class SettingsState {
 
     data class Success(
         val settings: List<SettingRender>,
+        val priceThreshold: Float = 0f,
     ) : SettingsState()
 
     data class Error(

@@ -156,7 +156,7 @@ class SettingsIntegrationTest {
                 awaitComplete()
             }
 
-            verify { val _ = mockSettingsStore.settings }
+            verify { mockSettingsStore.settings }
         }
 
     @Test
@@ -220,6 +220,34 @@ class SettingsIntegrationTest {
             }
 
             verify { mockSettingsStore.settings }
+        }
+
+    @Test
+    fun `complete settings flow - update price threshold`() =
+        runTest {
+            // Arrange
+            val threshold = 0.219f
+            coEvery { mockSettingsStore.updatePriceThreshold(threshold) } returns Unit
+
+            // Act
+            updateSettingUseCase(threshold)
+
+            // Assert
+            coVerify { mockSettingsStore.updatePriceThreshold(threshold) }
+        }
+
+    @Test
+    fun `update price threshold rejects negative values`() =
+        runTest {
+            // Act & Assert
+            try {
+                updateSettingUseCase(-1f)
+                org.junit.Assert.fail("Expected IllegalArgumentException to be thrown")
+            } catch (e: IllegalArgumentException) {
+                assertEquals("priceThreshold must be >= 0", e.message)
+            }
+
+            coVerify(exactly = 0) { mockSettingsStore.updatePriceThreshold(any()) }
         }
 
     @Test

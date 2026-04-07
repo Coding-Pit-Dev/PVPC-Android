@@ -119,9 +119,12 @@ class PriceRepositoryImplTest {
         runTest {
             // Arrange
             every { mockLocalDataSource.getAvailableDays() } returns PVPCTestFixtures.Models.HISTORY_DAYS_UNSORTED
-            every { mockLocalDataSource.getPricesByStoredDay("31/01/2026") } returns PVPCTestFixtures.Models.HISTORY_PRICES_2026_01_31
-            every { mockLocalDataSource.getPricesByStoredDay("01/02/2026") } returns PVPCTestFixtures.Models.HISTORY_PRICES_2026_02_01
-            every { mockLocalDataSource.getPricesByStoredDay("15/12/2025") } returns PVPCTestFixtures.Models.HISTORY_PRICES_2025_12_15
+            every { mockLocalDataSource.getPricesByStoredDay("31/01/2026") } returns
+                PVPCTestFixtures.Models.HISTORY_PRICES_2026_01_31
+            every { mockLocalDataSource.getPricesByStoredDay("01/02/2026") } returns
+                PVPCTestFixtures.Models.HISTORY_PRICES_2026_02_01
+            every { mockLocalDataSource.getPricesByStoredDay("15/12/2025") } returns
+                PVPCTestFixtures.Models.HISTORY_PRICES_2025_12_15
 
             // Act
             val result = repository.getPriceHistory()

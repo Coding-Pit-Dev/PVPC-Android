@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.dagger.hilt.android.plugin)
     alias(libs.plugins.protobuf)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -81,6 +82,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     buildFeatures {
         compose = true
     }
@@ -122,6 +129,7 @@ detekt {
     config.setFrom("config/detekt/config.yml")
     buildUponDefaultConfig = true
     basePath = projectDir.absolutePath
+    baseline = file("detekt-baseline.xml")
 }
 
 protobuf {
@@ -165,7 +173,9 @@ dependencies {
 
     // Hilt and Dagger
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -178,6 +188,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.work.runtime)
 
     // Tests
     testImplementation(libs.junit)
@@ -194,6 +205,15 @@ dependencies {
 
     // Other  Test
     testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
+
+    // Screenshot Tests
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
+    testImplementation(libs.robolectric)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.ui.test.junit4)
 }
 
 java {
