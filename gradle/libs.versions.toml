@@ -29,6 +29,8 @@ datastore = "1.2.1"
 protobufJavalite = "4.34.1"
 turbine = "1.2.1"
 kotlinxSerializationJson = "1.10.0"
+roborazzi = "1.20.0"
+robolectric = "4.14.1"
 
 
 [libraries]
@@ -72,6 +74,11 @@ junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ver
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+roborazzi-junit-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 
 
 
@@ -84,3 +91,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dagger-hilt-android-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
