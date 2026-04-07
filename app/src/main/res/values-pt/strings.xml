@@ -90,6 +90,7 @@
     <string name="always_on_description">Dispositivo sempre ligado como frigorífico 24h</string>
     <string name="consumption_watts">Potência (W)</string>
     <string name="unit_watts">W</string>
+    <string name="unit_watt">W</string>
     <string name="program_duration">Duração do programa</string>
     <string name="category_label">Categoria</string>
     <string name="category_appliances">Eletrodomésticos</string>
