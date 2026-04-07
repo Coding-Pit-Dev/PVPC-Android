@@ -13,7 +13,6 @@ import com.codingpit.pvpcplanner.domain.usecase.GetDevices
 import com.codingpit.pvpcplanner.domain.usecase.GetPricesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,24 +34,26 @@ class DevicesViewModel
         private val calculateBestTimeSlot: CalculateBestTimeSlot,
         private val calculateDeviceCost: CalculateDeviceCost,
         private val errorHandler: ErrorHandler,
-        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        private val dispatcher: CoroutineDispatcher,
     ) : ViewModel() {
         private val searchQuery = MutableStateFlow("")
+        private val selectedCategory = MutableStateFlow<DeviceCategoryFilter?>(null)
 
         val state =
             combine(
                 getDevices(),
                 getPricesFlow(),
                 searchQuery,
-            ) { devices, prices, query ->
-                prices.map { prices ->
+                selectedCategory,
+            ) { devices, prices, query, category ->
+                prices.map { fetchResult ->
                     val devicesSlot =
                         devices.map { device ->
-                            val bestSlot = calculateBestTimeSlot(device, prices)
-                            val cost = calculateDeviceCost(device, bestSlot, prices)
+                            val bestSlot = calculateBestTimeSlot(device, fetchResult.prices)
+                            val cost = calculateDeviceCost(device, bestSlot, fetchResult.prices)
                             DeviceRender(device, bestSlot, cost)
                         }
-                    DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query)
+                    DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query, selectedCategory = category)
                 }
             }.map { it.getOrThrow() }
                 .handleErrors(errorHandler, "device_data", DevicesState.Factory)
@@ -61,6 +62,10 @@ class DevicesViewModel
 
         fun updateSearchQuery(query: String) {
             searchQuery.value = query
+        }
+
+        fun selectCategory(category: DeviceCategoryFilter?) {
+            selectedCategory.value = category
         }
 
         fun addDevice(

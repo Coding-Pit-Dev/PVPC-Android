@@ -12,6 +12,7 @@ import com.codingpit.pvpcplanner.ui.devices.DeviceAddViewModel
 import com.codingpit.pvpcplanner.ui.devices.DevicesViewModel
 import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
+import com.codingpit.pvpcplanner.ui.stats.StatsViewModel
 import com.codingpit.pvpcplanner.ui.theme.PVPCPlannerTheme
 import com.codingpit.pvpcplanner.ui.theme.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private val devicesViewModel by viewModels<DevicesViewModel>()
     private val deviceAddViewModel by viewModels<DeviceAddViewModel>()
     private val settingsViewModel by viewModels<SettingsViewModel>()
+    private val statsViewModel by viewModels<StatsViewModel>()
 
     @Inject
     lateinit var themeManager: ThemeManager
@@ -39,6 +41,7 @@ class MainActivity : ComponentActivity() {
                     devicesViewModel = devicesViewModel,
                     deviceAddViewModel = deviceAddViewModel,
                     settingsViewModel = settingsViewModel,
+                    statsViewModel = statsViewModel,
                 )
             }
         }

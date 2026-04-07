@@ -26,6 +26,11 @@ class DefaultPriceLocalDataSource
             pvpcDao.insertAll(pvpcModel.map { it.toEntity() })
         }
 
+        override fun getAvailableDays(): List<String> = pvpcDao.getAvailableDays()
+
+        override fun getPricesByStoredDay(storedDay: String): List<PVPCModel> =
+            pvpcDao.getPrices(storedDay).map { it.toDomain() }
+
         companion object {
             private val queryDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
             private val inputDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
