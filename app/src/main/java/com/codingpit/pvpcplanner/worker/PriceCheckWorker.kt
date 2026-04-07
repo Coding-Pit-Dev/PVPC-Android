@@ -20,72 +20,76 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
 @HiltWorker
-class PriceCheckWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted params: WorkerParameters,
-    private val priceRepository: PriceRepository,
-) : CoroutineWorker(context, params) {
+class PriceCheckWorker
+    @AssistedInject
+    constructor(
+        @Assisted context: Context,
+        @Assisted params: WorkerParameters,
+        private val priceRepository: PriceRepository,
+    ) : CoroutineWorker(context, params) {
+        @Suppress("ReturnCount")
+        override suspend fun doWork(): Result {
+            val thresholdMilliEurosPerKwh = inputData.getInt(KEY_THRESHOLD_MILLI_EUROS_PER_KWH, 0)
+            if (thresholdMilliEurosPerKwh <= 0) return Result.success()
 
-    override suspend fun doWork(): Result {
-        val thresholdMilliEurosPerKwh = inputData.getInt(KEY_THRESHOLD_MILLI_EUROS_PER_KWH, 0)
-        if (thresholdMilliEurosPerKwh <= 0) return Result.success()
+            val currentDate = DateFormatter.formatDate(DateFormatter.getCurrentDate())
+            val currentHour = DateFormatter.getCurrentHour()
+            val prices = priceRepository.getPrices(currentDate).getOrElse { return Result.retry() }
+            val currentHourPrice = prices.firstOrNull { it.startHour == currentHour }?.pcb ?: return Result.success()
+            val currentHourPriceMilliEurosPerKwh = currentHourPrice.toFloat().toMilliEurosPerKwh()
 
-        val currentDate = DateFormatter.formatDate(DateFormatter.getCurrentDate())
-        val currentHour = DateFormatter.getCurrentHour()
-        val prices = priceRepository.getPrices(currentDate).getOrElse { return Result.retry() }
-        val currentHourPrice = prices.firstOrNull { it.startHour == currentHour }?.pcb ?: return Result.success()
-        val currentHourPriceMilliEurosPerKwh = currentHourPrice.toFloat().toMilliEurosPerKwh()
+            if (currentHourPriceMilliEurosPerKwh > thresholdMilliEurosPerKwh) {
+                return Result.success()
+            }
 
-        if (currentHourPriceMilliEurosPerKwh > thresholdMilliEurosPerKwh) {
+            sendNotification(thresholdMilliEurosPerKwh)
             return Result.success()
         }
 
-        sendNotification(thresholdMilliEurosPerKwh)
-        return Result.success()
-    }
+        private fun sendNotification(thresholdMilliEurosPerKwh: Int) {
+            val notificationManager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    private fun sendNotification(thresholdMilliEurosPerKwh: Int) {
-        val notificationManager =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel =
+                    NotificationChannel(
+                        CHANNEL_ID,
+                        applicationContext.getString(R.string.notification_channel_name),
+                        NotificationManager.IMPORTANCE_DEFAULT,
+                    )
+                notificationManager.createNotificationChannel(channel)
+            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                applicationContext.getString(R.string.notification_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
-            notificationManager.createNotificationChannel(channel)
+            val notification =
+                NotificationCompat
+                    .Builder(applicationContext, CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(applicationContext.getString(R.string.notification_cheap_price_title))
+                    .setContentText(
+                        applicationContext.getString(
+                            R.string.notification_cheap_price_body,
+                            thresholdMilliEurosPerKwh.toPriceThresholdEurosPerKwh(),
+                        ),
+                    ).setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build()
+
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.POST_NOTIFICATIONS,
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+
+            notificationManager.notify(NOTIFICATION_ID, notification)
         }
 
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(applicationContext.getString(R.string.notification_cheap_price_title))
-            .setContentText(
-                applicationContext.getString(
-                    R.string.notification_cheap_price_body,
-                    thresholdMilliEurosPerKwh.toPriceThresholdEurosPerKwh(),
-                ),
-            )
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
+        companion object {
+            const val CHANNEL_ID = "pvpc_price_alerts"
+            const val NOTIFICATION_ID = 1001
+            const val KEY_THRESHOLD_MILLI_EUROS_PER_KWH = "threshold_milli_eur_per_kwh"
         }
-
-        notificationManager.notify(NOTIFICATION_ID, notification)
     }
-
-    companion object {
-        const val CHANNEL_ID = "pvpc_price_alerts"
-        const val NOTIFICATION_ID = 1001
-        const val KEY_THRESHOLD_MILLI_EUROS_PER_KWH = "threshold_milli_eur_per_kwh"
-    }
-}

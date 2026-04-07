@@ -98,10 +98,15 @@ class PVPCDatabaseMigrationTest {
         }
 
         // Run all migrations
-        val db = helper.runMigrationsAndValidate(
-            testDb, 4, true,
-            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4
-        )
+        val db =
+            helper.runMigrationsAndValidate(
+                testDb,
+                4,
+                true,
+                MIGRATION_1_2,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+            )
 
         // Validate final schema has all columns
         val cursor = db.query("SELECT * FROM devices WHERE name = 'Washer'")

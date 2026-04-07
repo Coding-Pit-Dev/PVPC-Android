@@ -173,9 +173,10 @@ private fun PriceThresholdItem(
     val thresholdRegex = remember { Regex("^\\d*[.,]?\\d*$") }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(text = stringResource(R.string.setting_price_threshold))

@@ -11,8 +11,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val WORK_NAME = "price_alert_check"
-private const val REPEAT_INTERVAL_HOURS = 1L
+private const val WorkName = "price_alert_check"
+private const val RepeatIntervalHours = 1L
 
 class SchedulePriceAlerts
     @Inject
@@ -21,27 +21,29 @@ class SchedulePriceAlerts
     ) {
         operator fun invoke(thresholdPrice: Float) {
             val thresholdMilliEurosPerKwh = thresholdPrice.toMilliEurosPerKwh()
-            val data = Data.Builder()
-                .putInt(
-                    PriceCheckWorker.KEY_THRESHOLD_MILLI_EUROS_PER_KWH,
-                    thresholdMilliEurosPerKwh,
-                )
-                .build()
+            val data =
+                Data
+                    .Builder()
+                    .putInt(
+                        PriceCheckWorker.KEY_THRESHOLD_MILLI_EUROS_PER_KWH,
+                        thresholdMilliEurosPerKwh,
+                    ).build()
 
-            val workRequest = PeriodicWorkRequestBuilder<PriceCheckWorker>(
-                REPEAT_INTERVAL_HOURS,
-                TimeUnit.HOURS,
-            ).setInputData(data)
-                .build()
+            val workRequest =
+                PeriodicWorkRequestBuilder<PriceCheckWorker>(
+                    RepeatIntervalHours,
+                    TimeUnit.HOURS,
+                ).setInputData(data)
+                    .build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                WORK_NAME,
+                WorkName,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 workRequest,
             )
         }
 
         fun cancel() {
-            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
+            WorkManager.getInstance(context).cancelUniqueWork(WorkName)
         }
     }

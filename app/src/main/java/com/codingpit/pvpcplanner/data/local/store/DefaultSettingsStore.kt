@@ -44,7 +44,8 @@ class DefaultSettingsStore
 
         override suspend fun updatePriceThreshold(threshold: Float) {
             context.settingsDataStore.updateData { data ->
-                data.toBuilder()
+                data
+                    .toBuilder()
                     .setPriceThresholdMilliEurPerKwh(threshold.toMilliEurosPerKwh())
                     .build()
             }

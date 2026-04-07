@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val ThresholdDebounceMillis = 500L
+
 @HiltViewModel
 class SettingsViewModel
     @Inject
@@ -54,7 +56,7 @@ class SettingsViewModel
             viewModelScope.launch(coroutineDispatcher) {
                 thresholdInput
                     .filterNotNull()
-                    .debounce(500)
+                    .debounce(ThresholdDebounceMillis)
                     .distinctUntilChanged()
                     .collect { threshold ->
                         persistPriceThreshold(threshold)
