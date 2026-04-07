@@ -90,6 +90,7 @@
     <string name="always_on_description">Il dispositivo è sempre acceso come il frigo 24h</string>
     <string name="consumption_watts">Potenza (W)</string>
     <string name="unit_watts">W</string>
+    <string name="unit_watt">W</string>
     <string name="program_duration">Durata programma</string>
     <string name="category_label">Categoria</string>
     <string name="category_appliances">Elettrodomestici</string>
