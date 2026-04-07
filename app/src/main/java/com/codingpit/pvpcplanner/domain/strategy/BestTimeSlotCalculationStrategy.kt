@@ -27,7 +27,7 @@ class BestTimeSlotCalculationStrategy
 
             // Ensure we don't go out of bounds and have enough data points
             val searchLimit = prices.size - device.hours
-            
+
             for (index in 0..searchLimit) {
                 val subList = prices.subList(index, index + device.hours)
                 val slotPrice = subList.sumOf { it.pcb }
@@ -36,7 +36,7 @@ class BestTimeSlotCalculationStrategy
                     bestSlot = prices[index].startHour
                 }
             }
-            
+
             // Ensure end hour doesn't exceed 24 (or the end of the day)
             val endHour = (bestSlot + device.hours).coerceAtMost(24)
 
