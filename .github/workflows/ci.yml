@@ -23,6 +23,6 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
-        run: ./gradlew assemble
+        run: ./gradlew assembleDebug
       - name: Run Tests with Gradle
         run: ./gradlew test
