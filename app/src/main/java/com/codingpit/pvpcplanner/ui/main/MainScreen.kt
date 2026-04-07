@@ -19,7 +19,7 @@ import com.codingpit.pvpcplanner.ui.home.HomeViewModel
 import com.codingpit.pvpcplanner.ui.main.components.MainBottomBarNav
 import com.codingpit.pvpcplanner.ui.main.components.MainContent
 import com.codingpit.pvpcplanner.ui.settings.SettingsViewModel
-import com.codingpit.pvpcplanner.utils.Constants
+import com.codingpit.pvpcplanner.ui.stats.StatsViewModel
 
 @Composable
 fun MainScreen(
@@ -27,30 +27,31 @@ fun MainScreen(
     devicesViewModel: DevicesViewModel,
     deviceAddViewModel: DeviceAddViewModel,
     settingsViewModel: SettingsViewModel,
+    statsViewModel: StatsViewModel,
 ) {
-    var selectedScreen by remember { mutableStateOf(Constants.HOME_SCREEN) }
+    var selectedScreen by remember { mutableStateOf<Screen>(Screen.Home) }
     var deviceToEdit by remember { mutableStateOf<Device?>(null) }
 
     val title =
         when (selectedScreen) {
-            Constants.HOME_SCREEN -> stringResource(R.string.nav_prices)
-            Constants.DEVICES_SCREEN -> stringResource(R.string.nav_devices)
-            Constants.DEVICE_ADD_SCREEN -> null
-            Constants.SETTINGS_SCREEN -> stringResource(R.string.nav_settings)
-            else -> selectedScreen
+            is Screen.Home -> stringResource(R.string.nav_prices)
+            is Screen.Devices -> stringResource(R.string.nav_devices)
+            is Screen.DeviceAdd -> null
+            is Screen.Stats -> stringResource(R.string.nav_stats)
+            is Screen.Settings -> stringResource(R.string.nav_settings)
         }
 
-    val showBottomBar = selectedScreen != Constants.DEVICE_ADD_SCREEN
+    val showBottomBar = selectedScreen !is Screen.DeviceAdd
 
     ScaffoldScreen(
         title = title,
         fab = {
             when (selectedScreen) {
-                Constants.HOME_SCREEN -> {}
-                Constants.DEVICES_SCREEN -> {
+                is Screen.Home -> {}
+                is Screen.Devices -> {
                     FloatingActionButton(onClick = {
                         deviceToEdit = null
-                        selectedScreen = Constants.DEVICE_ADD_SCREEN
+                        selectedScreen = Screen.DeviceAdd
                     }) {
                         Icon(Icons.Filled.Add, stringResource(R.string.action_add))
                     }
@@ -73,19 +74,20 @@ fun MainScreen(
             devicesViewModel = devicesViewModel,
             deviceAddViewModel = deviceAddViewModel,
             settingsViewModel = settingsViewModel,
+            statsViewModel = statsViewModel,
             selectedScreen = selectedScreen,
             deviceToEdit = deviceToEdit,
             onNavigateToDeviceAdd = {
                 deviceToEdit = null
-                selectedScreen = Constants.DEVICE_ADD_SCREEN
+                selectedScreen = Screen.DeviceAdd
             },
             onNavigateToDeviceEdit = { device ->
                 deviceToEdit = device
-                selectedScreen = Constants.DEVICE_ADD_SCREEN
+                selectedScreen = Screen.DeviceAdd
             },
             onNavigateBack = {
                 deviceToEdit = null
-                selectedScreen = Constants.DEVICES_SCREEN
+                selectedScreen = Screen.Devices
             },
         )
     }

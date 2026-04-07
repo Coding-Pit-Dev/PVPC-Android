@@ -3,6 +3,7 @@ package com.codingpit.pvpcplanner.integration
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
 import io.mockk.coEvery
@@ -44,7 +45,8 @@ class PriceIntegrationTest {
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(cachedPrices, result.getOrNull())
+            assertEquals(cachedPrices, result.getOrNull()?.prices)
+            assertEquals(true, result.getOrNull()?.isFromCache)
             coVerify { mockLocalDataSource.getPrices(date) }
             coVerify(exactly = 0) { mockRemoteDataSource.getPrices(any()) }
         }
@@ -68,7 +70,8 @@ class PriceIntegrationTest {
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(remotePrices, result.getOrNull())
+            assertEquals(remotePrices, result.getOrNull()?.prices)
+            assertEquals(false, result.getOrNull()?.isFromCache)
             coVerify { mockLocalDataSource.getPrices(date) }
             coVerify { mockRemoteDataSource.getPrices(date) }
             coVerify { mockLocalDataSource.savePrices(remotePrices) }
@@ -127,7 +130,7 @@ class PriceIntegrationTest {
 
             // Assert
             assertTrue(result.isSuccess)
-            assertEquals(expectedPrices, result.getOrNull())
+            assertEquals(expectedPrices, result.getOrNull()?.prices)
             coVerify { mockLocalDataSource.getPrices(any()) }
         }
 
@@ -149,8 +152,8 @@ class PriceIntegrationTest {
             // Assert
             assertTrue(result1.isSuccess)
             assertTrue(result2.isSuccess)
-            assertEquals(cachedPrices, result1.getOrNull())
-            assertEquals(cachedPrices, result2.getOrNull())
+            assertEquals(cachedPrices, result1.getOrNull()?.prices)
+            assertEquals(cachedPrices, result2.getOrNull()?.prices)
             coVerify(exactly = 2) { mockLocalDataSource.getPrices(date) }
             coVerify(exactly = 0) { mockRemoteDataSource.getPrices(any()) }
         }

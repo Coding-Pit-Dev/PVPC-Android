@@ -37,18 +37,20 @@ class HomeViewModel
                     prices to settings
                 }.map { (it, settings) ->
                     val currentHour = useCaseProvider.getLocalHour()
+                    val fetchResult = it.getOrThrow()
                     HomeState.Success(
                         selectedDate = selectedDate.value.toParsedDate(),
-                        pvpcEntries = it.getOrThrow(),
+                        pvpcEntries = fetchResult.prices,
                         nextDateEnabled = useCaseProvider.isValidDate(selectedDate.value),
-                        currentPrice = it.getOrThrow().first { it.startHour == currentHour }.pcb,
+                        currentPrice = fetchResult.prices.first { price -> price.startHour == currentHour }.pcb,
                         currentHour = currentHour,
                         currentDate = useCaseProvider.getLocalDate().toParsedDate(),
                         timeFormat = settings.timeFormat,
+                        isFromCache = fetchResult.isFromCache,
                     )
                 }.handleErrors(errorHandler, "home_data", HomeState.Factory)
                 .flowOn(coroutineDispatcher)
-                .stateIn(viewModelScope, SharingStarted.Eagerly, HomeState.Loading)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeState.Loading)
 
         fun onPreviousClicked() {
             viewModelScope.launch {

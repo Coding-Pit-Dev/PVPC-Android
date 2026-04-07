@@ -15,7 +15,14 @@
     <string name="unit_kwh">kWh</string>
     <string name="nav_prices">Precios</string>
     <string name="nav_devices">Dispositivos</string>
+    <string name="nav_stats">Estadísticas</string>
     <string name="nav_settings">Ajustes</string>
+    <string name="stats_title">Historial de precios</string>
+    <string name="stats_no_data">No hay datos históricos disponibles aún.\nNavega por los precios de diferentes días para construir historial.</string>
+    <string name="stats_error_generic">Ha ocurrido un error al cargar las estadísticas. Inténtalo de nuevo.</string>
+    <string name="stats_avg">Media</string>
+    <string name="stats_min">Mín</string>
+    <string name="stats_max">Máx</string>
     <string name="setting_dark_mode">Modo oscuro</string>
     <string name="setting_time_format">Formato de hora</string>
     <string name="option_light">Claro</string>
@@ -93,6 +100,7 @@
     <string name="unit_watt">W</string>
     <string name="program_duration">Duración del programa</string>
     <string name="category_label">Categoría</string>
+    <string name="category_all">Todas</string>
     <string name="category_appliances">Electrodomésticos</string>
     <string name="category_lighting">Iluminación</string>
     <string name="category_hvac">Climatización</string>
@@ -110,4 +118,5 @@
     <string name="select_icon">Seleccionar icono</string>
     <string name="select_category">Seleccionar categoría</string>
     <string name="action_close">Cerrar</string>
+    <string name="cached_data_banner">Mostrando datos en caché. Conecta para actualizar los precios.</string>
 </resources>

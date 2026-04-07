@@ -11,6 +11,7 @@ import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetSettings
 import com.codingpit.pvpcplanner.domain.usecase.UpdateSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
@@ -41,7 +42,7 @@ class SettingsViewModel
             option: SettingOption,
         ) {
             viewModelScope.launch(coroutineDispatcher) {
-                try {
+                runCatching {
                     when (render.setting) {
                         is SettingValue.DarkMode -> {
                             updateSettingUseCase(
@@ -62,7 +63,8 @@ class SettingsViewModel
                             )
                         }
                     }
-                } catch (e: Exception) {
+                }.onFailure { e ->
+                    if (e is CancellationException) throw e
                     errorHandler.handleError(e, "update_setting")
                 }
             }

@@ -25,9 +25,12 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +59,7 @@ import com.codingpit.pvpcplanner.R
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.DeviceConsumptionInput
 import com.codingpit.pvpcplanner.domain.usecase.CalculateTotalConsumption
+import com.codingpit.pvpcplanner.utils.DEVICE_CATEGORIES
 import com.codingpit.pvpcplanner.utils.getIcons
 import java.text.NumberFormat
 
@@ -86,6 +90,7 @@ fun DevicesScreen(
                     onSwiped = { viewModel.removeDevice(it.device) },
                     onDeviceClick = onDeviceClick,
                     onSearchQueryChanged = viewModel::updateSearchQuery,
+                    onCategorySelected = viewModel::selectCategory,
                 )
         }
     }
@@ -98,6 +103,7 @@ private fun DevicesScreen_Success(
     onSwiped: (DeviceRender) -> Unit,
     onDeviceClick: (Device) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
+    onCategorySelected: (DeviceCategoryFilter?) -> Unit,
 ) {
     val calculateTotalConsumption = remember { CalculateTotalConsumption() }
     val summary =
@@ -121,6 +127,13 @@ private fun DevicesScreen_Success(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                item(span = { GridItemSpan(1) }) {
+                    CategoryFilterRow(
+                        selectedCategory = state.selectedCategory,
+                        onCategorySelected = onCategorySelected,
+                    )
+                }
+
                 item(span = { GridItemSpan(1) }) {
                     SearchBar(
                         searchQuery = state.searchQuery,
@@ -154,6 +167,46 @@ private fun DevicesScreen_Success(
             }
         } else {
             EmptyState()
+        }
+    }
+}
+
+@Composable
+private fun CategoryFilterRow(
+    selectedCategory: DeviceCategoryFilter?,
+    onCategorySelected: (DeviceCategoryFilter?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val categories = DEVICE_CATEGORIES
+
+    LazyRow(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        item {
+            FilterChip(
+                selected = selectedCategory == null,
+                onClick = { onCategorySelected(null) },
+                label = { Text(stringResource(R.string.category_all)) },
+            )
+        }
+        items(categories, key = { it.id }) { category ->
+            FilterChip(
+                selected = selectedCategory?.id == category.id,
+                onClick = {
+                    onCategorySelected(
+                        if (selectedCategory?.id == category.id) {
+                            null
+                        } else {
+                            DeviceCategoryFilter(category.id)
+                        },
+                    )
+                },
+                label = { Text(stringResource(category.labelRes)) },
+            )
         }
     }
 }
