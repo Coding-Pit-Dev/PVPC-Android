@@ -2,6 +2,11 @@ name: Android CI
 
 on:
   push:
+    branches-ignore:
+      # release/* branches are handled by release.yml (version bump)
+      - "release/**"
+      # main is populated only via merged release PRs, handled by release_deploy.yml
+      - "main"
   pull_request:
     types:
       - opened

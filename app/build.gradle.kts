@@ -30,8 +30,40 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            // Credentials are injected via environment variables in CI.
+            // For local release builds, set these variables in your shell
+            // before running ./gradlew assembleRelease or bundleRelease.
+            // Fastlane also injects them via android.injected.signing.*
+            // Gradle properties, which takes precedence over this block.
+            val keystorePath = System.getenv("KEYSTORE_PATH")
+            val storePass = System.getenv("STORE_PASSWORD")
+            val keyAl = System.getenv("KEY_ALIAS")
+            val keyPass = System.getenv("KEY_PASSWORD")
+            val signingValues = listOf(keystorePath, storePass, keyAl, keyPass)
+            val hasAny = signingValues.any { !it.isNullOrBlank() }
+            val hasAll = signingValues.all { !it.isNullOrBlank() }
+
+            if (hasAny && !hasAll) {
+                throw GradleException(
+                    "Partial signing configuration detected. " +
+                        "Set KEYSTORE_PATH, STORE_PASSWORD, KEY_ALIAS, and KEY_PASSWORD.",
+                )
+            }
+
+            if (hasAll) {
+                storeFile = file(keystorePath!!)
+                storePassword = storePass
+                keyAlias = keyAl
+                keyPassword = keyPass
+            }
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
