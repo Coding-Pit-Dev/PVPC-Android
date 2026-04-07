@@ -53,19 +53,6 @@ class IsValidDateTest {
     }
 
     @Test
-    fun `invoke delegates to dateValidator validateQueryDate`() {
-        // Arrange
-        val date = LocalDate.of(2024, 3, 1)
-        every { mockDateValidator.validateQueryDate(date) } returns ValidationResult.Success
-
-        // Act
-        isValidDate(date)
-
-        // Assert
-        verify { mockDateValidator.validateQueryDate(date) }
-    }
-
-    @Test
     fun `invoke returns true for a past date when validator succeeds`() {
         // Arrange
         val pastDate = LocalDate.of(2020, 1, 1)

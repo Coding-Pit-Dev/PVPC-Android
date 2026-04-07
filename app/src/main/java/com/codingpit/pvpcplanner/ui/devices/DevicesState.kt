@@ -10,16 +10,19 @@ sealed class DevicesState {
     data class Success(
         val devicesSlot: List<DeviceRender> = emptyList(),
         val searchQuery: String = "",
+        val selectedCategory: DeviceCategoryFilter? = null,
     ) : DevicesState() {
         val filteredDevices: List<DeviceRender>
-            get() =
-                if (searchQuery.isBlank()) {
-                    devicesSlot
-                } else {
-                    devicesSlot.filter { device ->
-                        device.device.name.contains(searchQuery, ignoreCase = true)
-                    }
+            get() {
+                var result = devicesSlot
+                if (searchQuery.isNotBlank()) {
+                    result = result.filter { it.device.name.contains(searchQuery, ignoreCase = true) }
                 }
+                if (selectedCategory != null) {
+                    result = result.filter { it.device.category == selectedCategory.id }
+                }
+                return result
+            }
     }
 
     data class Error(

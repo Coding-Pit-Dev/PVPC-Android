@@ -21,7 +21,7 @@ jobs:
           distribution: 'temurin'
           cache: gradle
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
       - name: Verify and build with Gradle
         run: ./gradlew --continue ktlintCheck detekt lintDebug assemble test
       - name: Upload lint results
