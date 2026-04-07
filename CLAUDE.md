@@ -320,6 +320,44 @@ myFlow
 
 This automatically converts exceptions to error states using the centralized error system.
 
+## Release Process
+
+The release pipeline is automated via Fastlane and GitHub Actions. Releases use **CalVer** (`YYYY.MM.PATCH`, e.g. `2026.04.1`).
+
+### Quick Reference
+
+```bash
+# Check last tag for this month to determine next patch number
+git fetch --tags
+git tag -l "v$(date +%Y.%m).*" | sort -V | tail -1 | sed 's/^v//'
+
+# Create release branch (replace X with next patch number)
+git checkout develop && git pull
+git checkout -b release/$(date +%Y.%m).X
+git push -u origin release/$(date +%Y.%m).X
+```
+
+GitHub Actions auto-bumps the version, then opens a PR from `release/...` → `main`. Merging triggers the full deploy pipeline.
+
+> **Branch targets:** Feature and regular work should target `develop` (e.g. `feature/*` PRs → `develop`). Release branches target `main` (e.g. `release/*` PRs → `main`) to trigger the deploy pipeline.
+
+### Fastlane Lanes
+
+```bash
+bundle exec fastlane increment_calver   # bump version from branch name (idempotent)
+bundle exec fastlane build_release      # build signed APK + AAB
+bundle exec fastlane deploy             # full pipeline: tests → build → all channels
+```
+
+### Version Formula
+
+`versionCode = YYYY × 10,000 + MM × 100 + PATCH` (e.g. `2026.04.1` → `20260401`)
+
+### Documentation
+
+- [docs/release/RELEASE_PROCESS.md](docs/release/RELEASE_PROCESS.md) — automated flow, branch naming, developer workflow
+- [docs/release/MANUAL_STEPS.md](docs/release/MANUAL_STEPS.md) — one-time setup: keystore, GitHub Secrets, Firebase, Play Store
+
 ## Error Logging — The Archive
 
 **The Archive** is a shared knowledge base of errors and solutions at [Coding-Pit-Dev/the-archive](https://github.com/Coding-Pit-Dev/the-archive). Whenever a build, test, lint, or runtime failure occurs during a session, you **must** document it there if it is non-trivial (i.e., it required investigation beyond a typo fix).

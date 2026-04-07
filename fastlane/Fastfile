@@ -1,0 +1,275 @@
+# encoding: utf-8
+# frozen_string_literal: true
+
+# Fastfile for PVPC-Android
+# Implements CalVer (YYYY.MM.PATCH) release automation with:
+#   - GitHub Releases (signed APK)
+#   - Google Play Store internal track (signed AAB)
+#   - Firebase App Distribution (signed APK)
+
+# ─── Constants ────────────────────────────────────────────────────────────────
+
+APP_BUILD_GRADLE = "app/build.gradle.kts"
+GITHUB_REPO      = "Coding-Pit-Dev/PVPC-Android"
+
+# ─── Private helpers ──────────────────────────────────────────────────────────
+
+# Read a captured group from app/build.gradle.kts.
+def read_gradle_value(regex)
+  content = File.read(APP_BUILD_GRADLE)
+  match   = content.match(regex)
+  raise "Pattern #{regex} not found in #{APP_BUILD_GRADLE}" unless match
+
+  match[1]
+end
+
+# Replace a pattern in app/build.gradle.kts with a new line (in place).
+def write_gradle_value(regex, replacement)
+  content = File.read(APP_BUILD_GRADLE)
+  raise "Pattern #{regex} not found in #{APP_BUILD_GRADLE}" unless content.match?(regex)
+
+  File.write(APP_BUILD_GRADLE, content.gsub(regex, replacement))
+end
+
+# Parse CalVer components from the release branch name.
+# Accepts branch names like:
+#   release/2026.04.1  (from GITHUB_REF_NAME on direct push)
+#   release/2026.04.1  (from GITHUB_HEAD_REF on pull_request event)
+# Returns a Hash: { year:, month:, patch: } as Integers.
+def parse_calver_from_branch
+  branch = ENV["GITHUB_HEAD_REF"].to_s.strip
+  branch = ENV["GITHUB_REF_NAME"].to_s.strip  if branch.empty?
+  branch = `git rev-parse --abbrev-ref HEAD`.strip if branch.empty?
+
+  match = branch.match(%r{\Arelease/(\d{4})\.(0[1-9]|1[0-2])\.([1-9]\d?)\z})
+  raise "Branch '#{branch}' does not match release/YYYY.MM.PATCH format (month 01-12, patch 1-99)" unless match
+
+  { year: match[1].to_i, month: match[2].to_i, patch: match[3].to_i }
+end
+
+# Compute versionCode from CalVer components.
+# Formula: YYYY * 10_000 + MM * 100 + PATCH
+# Example: 2026, 4, 1  →  20260401
+# Max (2099, 12, 99)   →  20991299  ─ well within Android's 2.1B limit.
+def compute_version_code(year, month, patch)
+  raise "Month must be 1–12, got #{month}" unless (1..12).cover?(month)
+  raise "Patch must be 1–99, got #{patch}" unless (1..99).cover?(patch)
+
+  year * 10_000 + month * 100 + patch
+end
+
+# Format versionName with zero-padded month.
+# Example: 2026, 4, 1  →  "2026.04.1"
+def format_version_name(year, month, patch)
+  format("%<y>d.%<m>02d.%<p>d", y: year, m: month, p: patch)
+end
+
+# ─── Lanes ────────────────────────────────────────────────────────────────────
+
+default_platform(:android)
+
+platform :android do
+  # ---------------------------------------------------------------------------
+  # increment_calver
+  #
+  # Reads the release branch name, derives versionName + versionCode, and
+  # writes them into app/build.gradle.kts only when a change is needed.
+  # The commit uses [skip ci] to avoid triggering the version-bump workflow
+  # again. GITHUB_TOKEN push commits also do not re-trigger workflows by
+  # GitHub design, giving double protection against infinite loops.
+  #
+  # Called by: release.yml on every push to release/**
+  # ---------------------------------------------------------------------------
+  lane :increment_calver do
+    calver = parse_calver_from_branch
+
+    new_version_name = format_version_name(calver[:year], calver[:month], calver[:patch])
+    new_version_code = compute_version_code(calver[:year], calver[:month], calver[:patch])
+
+    current_version_name = read_gradle_value(/versionName\s*=\s*"([^"]+)"/)
+    current_version_code = read_gradle_value(/versionCode\s*=\s*(\d+)/).to_i
+
+    # Idempotency: skip if already up to date.
+    if current_version_name == new_version_name && current_version_code == new_version_code
+      UI.success("Version already set to #{new_version_name} (#{new_version_code}). Skipping.")
+      next
+    end
+
+    # Safety: versionCode must never decrease (Play Store enforces this).
+    if new_version_code < current_version_code
+      UI.user_error!(
+        "New versionCode #{new_version_code} is less than current #{current_version_code}. " \
+        "Ensure the patch number in the branch name is higher than the previous release."
+      )
+    end
+
+    UI.message("Updating versionName: #{current_version_name} → #{new_version_name}")
+    UI.message("Updating versionCode: #{current_version_code} → #{new_version_code}")
+
+    write_gradle_value(
+      /(\s*versionCode\s*=\s*)\d+/,
+      "\\1#{new_version_code}"
+    )
+    write_gradle_value(
+      /(\s*versionName\s*=\s*)"[^"]+"/,
+      "\\1\"#{new_version_name}\""
+    )
+
+    sh("git add #{APP_BUILD_GRADLE}")
+    sh("git commit -m 'chore: bump version to #{new_version_name} (#{new_version_code}) [skip ci]'")
+    sh("git push")
+
+    UI.success("Version bumped to #{new_version_name} (#{new_version_code})")
+  end
+
+  # ---------------------------------------------------------------------------
+  # build_release
+  #
+  # Builds the signed release APK and AAB.
+  # Signing credentials are injected at build time via Gradle properties so
+  # they never touch the filesystem in plaintext. The keystore file is decoded
+  # from the KEYSTORE_BASE64 secret in the workflow step before this lane runs
+  # and placed at $KEYSTORE_PATH (typically /tmp/release.keystore).
+  #
+  # Required env vars:
+  #   KEYSTORE_PATH, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+  # ---------------------------------------------------------------------------
+  lane :build_release do
+    signing_props = {
+      "android.injected.signing.store.file"     => ENV.fetch("KEYSTORE_PATH"),
+      "android.injected.signing.store.password" => ENV.fetch("STORE_PASSWORD"),
+      "android.injected.signing.key.alias"      => ENV.fetch("KEY_ALIAS"),
+      "android.injected.signing.key.password"   => ENV.fetch("KEY_PASSWORD"),
+    }
+
+    # Signed APK — for GitHub Releases and Firebase App Distribution.
+    gradle(
+      task:       "assemble",
+      build_type: "Release",
+      properties: signing_props
+    )
+
+    # Signed AAB — required for Google Play Store uploads.
+    gradle(
+      task:       "bundle",
+      build_type: "Release",
+      properties: signing_props
+    )
+  end
+
+  # ---------------------------------------------------------------------------
+  # deploy_github
+  #
+  # Creates a GitHub Release tagged vYYYY.MM.PATCH and uploads the signed APK.
+  #
+  # Required env vars:
+  #   GITHUB_TOKEN (provided automatically by GitHub Actions)
+  # Requires: build_release to have run first (APK path in lane context).
+  # ---------------------------------------------------------------------------
+  lane :deploy_github do
+    version_name = read_gradle_value(/versionName\s*=\s*"([^"]+)"/)
+    tag          = "v#{version_name}"
+    target_sha   = ENV["GITHUB_SHA"].to_s.strip
+    target_sha   = `git rev-parse HEAD`.strip if target_sha.empty?
+
+    apk_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+    UI.user_error!("APK not found. Run build_release before deploy_github.") unless apk_path && File.exist?(apk_path.to_s)
+
+    set_github_release(
+      repository_name: GITHUB_REPO,
+      api_token:       ENV.fetch("GITHUB_TOKEN"),
+      name:            "Release #{version_name}",
+      tag_name:        tag,
+      description:     changelog_for_version(version_name),
+      commitish:       target_sha,
+      upload_assets:   [apk_path]
+    )
+
+    UI.success("GitHub Release #{tag} created.")
+  end
+
+  # ---------------------------------------------------------------------------
+  # deploy_play
+  #
+  # Uploads the signed AAB to the Play Store internal testing track as a draft.
+  # Promote to a higher track manually via the Play Console after QA.
+  #
+  # Required env vars:
+  #   PLAY_STORE_JSON_KEY_PATH (decoded from PLAY_STORE_JSON_KEY_BASE64 secret)
+  # Requires: build_release to have run first (AAB path in lane context).
+  #
+  # NOTE: The very first upload must be done manually via the Play Console web
+  # UI — the API cannot create a new app listing. See docs/release/MANUAL_STEPS.md
+  # ---------------------------------------------------------------------------
+  lane :deploy_play do
+    aab_path = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+    UI.user_error!("AAB not found. Run build_release before deploy_play.") unless aab_path && File.exist?(aab_path.to_s)
+
+    upload_to_play_store(
+      track:                  "internal",
+      aab:                    aab_path,
+      release_status:         "draft",
+      skip_upload_apk:        true,
+      skip_upload_metadata:   true,
+      skip_upload_changelogs: true,
+      skip_upload_images:     true,
+      skip_upload_screenshots: true
+    )
+
+    UI.success("AAB uploaded to Play Store internal track as draft.")
+  end
+
+  # ---------------------------------------------------------------------------
+  # deploy_firebase
+  #
+  # Distributes the signed APK to the 'internal-testers' group in Firebase
+  # App Distribution.
+  #
+  # Required env vars:
+  #   FIREBASE_APP_ID  — from Firebase Console → Project Settings → Apps
+  #   FIREBASE_TOKEN   — from `firebase login:ci` (or use service account)
+  # Requires: build_release to have run first (APK path in lane context).
+  # ---------------------------------------------------------------------------
+  lane :deploy_firebase do
+    version_name = read_gradle_value(/versionName\s*=\s*"([^"]+)"/)
+    apk_path     = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+    UI.user_error!("APK not found. Run build_release before deploy_firebase.") unless apk_path && File.exist?(apk_path.to_s)
+
+    firebase_app_distribution(
+      app:           ENV.fetch("FIREBASE_APP_ID"),
+      apk_path:      apk_path,
+      groups:        "internal-testers",
+      release_notes: "Release #{version_name}"
+    )
+
+    UI.success("APK distributed via Firebase App Distribution.")
+  end
+
+  # ---------------------------------------------------------------------------
+  # deploy
+  #
+  # Master deploy lane: runs tests → builds signed artifacts → distributes to
+  # all channels. Does NOT bump the version (that was done in the release
+  # branch phase via increment_calver). Called by release_deploy.yml after a
+  # release/* PR is merged into main.
+  # ---------------------------------------------------------------------------
+  lane :deploy do
+    gradle(task: "test")
+    build_release
+    deploy_github
+    deploy_play
+    deploy_firebase
+
+    version_name = read_gradle_value(/versionName\s*=\s*"([^"]+)"/)
+    UI.success("Release #{version_name} deployed to all channels successfully!")
+  end
+
+  # ---------------------------------------------------------------------------
+  # Private helpers
+  # ---------------------------------------------------------------------------
+
+  # Returns a basic release description. Extend this to read from a CHANGELOG.
+  def changelog_for_version(version_name)
+    "## Release #{version_name}\n\nSee commit history for changes in this release."
+  end
+end

@@ -1,0 +1,88 @@
+name: Release — Deploy
+
+# Fires when a pull_request targeting main is closed.
+# The job only runs when the PR is actually merged (not abandoned) AND the
+# source branch matches release/*, ensuring only intentional releases deploy.
+#
+# Pipeline: unit tests → signed APK + AAB → GitHub Release → Play Store → Firebase
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'release/') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # Required to create GitHub Releases and tags
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          # Full history needed for git operations inside Fastlane lanes.
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Configure git bot identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Decode release keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > /tmp/release.keystore
+          chmod 600 /tmp/release.keystore
+
+      - name: Decode Play Store JSON key
+        run: |
+          echo "${{ secrets.PLAY_STORE_JSON_KEY_BASE64 }}" | base64 --decode > /tmp/play-store-key.json
+          chmod 600 /tmp/play-store-key.json
+
+      - name: Run deploy lane
+        env:
+          # Signing
+          KEYSTORE_PATH: /tmp/release.keystore
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # Google Play Store
+          PLAY_STORE_JSON_KEY_PATH: /tmp/play-store-key.json
+          # Firebase App Distribution
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          # GitHub Releases
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Provide the release branch ref so Fastlane can parse the CalVer
+          # if increment_calver is called (idempotent on main after merge).
+          GITHUB_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: bundle exec fastlane deploy
+
+      # Always remove decoded secrets from the runner, even on failure,
+      # to prevent leaking credentials if the runner is reused.
+      - name: Clean up secrets from disk
+        if: always()
+        run: |
+          rm -f /tmp/release.keystore
+          rm -f /tmp/play-store-key.json
