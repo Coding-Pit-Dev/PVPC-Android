@@ -5,7 +5,6 @@ import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
 import com.codingpit.pvpcplanner.domain.models.Device
-import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy

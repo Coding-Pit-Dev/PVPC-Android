@@ -1,21 +1,2 @@
-root = true
-
-[*]
-charset = utf-8
-end_of_line = lf
-indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
-
-[*.{kt,kts}]
-indent_size = 4
-# Disable max-line-length in ktlint — detekt MaxLineLength: 120 enforces this project-wide
-ktlint_standard_max-line-length = disabled
-# Disable function-signature: avoids conflicts with max-line-length being off
-ktlint_standard_function-signature = disabled
-# Disable property-naming: project uses PascalCase for const val, detekt TopLevelPropertyNaming handles this
-ktlint_standard_property-naming = disabled
-# Allow PascalCase for @Composable and @Preview annotated functions (Compose convention)
-ktlint_function_naming_ignore_when_annotated_with = Composable,Preview
-# Disable backing-property-naming: false positive with val _ = pattern used for unused return suppression
-ktlint_standard_backing-property-naming = disabled
+[*.kt]
+ktlint_function_naming_ignore_when_annotated_with = Composable
