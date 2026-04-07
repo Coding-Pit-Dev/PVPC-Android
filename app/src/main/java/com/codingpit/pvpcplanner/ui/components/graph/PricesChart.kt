@@ -5,25 +5,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.Zoom
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.component.TextComponent
+import com.patrykandpatrick.vico.compose.common.component.TextComponent
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -72,13 +71,13 @@ fun PriceChart(
                 markerVisibilityListener = markerVisibilityListener,
                 startAxis =
                     VerticalAxis.rememberStart(
-                        label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
+                        label = rememberAxisLabelComponent(axisLabelTextStyle()),
                         guideline = null,
                         itemPlacer = VerticalAxis.ItemPlacer.step(step = { yAxisStep.toDouble() }),
                     ),
                 bottomAxis =
                     HorizontalAxis.rememberBottom(
-                        label = rememberAxisLabelComponent(MaterialTheme.colorScheme.primary),
+                        label = rememberAxisLabelComponent(axisLabelTextStyle()),
                         guideline = null,
                         valueFormatter = getValueFormatter(calendar, timeFormat, simpleDateFormat),
                         itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 1 }),
@@ -94,14 +93,14 @@ fun PriceChart(
 private fun rememberYAxis(values: List<Float>) =
     remember(values) {
         if (values.isEmpty()) {
-            DefaultYAxisValue
+            DEFAULT_Y_AXIS_VALUE
         } else {
-            val minPrice = values.minOrNull() ?: DefaultMinPrice
-            val maxPrice = values.maxOrNull() ?: DefaultMaxPrice
+            val minPrice = values.minOrNull() ?: DEFAULT_MIN_PRICE
+            val maxPrice = values.maxOrNull() ?: DEFAULT_MAX_PRICE
 
             val range = maxPrice - minPrice
-            if (range == DefaultMinPrice) {
-                DefaultYAxisValue
+            if (range == DEFAULT_MIN_PRICE) {
+                DEFAULT_Y_AXIS_VALUE
             } else {
                 val desiredLabelCount = 5 // Adjust as needed
                 val calculatedStep = range / (desiredLabelCount - 1)
@@ -111,6 +110,9 @@ private fun rememberYAxis(values: List<Float>) =
             }
         }
     }
+
+@Composable
+private fun axisLabelTextStyle(): TextStyle = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.primary)
 
 private fun getValueFormatter(
     calendar: Calendar,
@@ -125,6 +127,6 @@ private fun getValueFormatter(
     }
 }
 
-private const val DefaultYAxisValue = 0.1f
-private const val DefaultMinPrice = 0f
-private const val DefaultMaxPrice = 1f
+private const val DEFAULT_Y_AXIS_VALUE = 0.1f
+private const val DEFAULT_MIN_PRICE = 0f
+private const val DEFAULT_MAX_PRICE = 1f

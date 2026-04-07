@@ -1,22 +1,22 @@
 [versions]
 activityCompose = "1.12.4"
 agp = "9.1.0"
-composeBom = "2026.02.01"
+composeBom = "2026.03.01"
 coreKtx = "1.18.0"
 detekt = "1.23.8"
 espressoCore = "3.7.0"
 graphicsShapes = "1.1.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxDatetime = "0.7.1-0.6.x-compat"
-ktlint = "14.1.0"
+ktlint = "14.2.0"
 lifecycleRuntimeKtx = "2.10.0"
-material3 = "1.5.0-alpha15"
+material3 = "1.5.0-alpha16"
 materialIconsExtendedAndroid = "1.7.8"
 mockk = "1.14.9"
-vico = "2.4.3"
+vico = "3.1.0"
 retrofit = "3.0.0"
 room = "2.8.4"
 moshi = "1.15.2"
@@ -27,10 +27,12 @@ junitJupiter = "6.0.3"
 ksp = "2.3.6"
 protobuf = "0.9.6"
 datastore = "1.2.1"
-protobufJavalite = "4.34.0"
+protobufJavalite = "4.34.1"
 turbine = "1.2.1"
 kotlinxSerializationJson = "1.10.0"
 workmanager = "2.10.0"
+roborazzi = "1.20.0"
+robolectric = "4.14.1"
 
 
 [libraries]
@@ -77,6 +79,11 @@ protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+roborazzi-junit-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 
 
 
@@ -89,3 +96,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dagger-hilt-android-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

@@ -15,6 +15,7 @@
     <string name="unit_kwh">kWh</string>
     <string name="nav_prices">Prix</string>
     <string name="nav_devices">Appareils</string>
+    <string name="nav_stats">Statistiques</string>
     <string name="nav_settings">Paramètres</string>
     <string name="setting_dark_mode">Mode sombre</string>
     <string name="setting_time_format">Format de l\'heure</string>
@@ -93,6 +94,7 @@
     <string name="unit_watt">W</string>
     <string name="program_duration">Durée du programme</string>
     <string name="category_label">Catégorie</string>
+    <string name="category_all">Tous</string>
     <string name="category_appliances">Électroménager</string>
     <string name="category_lighting">Éclairage</string>
     <string name="category_hvac">Climatisation</string>

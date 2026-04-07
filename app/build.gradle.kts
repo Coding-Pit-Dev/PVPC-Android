@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.dagger.hilt.android.plugin)
     alias(libs.plugins.protobuf)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -46,6 +47,12 @@ android {
     sourceSets {
         getByName("androidTest") {
             assets.srcDirs("$projectDir/schemas")
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 
@@ -166,6 +173,15 @@ dependencies {
 
     // Other  Test
     testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
+
+    // Screenshot Tests
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
+    testImplementation(libs.robolectric)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.ui.test.junit4)
 }
 
 java {
