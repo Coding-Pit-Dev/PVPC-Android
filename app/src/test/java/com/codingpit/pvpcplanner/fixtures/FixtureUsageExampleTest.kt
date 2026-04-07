@@ -3,7 +3,6 @@ package com.codingpit.pvpcplanner.fixtures
 import com.codingpit.pvpcplanner.data.PriceRepositoryImpl
 import com.codingpit.pvpcplanner.data.local.sources.PriceLocalDataSource
 import com.codingpit.pvpcplanner.data.remote.RemoteDataSource
-import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy
 import com.codingpit.pvpcplanner.domain.usecase.CalculateBestTimeSlot
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices

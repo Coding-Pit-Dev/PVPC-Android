@@ -10,7 +10,6 @@ import com.codingpit.pvpcplanner.utils.CategoryUiModel
 import com.codingpit.pvpcplanner.utils.DeviceIcon
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

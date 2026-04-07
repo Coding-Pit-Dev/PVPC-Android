@@ -2,8 +2,8 @@ package com.codingpit.pvpcplanner.ui.devices
 
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.Device
-import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.TimeSlot
 import com.codingpit.pvpcplanner.domain.strategy.BestTimeSlotCalculationStrategy
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice

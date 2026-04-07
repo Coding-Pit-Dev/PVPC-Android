@@ -71,6 +71,7 @@ class DefaultErrorMessageProvider
                 "settings_data" -> context.getString(R.string.error_data_settings)
                 else -> context.getString(R.string.error_data_generic)
             }
+
         override fun getValidationErrorMessage(field: String?): String =
             when (field) {
                 "date" -> context.getString(R.string.error_validation_date)

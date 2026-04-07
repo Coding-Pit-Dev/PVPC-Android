@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import app.cash.turbine.test
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.DarkMode
-import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.PVPCModel
+import com.codingpit.pvpcplanner.domain.models.PriceFetchResult
 import com.codingpit.pvpcplanner.domain.models.Settings
 import com.codingpit.pvpcplanner.domain.models.TimeFormat
 import com.codingpit.pvpcplanner.domain.usecase.GetPrices
