@@ -18,34 +18,39 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SettingsScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
 
     private fun buildSettingsSuccess(): SettingsState.Success {
-        val darkModeSetting = SettingRender(
-            setting = SettingValue.DarkMode(
-                titleRes = R.string.setting_dark_mode,
-                valueRes = R.string.option_system,
-            ),
-            options = listOf(
-                SettingOption(labelRes = R.string.option_system, selected = true),
-                SettingOption(labelRes = R.string.option_light, selected = false),
-                SettingOption(labelRes = R.string.option_dark, selected = false),
-            ),
-        )
-        val timeFormatSetting = SettingRender(
-            setting = SettingValue.TimeFormat(
-                titleRes = R.string.setting_time_format,
-                valueRes = R.string.option_24h,
-            ),
-            options = listOf(
-                SettingOption(labelRes = R.string.option_24h, selected = true),
-                SettingOption(labelRes = R.string.option_ampm, selected = false),
-            ),
-        )
+        val darkModeSetting =
+            SettingRender(
+                setting =
+                    SettingValue.DarkMode(
+                        titleRes = R.string.setting_dark_mode,
+                        valueRes = R.string.option_system,
+                    ),
+                options =
+                    listOf(
+                        SettingOption(labelRes = R.string.option_system, selected = true),
+                        SettingOption(labelRes = R.string.option_light, selected = false),
+                        SettingOption(labelRes = R.string.option_dark, selected = false),
+                    ),
+            )
+        val timeFormatSetting =
+            SettingRender(
+                setting =
+                    SettingValue.TimeFormat(
+                        titleRes = R.string.setting_time_format,
+                        valueRes = R.string.option_24h,
+                    ),
+                options =
+                    listOf(
+                        SettingOption(labelRes = R.string.option_24h, selected = true),
+                        SettingOption(labelRes = R.string.option_ampm, selected = false),
+                    ),
+            )
         return SettingsState.Success(settings = listOf(darkModeSetting, timeFormatSetting))
     }
 

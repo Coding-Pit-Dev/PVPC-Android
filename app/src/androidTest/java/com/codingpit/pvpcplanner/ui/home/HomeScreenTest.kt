@@ -17,15 +17,15 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class HomeScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val testPrices = List(24) { i ->
-        PVPCModel(day = "2024-01-15", startHour = i, endHour = i + 1, pcb = 0.1 + i * 0.005, cym = 0.12)
-    }
+    private val testPrices =
+        List(24) { i ->
+            PVPCModel(day = "2024-01-15", startHour = i, endHour = i + 1, pcb = 0.1 + i * 0.005, cym = 0.12)
+        }
 
     @Test
     fun homeComponents_displaysPriceValue() {

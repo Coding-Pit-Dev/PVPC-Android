@@ -33,6 +33,7 @@ class SettingsViewModelTest {
     companion object {
         private const val UNKNOWN_LABEL_RES = 0
     }
+
     private val mockGetSettings = mockk<GetSettings>()
     private val mockUpdateSetting = mockk<UpdateSetting>()
     private val mockErrorHandler = mockk<ErrorHandler>()

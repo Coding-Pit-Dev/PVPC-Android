@@ -23,7 +23,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class DeviceAddScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -70,9 +69,10 @@ class DeviceAddScreenTest {
     @Test
     fun deviceAddScreen_saveButtonDisabled_whenNameEmpty() {
         val mockVM = mockk<DeviceAddViewModel>(relaxed = true)
-        every { mockVM.state } returns MutableStateFlow(
-            buildSuccessState(deviceName = "", saveEnabled = false),
-        )
+        every { mockVM.state } returns
+            MutableStateFlow(
+                buildSuccessState(deviceName = "", saveEnabled = false),
+            )
 
         composeTestRule.setContent {
             MaterialTheme {
@@ -87,14 +87,15 @@ class DeviceAddScreenTest {
     @Test
     fun deviceAddScreen_saveButtonEnabled_whenFormValid() {
         val mockVM = mockk<DeviceAddViewModel>(relaxed = true)
-        every { mockVM.state } returns MutableStateFlow(
-            buildSuccessState(
-                deviceName = "Washing Machine",
-                watts = "2000",
-                hours = "2",
-                saveEnabled = true,
-            ),
-        )
+        every { mockVM.state } returns
+            MutableStateFlow(
+                buildSuccessState(
+                    deviceName = "Washing Machine",
+                    watts = "2000",
+                    hours = "2",
+                    saveEnabled = true,
+                ),
+            )
 
         composeTestRule.setContent {
             MaterialTheme {
@@ -109,13 +110,14 @@ class DeviceAddScreenTest {
     @Test
     fun deviceAddScreen_showsHoursError_whenHoursExceed24() {
         val mockVM = mockk<DeviceAddViewModel>(relaxed = true)
-        every { mockVM.state } returns MutableStateFlow(
-            buildSuccessState(
-                hours = "25",
-                saveEnabled = false,
-                hoursError = "error_validation_device_hours_max",
-            ),
-        )
+        every { mockVM.state } returns
+            MutableStateFlow(
+                buildSuccessState(
+                    hours = "25",
+                    saveEnabled = false,
+                    hoursError = "error_validation_device_hours_max",
+                ),
+            )
 
         composeTestRule.setContent {
             MaterialTheme {
