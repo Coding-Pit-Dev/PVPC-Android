@@ -32,7 +32,7 @@ turbine = "1.2.1"
 kotlinxSerializationJson = "1.11.0"
 workmanager = "2.10.0"
 roborazzi = "1.59.0"
-robolectric = "4.14.1"
+robolectric = "4.16.1"
 
 
 [libraries]
