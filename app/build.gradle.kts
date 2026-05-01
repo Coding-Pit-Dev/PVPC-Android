@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android.plugin)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.roborazzi)
+    jacoco
 }
 
 android {
@@ -70,6 +71,11 @@ android {
                 "proguard-rules.pro",
             )
         }
+        debug {
+            val coverageEnabled = project.hasProperty("coverage")
+            enableAndroidTestCoverage = coverageEnabled
+            enableUnitTestCoverage = coverageEnabled
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -99,6 +105,16 @@ android {
     composeCompiler {
         reportsDestination = layout.buildDirectory.dir("compose_reports")
         metricsDestination = layout.buildDirectory.dir("compose_metrics")
+    }
+    jacoco {
+        version = libs.versions.jacoco.get()
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
     }
 }
 
