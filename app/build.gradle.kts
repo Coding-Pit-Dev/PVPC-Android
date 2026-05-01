@@ -72,8 +72,9 @@ android {
             )
         }
         debug {
-            enableAndroidTestCoverage = true
-            enableUnitTestCoverage = true
+            val coverageEnabled = project.hasProperty("coverage")
+            enableAndroidTestCoverage = coverageEnabled
+            enableUnitTestCoverage = coverageEnabled
         }
     }
     compileOptions {
@@ -108,11 +109,11 @@ android {
 }
 
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = libs.versions.jacoco.get()
     reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
 }
 
-tasks.withType(Test::class) {
+tasks.withType<Test>().configureEach {
     configure<JacocoTaskExtension> {
         isIncludeNoLocationClasses = true
         excludes = listOf("jdk.internal.*")

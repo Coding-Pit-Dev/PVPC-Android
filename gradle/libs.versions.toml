@@ -1,5 +1,6 @@
 [versions]
 activityCompose = "1.13.0"
+jacoco = "0.8.12"
 agp = "9.2.0"
 composeBom = "2026.04.01"
 coreKtx = "1.18.0"
