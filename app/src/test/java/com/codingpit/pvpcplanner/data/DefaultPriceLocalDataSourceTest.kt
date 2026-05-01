@@ -70,7 +70,20 @@ class DefaultPriceLocalDataSourceTest {
 
             dataSource.savePrices(prices)
 
-            coVerify { mockDao.insertAll(match { it.size == 2 }) }
+            coVerify {
+                mockDao.insertAll(
+                    match { entities ->
+                        entities.size == 2 &&
+                            entities[0].day == "01/05/2026" &&
+                            entities[0].startHour == 0 &&
+                            entities[0].endHour == 1 &&
+                            entities[0].pcb == 0.15 &&
+                            entities[1].startHour == 1 &&
+                            entities[1].endHour == 2 &&
+                            entities[1].pcb == 0.12
+                    },
+                )
+            }
         }
 
     @Test

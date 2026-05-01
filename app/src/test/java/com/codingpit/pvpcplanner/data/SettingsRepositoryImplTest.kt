@@ -14,6 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 class SettingsRepositoryImplTest {
     private val mockStore = mockk<SettingsStore>()
@@ -79,11 +80,11 @@ class SettingsRepositoryImplTest {
     @Test
     fun `updatePriceThreshold throws for negative value`() =
         runTest {
-            try {
-                repository.updatePriceThreshold(-0.1f)
-                org.junit.Assert.fail("Expected IllegalArgumentException")
-            } catch (e: IllegalArgumentException) {
-                assertEquals("priceThreshold must be >= 0", e.message)
-            }
+            val e =
+                assertFailsWith<IllegalArgumentException> {
+                    repository.updatePriceThreshold(-0.1f)
+                }
+            assertEquals("priceThreshold must be >= 0", e.message)
+            coVerify(exactly = 0) { mockStore.updatePriceThreshold(any()) }
         }
 }

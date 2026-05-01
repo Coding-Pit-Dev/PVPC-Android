@@ -81,4 +81,14 @@ class SettingsMapperTest {
     fun `TimeFormat round-trip TWENTY_FOUR_HOURS`() {
         assertEquals(TimeFormat.TWENTY_FOUR_HOURS, TimeFormat.TWENTY_FOUR_HOURS.toProto().toDomain())
     }
+
+    @Test
+    fun `DarkMode round-trip LIGHT`() {
+        assertEquals(DarkMode.LIGHT, DarkMode.LIGHT.toProto().toDomain())
+    }
+
+    @Test
+    fun `TimeFormat round-trip TWELVE_HOURS`() {
+        assertEquals(TimeFormat.TWELVE_HOURS, TimeFormat.TWELVE_HOURS.toProto().toDomain())
+    }
 }

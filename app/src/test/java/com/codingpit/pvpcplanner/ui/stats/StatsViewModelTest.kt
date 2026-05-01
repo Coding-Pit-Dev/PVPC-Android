@@ -7,8 +7,10 @@ import com.codingpit.pvpcplanner.domain.error.ErrorResult
 import com.codingpit.pvpcplanner.domain.models.DailyPriceSummary
 import com.codingpit.pvpcplanner.domain.usecase.GetPriceHistory
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -46,14 +48,13 @@ class StatsViewModelTest {
     }
 
     @Test
-    fun `initial state is Loading`() =
+    fun `initial state is Loading or immediate Success`() =
         runTest {
             coEvery { mockGetPriceHistory() } returns Result.success(emptyList())
             viewModel = StatsViewModel(mockGetPriceHistory, mockErrorHandler, testDispatcher)
 
             viewModel.state.test {
                 val state = awaitItem()
-                // With UnconfinedTestDispatcher the flow may already be Success
                 assertTrue(state is StatsState.Loading || state is StatsState.Success)
                 cancelAndIgnoreRemainingEvents()
             }
@@ -78,6 +79,7 @@ class StatsViewModelTest {
                 assertEquals(summaries, (successState as StatsState.Success).summaries)
                 cancelAndIgnoreRemainingEvents()
             }
+            coVerify(exactly = 1) { mockGetPriceHistory() }
         }
 
     @Test
@@ -94,6 +96,7 @@ class StatsViewModelTest {
                 assertTrue((successState as StatsState.Success).summaries.isEmpty())
                 cancelAndIgnoreRemainingEvents()
             }
+            coVerify(exactly = 1) { mockGetPriceHistory() }
         }
 
     @Test
@@ -111,6 +114,8 @@ class StatsViewModelTest {
                 assertEquals("Database read error", (errorState as StatsState.Error).error)
                 cancelAndIgnoreRemainingEvents()
             }
+            coVerify(exactly = 1) { mockGetPriceHistory() }
+            verify(exactly = 1) { mockErrorHandler.handleError(exception, any()) }
         }
 
     @Test
