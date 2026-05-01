@@ -18,9 +18,10 @@ class PriceCalculationStrategyTest {
 
     @Test
     fun `finds cheapest consecutive slot for 2-hour device`() {
-        val prices = (0 until 24).map { h ->
-            priceAt(h, if (h in 2..3) 0.05 else 0.15)
-        }
+        val prices =
+            (0 until 24).map { h ->
+                priceAt(h, if (h in 2..3) 0.05 else 0.15)
+            }
         val device = Device(1, "Test", hours = 2, icon = "test")
 
         val slot = strategy.calculateBestTimeSlot(device, prices)
@@ -31,9 +32,10 @@ class PriceCalculationStrategyTest {
 
     @Test
     fun `single hour device picks cheapest single hour`() {
-        val prices = (0 until 24).map { h ->
-            priceAt(h, if (h == 5) 0.01 else 0.20)
-        }
+        val prices =
+            (0 until 24).map { h ->
+                priceAt(h, if (h == 5) 0.01 else 0.20)
+            }
         val device = Device(1, "Test", hours = 1, icon = "test")
 
         val slot = strategy.calculateBestTimeSlot(device, prices)

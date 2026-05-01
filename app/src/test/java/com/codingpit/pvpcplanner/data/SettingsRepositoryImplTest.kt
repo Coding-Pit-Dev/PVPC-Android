@@ -25,59 +25,65 @@ class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `getSettings returns flow from store`() = runTest {
-        val settings = Settings(DarkMode.DARK, TimeFormat.TWENTY_FOUR_HOURS, 5, 0.1f)
-        every { mockStore.settings } returns flowOf(settings)
+    fun `getSettings returns flow from store`() =
+        runTest {
+            val settings = Settings(DarkMode.DARK, TimeFormat.TWENTY_FOUR_HOURS, 5, 0.1f)
+            every { mockStore.settings } returns flowOf(settings)
 
-        repository.getSettings().test {
-            assertEquals(settings, awaitItem())
-            awaitComplete()
+            repository.getSettings().test {
+                assertEquals(settings, awaitItem())
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `updateDarkMode delegates to store`() = runTest {
-        coEvery { mockStore.updateDarkMode(DarkMode.DARK) } returns Unit
+    fun `updateDarkMode delegates to store`() =
+        runTest {
+            coEvery { mockStore.updateDarkMode(DarkMode.DARK) } returns Unit
 
-        repository.updateDarkMode(DarkMode.DARK)
+            repository.updateDarkMode(DarkMode.DARK)
 
-        coVerify { mockStore.updateDarkMode(DarkMode.DARK) }
-    }
-
-    @Test
-    fun `updateTimeFormat delegates to store`() = runTest {
-        coEvery { mockStore.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS) } returns Unit
-
-        repository.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS)
-
-        coVerify { mockStore.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS) }
-    }
-
-    @Test
-    fun `updatePriceThreshold delegates to store for positive value`() = runTest {
-        coEvery { mockStore.updatePriceThreshold(0.15f) } returns Unit
-
-        repository.updatePriceThreshold(0.15f)
-
-        coVerify { mockStore.updatePriceThreshold(0.15f) }
-    }
-
-    @Test
-    fun `updatePriceThreshold allows zero value`() = runTest {
-        coEvery { mockStore.updatePriceThreshold(0f) } returns Unit
-
-        repository.updatePriceThreshold(0f)
-
-        coVerify { mockStore.updatePriceThreshold(0f) }
-    }
-
-    @Test
-    fun `updatePriceThreshold throws for negative value`() = runTest {
-        try {
-            repository.updatePriceThreshold(-0.1f)
-            org.junit.Assert.fail("Expected IllegalArgumentException")
-        } catch (e: IllegalArgumentException) {
-            assertEquals("priceThreshold must be >= 0", e.message)
+            coVerify { mockStore.updateDarkMode(DarkMode.DARK) }
         }
-    }
+
+    @Test
+    fun `updateTimeFormat delegates to store`() =
+        runTest {
+            coEvery { mockStore.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS) } returns Unit
+
+            repository.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS)
+
+            coVerify { mockStore.updateTimeFormat(TimeFormat.TWENTY_FOUR_HOURS) }
+        }
+
+    @Test
+    fun `updatePriceThreshold delegates to store for positive value`() =
+        runTest {
+            coEvery { mockStore.updatePriceThreshold(0.15f) } returns Unit
+
+            repository.updatePriceThreshold(0.15f)
+
+            coVerify { mockStore.updatePriceThreshold(0.15f) }
+        }
+
+    @Test
+    fun `updatePriceThreshold allows zero value`() =
+        runTest {
+            coEvery { mockStore.updatePriceThreshold(0f) } returns Unit
+
+            repository.updatePriceThreshold(0f)
+
+            coVerify { mockStore.updatePriceThreshold(0f) }
+        }
+
+    @Test
+    fun `updatePriceThreshold throws for negative value`() =
+        runTest {
+            try {
+                repository.updatePriceThreshold(-0.1f)
+                org.junit.Assert.fail("Expected IllegalArgumentException")
+            } catch (e: IllegalArgumentException) {
+                assertEquals("priceThreshold must be >= 0", e.message)
+            }
+        }
 }
