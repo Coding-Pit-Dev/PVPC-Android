@@ -6,6 +6,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PVPC-Android is an electricity price management application for Android that helps users optimize their appliance usage based on PVPC (Voluntary Price for Small Consumers) electricity rates in Spain. The app calculates the best time slots to run appliances based on real-time pricing data.
 
+## Working on Tasks — Worktree Requirement
+
+**Every non-trivial code task must be done in a git worktree.** This keeps the main working tree clean and makes it safe to parallelize or abandon work.
+
+### Workflow
+
+```bash
+# 1. Create worktree from develop
+git worktree add .claude/worktrees/<short-name> -b <branch-name> develop
+
+# 2. Do all work inside that directory
+cd .claude/worktrees/<short-name>
+
+# 3. Commit, push, open PR
+git push -u origin <branch-name>
+gh pr create --base develop ...
+
+# 4. Remove worktree when PR is open (or abandoned)
+cd /path/to/main/repo
+git worktree remove .claude/worktrees/<short-name>
+```
+
+Exceptions — work directly in the main tree only when:
+- Fixing a hook or settings file that affects the worktree itself
+- Responding to an existing PR's review comments on the same branch
+
 ## Build & Test Commands
 
 ### Building
