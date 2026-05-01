@@ -12,9 +12,9 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class SettingsRepositoryImplTest {
     private val mockStore = mockk<SettingsStore>()
@@ -80,11 +80,12 @@ class SettingsRepositoryImplTest {
     @Test
     fun `updatePriceThreshold throws for negative value`() =
         runTest {
-            val e =
-                assertFailsWith<IllegalArgumentException> {
-                    repository.updatePriceThreshold(-0.1f)
-                }
-            assertEquals("priceThreshold must be >= 0", e.message)
+            try {
+                repository.updatePriceThreshold(-0.1f)
+                fail("Expected IllegalArgumentException")
+            } catch (e: IllegalArgumentException) {
+                assertEquals("priceThreshold must be >= 0", e.message)
+            }
             coVerify(exactly = 0) { mockStore.updatePriceThreshold(any()) }
         }
 }

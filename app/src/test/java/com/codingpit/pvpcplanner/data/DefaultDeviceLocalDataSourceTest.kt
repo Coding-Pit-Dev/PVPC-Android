@@ -13,9 +13,9 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class DefaultDeviceLocalDataSourceTest {
     private val mockDao = mockk<PVPCDao>()
@@ -104,7 +104,11 @@ class DefaultDeviceLocalDataSourceTest {
             val exception = RuntimeException("Database error")
             coEvery { mockDao.insertDevice(any()) } throws exception
 
-            val e = assertFailsWith<RuntimeException> { dataSource.saveDevice(device) }
-            assertEquals("Database error", e.message)
+            try {
+                dataSource.saveDevice(device)
+                fail("Expected RuntimeException")
+            } catch (e: RuntimeException) {
+                assertEquals("Database error", e.message)
+            }
         }
 }
