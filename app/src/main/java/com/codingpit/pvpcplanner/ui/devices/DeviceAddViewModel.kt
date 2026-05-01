@@ -171,7 +171,7 @@ class DeviceAddViewModel
 
                     onSuccess()
                 } catch (e: Exception) {
-                    val errorResult = errorHandler.handleError(e, "device_save")
+                    val errorResult = errorHandler.handleError(e, ERROR_CONTEXT_SAVE)
                     _state.value = DeviceAddState.Factory.createErrorState(errorResult)
                 }
             }
@@ -216,5 +216,9 @@ class DeviceAddViewModel
                     state
                 }
             }
+        }
+
+        companion object {
+            private const val ERROR_CONTEXT_SAVE = "device_save"
         }
     }

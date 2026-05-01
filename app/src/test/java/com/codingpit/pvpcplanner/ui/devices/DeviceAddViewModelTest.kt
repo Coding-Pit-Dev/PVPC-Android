@@ -3,12 +3,16 @@ package com.codingpit.pvpcplanner.ui.devices
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import com.codingpit.pvpcplanner.domain.error.ErrorHandler
+import com.codingpit.pvpcplanner.domain.error.ErrorResult
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.UpdateDevice
 import com.codingpit.pvpcplanner.utils.CategoryUiModel
 import com.codingpit.pvpcplanner.utils.DeviceIcon
+import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -84,6 +88,27 @@ class DeviceAddViewModelTest {
                     },
                 )
             }
+        }
+
+    @Test
+    fun `saveDevice transitions to Error state when addDevice throws`() =
+        runTest {
+            val icons = listOf(DeviceIcon("icon1", Icons.Default.Add, 0))
+            val categories = listOf(CategoryUiModel("cat1", 0))
+            viewModel.initialize(icons, categories)
+
+            coEvery { mockAddDevice(any()) } throws RuntimeException("test error")
+            every { mockErrorHandler.handleError(any(), any()) } returns ErrorResult.UnknownError("test error")
+
+            viewModel.onDeviceNameChanged("Test Device")
+            viewModel.onWattsChanged("100")
+            viewModel.onHoursChanged("2")
+
+            viewModel.saveDevice {}
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            verify { mockErrorHandler.handleError(any(), any()) }
+            assert(viewModel.state.value is DeviceAddState.Error)
         }
 
     @Test
