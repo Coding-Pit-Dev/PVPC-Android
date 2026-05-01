@@ -140,7 +140,7 @@ ktlint {
 }
 
 detekt {
-    toolVersion = "1.23.7"
+    toolVersion = libs.versions.detekt.get()
     parallel = true
     config.setFrom("config/detekt/config.yml")
     buildUponDefaultConfig = true
