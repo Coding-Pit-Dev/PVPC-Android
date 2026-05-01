@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -39,20 +40,24 @@ class DevicesViewModel
         private val searchQuery = MutableStateFlow("")
         private val selectedCategory = MutableStateFlow<DeviceCategoryFilter?>(null)
 
+        private val deviceRenders =
+            combine(getDevices(), getPricesFlow()) { devices, prices ->
+                prices.map { fetchResult ->
+                    devices.map { device ->
+                        val bestSlot = calculateBestTimeSlot(device, fetchResult.prices)
+                        val cost = calculateDeviceCost(device, bestSlot, fetchResult.prices)
+                        DeviceRender(device, bestSlot, cost)
+                    }
+                }
+            }.distinctUntilChanged()
+
         val state =
             combine(
-                getDevices(),
-                getPricesFlow(),
+                deviceRenders,
                 searchQuery,
                 selectedCategory,
-            ) { devices, prices, query, category ->
-                prices.map { fetchResult ->
-                    val devicesSlot =
-                        devices.map { device ->
-                            val bestSlot = calculateBestTimeSlot(device, fetchResult.prices)
-                            val cost = calculateDeviceCost(device, bestSlot, fetchResult.prices)
-                            DeviceRender(device, bestSlot, cost)
-                        }
+            ) { renders, query, category ->
+                renders.map { devicesSlot ->
                     DevicesState.Success(devicesSlot = devicesSlot, searchQuery = query, selectedCategory = category)
                 }
             }.map { it.getOrThrow() }
