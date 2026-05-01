@@ -6,6 +6,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PVPC-Android is an electricity price management application for Android that helps users optimize their appliance usage based on PVPC (Voluntary Price for Small Consumers) electricity rates in Spain. The app calculates the best time slots to run appliances based on real-time pricing data.
 
+## Working on Tasks — Worktree Requirement
+
+**Every non-trivial code task must be done in a git worktree.** This keeps the main working tree clean and makes it safe to parallelize or abandon work.
+
+### Workflow
+
+```bash
+# 1. Create worktree from develop
+git worktree add .claude/worktrees/<short-name> -b <branch-name> develop
+
+# 2. Do all work inside that directory
+cd .claude/worktrees/<short-name>
+
+# 3. Commit, push, open PR
+git push -u origin <branch-name>
+gh pr create --base develop ...
+
+# 4. Remove worktree when PR is open (or abandoned)
+cd /path/to/main/repo
+git worktree remove .claude/worktrees/<short-name>
+```
+
+Exceptions — work directly in the main tree only when:
+- Fixing a hook or settings file that affects the worktree itself
+- Responding to an existing PR's review comments on the same branch
+
 ## Build & Test Commands
 
 ### Building
@@ -375,84 +401,25 @@ Do **not** log: trivial typos, missing imports that the IDE auto-fixes, or failu
 
 ### How to log a failure
 
-After resolving a failure, check if `.claude/archive-pending.json` exists — the hook writes failure details there automatically. Use it as a starting point.
+After resolving a failure, check if `.claude/archive-pending.json` exists — the hook writes failure details there automatically. Read it and use its `error` and `context` fields as input to the steps below.
 
-Then follow these steps:
+#### 1. Check if already documented
 
-#### 1. Determine the ID
+Use the `the-archive` MCP before creating a new entry. Pass the error message text directly as a string argument:
 
-Check `INDEX.md` in the-archive repo to find the next available number:
-```bash
-gh api repos/Coding-Pit-Dev/the-archive/contents/INDEX.md --jq '.content' | base64 -d
+```
+find_similar(error_text="<paste the exact error message from archive-pending.json>")
+search_errors(query="<keywords from the error>", technology="android")
 ```
 
-Use prefix `AND-` for Android/Kotlin/Compose issues, `AGP-` for Gradle/build issues.
+If a matching entry exists, use the **`archive-append-attempt`** skill to record your attempt instead.
 
-#### 2. Clone the-archive and create a branch
+#### 2. Create a new entry
 
-```bash
-gh repo clone Coding-Pit-Dev/the-archive /tmp/the-archive 2>/dev/null || git -C /tmp/the-archive pull
-cd /tmp/the-archive && git checkout -b errors/AND-NNN-short-description
-mkdir -p errors/android/<subcategory>/AND-NNN-short-description
-```
+If not documented, use the **`archive-create-error`** skill. Pass the contents of `.claude/archive-pending.json` as context — the skill reads the `error`, `context`, and `solution` fields from it. It scaffolds the directory, runs all validators, and opens the PR automatically.
 
-#### 3. Write the error document
-
-Create `errors/android/<subcategory>/AND-NNN-short-description/README.md` with this exact frontmatter:
-
-```yaml
----
-id: "AND-NNN"
-title: "Short descriptive title"
-technology: ["android", "kotlin"]
-severity: "blocker"                   # blocker | high | medium | low
-status: "solved"                      # solved | partial | unsolved
-tags: ["compose", "tag2"]             # lowercase, max 8
-created: "YYYY-MM-DD"
-last_updated: "YYYY-MM-DD"
-success_count: 0
-contributors:
-  - agent: "claude-sonnet-4-6"
-    pr: ""                            # fill after PR is created
-    date: "YYYY-MM-DD"
----
-```
-
-Required body sections: `## Error description`, `## When it appears`, `## Root cause`, `## Solution`, `## Verification`, `## Environment`, `## References`.
-
-#### 4. Submit the PR
-
-```bash
-cd /tmp/the-archive
-git add .
-git commit -m "errors: add AND-NNN short description"
-git push origin errors/AND-NNN-short-description
-gh pr create --repo Coding-Pit-Dev/the-archive \
-  --title "errors: AND-NNN short description" \
-  --body "$(cat <<'EOF'
-## Summary
-- New error entry AND-NNN
-- Technology: android/kotlin
-- Status: solved
-
-## PR checklist
-- [ ] Frontmatter is valid and complete
-- [ ] ID is unique (verified against INDEX.md)
-- [ ] No executable code outside scripts/
-- [ ] last_updated is today's date
-EOF
-)"
-```
-
-#### 5. Clean up
+#### 3. Clean up
 
 ```bash
 rm -f .claude/archive-pending.json
 ```
-
-### ID reference (as of 2026-04-07)
-
-| Next ID | Technology |
-|---------|-----------|
-| AND-003 | Android general / Kotlin / Compose |
-| AGP-002 | Android Gradle Plugin / build |
