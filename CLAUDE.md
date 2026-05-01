@@ -375,22 +375,22 @@ Do **not** log: trivial typos, missing imports that the IDE auto-fixes, or failu
 
 ### How to log a failure
 
-After resolving a failure, check if `.claude/archive-pending.json` exists — the hook writes failure details there automatically. Use it as context.
+After resolving a failure, check if `.claude/archive-pending.json` exists — the hook writes failure details there automatically. Read it and use its `error` and `context` fields as input to the steps below.
 
 #### 1. Check if already documented
 
-Use the `the-archive` MCP before creating a new entry:
+Use the `the-archive` MCP before creating a new entry. Pass the error message text directly as a string argument:
 
 ```
-find_similar(error_text="<paste the error message>")
-search_errors(query="<keywords>", technology="android")
+find_similar(error_text="<paste the exact error message from archive-pending.json>")
+search_errors(query="<keywords from the error>", technology="android")
 ```
 
 If a matching entry exists, use the **`archive-append-attempt`** skill to record your attempt instead.
 
 #### 2. Create a new entry
 
-If not documented, use the **`archive-create-error`** skill. It scaffolds the directory, runs all validators, and opens the PR automatically.
+If not documented, use the **`archive-create-error`** skill. Pass the contents of `.claude/archive-pending.json` as context — the skill reads the `error`, `context`, and `solution` fields from it. It scaffolds the directory, runs all validators, and opens the PR automatically.
 
 #### 3. Clean up
 
