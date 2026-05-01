@@ -140,9 +140,10 @@ private fun formatHour(
     currentHour: Int,
     timeFormat: TimeFormat,
 ): String {
+    val locale = LocalConfiguration.current.locales[0]
+    val sdf = remember(locale) { SimpleDateFormat("h a", locale) }
     val formattedHour =
         if (timeFormat == TimeFormat.TWELVE_HOURS) {
-            val sdf = SimpleDateFormat("h a", LocalConfiguration.current.locales[0])
             sdf.format(
                 Calendar
                     .getInstance()
