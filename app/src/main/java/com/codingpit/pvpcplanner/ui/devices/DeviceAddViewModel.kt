@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.ui.devices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.models.Device
 import com.codingpit.pvpcplanner.domain.models.DeviceCategory
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
@@ -25,6 +26,7 @@ class DeviceAddViewModel
         private val addDevice: AddDevice,
         private val updateDevice: UpdateDevice,
         private val dispatcher: CoroutineDispatcher,
+        private val errorHandler: ErrorHandler,
     ) : ViewModel() {
         private val _state = MutableStateFlow<DeviceAddState>(DeviceAddState.Loading)
         val state: StateFlow<DeviceAddState> = _state.asStateFlow()
@@ -169,11 +171,8 @@ class DeviceAddViewModel
 
                     onSuccess()
                 } catch (e: Exception) {
-                    _state.value =
-                        DeviceAddState.Error(
-                            error = e.message ?: "Error saving device",
-                            isSaving = false,
-                        )
+                    val errorResult = errorHandler.handleError(e, "device_save")
+                    _state.value = DeviceAddState.Factory.createErrorState(errorResult)
                 }
             }
         }
