@@ -2,6 +2,7 @@ package com.codingpit.pvpcplanner.ui.devices
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import com.codingpit.pvpcplanner.domain.error.ErrorHandler
 import com.codingpit.pvpcplanner.domain.usecase.AddDevice
 import com.codingpit.pvpcplanner.domain.usecase.UpdateDevice
 import com.codingpit.pvpcplanner.utils.CategoryUiModel
@@ -23,13 +24,14 @@ import org.junit.Test
 class DeviceAddViewModelTest {
     private val mockAddDevice = mockk<AddDevice>(relaxed = true)
     private val mockUpdateDevice = mockk<UpdateDevice>(relaxed = true)
+    private val mockErrorHandler = mockk<ErrorHandler>(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: DeviceAddViewModel
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = DeviceAddViewModel(mockAddDevice, mockUpdateDevice, testDispatcher)
+        viewModel = DeviceAddViewModel(mockAddDevice, mockUpdateDevice, testDispatcher, mockErrorHandler)
     }
 
     @After
