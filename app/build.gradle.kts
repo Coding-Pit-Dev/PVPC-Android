@@ -106,11 +106,9 @@ android {
         reportsDestination = layout.buildDirectory.dir("compose_reports")
         metricsDestination = layout.buildDirectory.dir("compose_metrics")
     }
-}
-
-jacoco {
-    toolVersion = libs.versions.jacoco.get()
-    reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+    jacoco {
+        version = libs.versions.jacoco.get()
+    }
 }
 
 tasks.withType<Test>().configureEach {
