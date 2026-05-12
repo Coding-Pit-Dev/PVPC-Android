@@ -2,7 +2,7 @@
 activityCompose = "1.13.0"
 jacoco = "0.8.12"
 agp = "9.2.0"
-composeBom = "2026.04.01"
+composeBom = "2026.05.00"
 coreKtx = "1.18.0"
 detekt = "1.23.8"
 espressoCore = "3.7.0"
