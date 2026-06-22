@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout release branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Full history so Fastlane can inspect git state if needed.
           fetch-depth: 0
